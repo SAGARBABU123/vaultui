@@ -1,0 +1,31 @@
+{
+  "name": "@vault/data-viz",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Data Viz Pro — Sparkline, KpiCard, ProgressRadial, HeatmapCalendar, AnimatedCounter",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@vault/tokens": "workspace:*",
+    "@vault/ui": "workspace:*",
+    "@vault/utils": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@vault/configs": "workspace:*",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.7.0"
+  }
+}

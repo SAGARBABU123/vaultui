@@ -17,6 +17,22 @@ import {
   type PromptVariant,
   type ToolCall,
 } from "@vault/ai-chat";
+import {
+  HeatmapCalendar,
+  KpiCard,
+  ProgressRadial,
+} from "@vault/data-viz";
+import {
+  CartDrawer,
+  InstallmentToggle,
+  InventoryChip,
+  PricingTable,
+  RefundWizard,
+  type CartItem,
+  type PricingFeature,
+  type PricingPlan,
+  type UpsellItem,
+} from "@vault/commerce";
 import { cn } from "@vault/utils";
 
 /* ---------------------------------- data ---------------------------------- */
@@ -57,9 +73,11 @@ const features = [
 ];
 
 const kits = [
-  { name: "AI Agent Kit", desc: "Token streamers, tool-call inspectors, agent canvases", emoji: "🤖", phase: "Phase 1" },
-  { name: "Data Viz Pro", desc: "Sankey, candlesticks, heatmaps — beyond Recharts", emoji: "📈", phase: "Phase 3" },
-  { name: "Commerce Kit", desc: "Cart drawers, refund wizards, tier compare", emoji: "🛒", phase: "Phase 4" },
+  { name: "AI Agent Kit", desc: "ChatCanvas, tool-call inspectors, agent canvases, prompt playground", emoji: "🤖", phase: "Phase 1", status: "live" as const, href: "#ai-demo" },
+  { name: "Data Viz Pro", desc: "KPI cards, sparklines, gauges, heatmaps — no chart library", emoji: "📈", phase: "Phase 3", status: "live" as const, href: "#data-viz" },
+  { name: "Commerce Kit", desc: "Cart drawer, pricing matrix, refund wizard, installments", emoji: "🛒", phase: "Phase 4", status: "live" as const, href: "#commerce" },
+  { name: "Dev Tools Kit", desc: "Diff viewer, API playground, log stream", emoji: "🧰", phase: "Phase 6", status: "soon" as const, href: undefined },
+  { name: "Project Mgmt Kit", desc: "Gantt, kanban swimlanes, roadmap timeline", emoji: "🗂️", phase: "Phase 6", status: "soon" as const, href: undefined },
 ];
 
 const tiers = [
@@ -103,6 +121,7 @@ export default function App() {
       <main>
         <Hero />
         <FeatureStrip />
+        <ComponentsRegistry />
         <ButtonsShowcase />
         <BadgesShowcase />
         <CardsShowcase />
@@ -110,6 +129,8 @@ export default function App() {
         <AiKitDemo />
         <AgentDemo />
         <PlaygroundDemo />
+        <DataVizDemo />
+        <CommerceDemo />
         <TokensShowcase />
         <KitsShowcase />
       </main>
@@ -122,12 +143,10 @@ export default function App() {
 /* --------------------------------- header -------------------------------- */
 
 const NAV_LINKS = [
+  { label: "Components", href: "#components" },
   { label: "AI Kit", href: "#ai-demo" },
   { label: "Playground", href: "#playground" },
-  { label: "Components", href: "#components" },
   { label: "Pricing", href: "#pricing" },
-  { label: "Tokens", href: "#tokens" },
-  { label: "Kits", href: "#kits" },
 ];
 
 function Header({
@@ -305,6 +324,7 @@ function ButtonsShowcase() {
   return (
     <ShowcaseShell>
       <SectionHeading
+        id="comp-button"
         kicker="Free tier · Button"
         title="Five sizes, four variants — responsive by default"
         desc='Sizes run xs → xl: xs for dense rows, sm as the minimum comfortable touch target, lg/xl for hero CTAs. On small screens pair `fullWidth` with `className="w-full sm:w-auto"`.'
@@ -365,6 +385,7 @@ function BadgesShowcase() {
   return (
     <ShowcaseShell>
       <SectionHeading
+        id="comp-badge"
         kicker="Free tier · Badge"
         title="Status chips for every situation"
         desc="Six tonal variants with an optional status dot. Wrap gracefully on narrow screens."
@@ -402,6 +423,7 @@ function CardsShowcase() {
   return (
     <ShowcaseShell>
       <SectionHeading
+        id="comp-card"
         kicker="Free tier · Card"
         title="Pricing tiers that adapt to the screen"
         desc="Cards stack to one column on mobile, two on tablet, three on desktop — and every CTA goes full-width until there's room."
@@ -550,12 +572,25 @@ function KitsShowcase() {
             <h3 className="mt-3 text-lg font-semibold">{kit.name}</h3>
             <p className="mt-1 flex-1 text-sm text-surface-500">{kit.desc}</p>
             <div className="mt-4 flex items-center justify-between">
-              <Badge variant="info" size="sm" dot>
-                {kit.phase}
-              </Badge>
-              <Button variant="ghost" size="sm" leadingIcon={<ArrowIcon />}>
-                Notify me
-              </Button>
+              <div className="flex items-center gap-1.5">
+                <Badge variant={kit.status === "live" ? "success" : "info"} size="sm" dot>
+                  {kit.status === "live" ? "Live" : "Coming"}
+                </Badge>
+                <span className="text-[11px] text-surface-400">{kit.phase}</span>
+              </div>
+              {kit.status === "live" ? (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => kit.href && document.querySelector(kit.href)?.scrollIntoView({ behavior: "smooth" })}
+                >
+                  Explore
+                </Button>
+              ) : (
+                <Button variant="ghost" size="sm" leadingIcon={<ArrowIcon />}>
+                  Notify me
+                </Button>
+              )}
             </div>
           </Card>
         ))}
@@ -864,6 +899,7 @@ function AgentDemo() {
   return (
     <ShowcaseShell>
       <SectionHeading
+        id="agent-demo"
         kicker="AI Agent Kit · Orchestration + Memory"
         title="Watch the agent's run — and what it remembers"
         desc="AgentOrchestrationCanvas renders input → planner → parallel tool batches → output with live status. MemoryTimeline shows what the agent remembers, with confidence bars."
@@ -963,6 +999,231 @@ function PlaygroundDemo() {
 }
 
 /* -------------------------------- footer -------------------------------- */
+
+/* --------------------------- components registry ------------------------- */
+
+const COMPONENT_GROUPS = [
+  {
+    name: "Free tier",
+    items: [
+      { name: "Button", href: "#comp-button" },
+      { name: "Badge", href: "#comp-badge" },
+      { name: "Card", href: "#comp-card" },
+    ],
+  },
+  {
+    name: "AI Agent Kit",
+    items: [
+      { name: "ChatCanvas", href: "#ai-demo" },
+      { name: "ChatInput", href: "#ai-demo" },
+      { name: "TokenStreamer", href: "#ai-demo" },
+      { name: "TypingIndicator", href: "#ai-demo" },
+      { name: "ToolCallInspector", href: "#ai-demo" },
+      { name: "ConstraintBadge", href: "#ai-demo" },
+      { name: "SourceCitation", href: "#ai-demo" },
+      { name: "ModelPicker", href: "#ai-demo" },
+      { name: "MemoryTimeline", href: "#agent-demo" },
+      { name: "AgentCanvas", href: "#agent-demo" },
+      { name: "PromptPlayground", href: "#playground" },
+    ],
+  },
+  {
+    name: "Data Viz Pro",
+    items: [
+      { name: "KpiCard", href: "#data-viz" },
+      { name: "Sparkline", href: "#data-viz" },
+      { name: "AnimatedCounter", href: "#data-viz" },
+      { name: "ProgressRadial", href: "#data-viz" },
+      { name: "HeatmapCalendar", href: "#data-viz" },
+    ],
+  },
+  {
+    name: "Commerce Kit",
+    items: [
+      { name: "CartDrawer", href: "#commerce" },
+      { name: "PricingTable", href: "#commerce" },
+      { name: "RefundWizard", href: "#commerce" },
+      { name: "InstallmentToggle", href: "#commerce" },
+      { name: "InventoryChip", href: "#commerce" },
+    ],
+  },
+];
+
+function ComponentsRegistry() {
+  const total = COMPONENT_GROUPS.reduce((s, g) => s + g.items.length, 0);
+  return (
+    <section id="components" className="border-b border-surface-200 bg-surface-0">
+      <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
+        <SectionHeading
+          kicker={`${total} components · all live`}
+          title="Everything, one place"
+          desc="The full component index — 3 free-tier foundations + 3 kits. Click any component to jump straight to its live demo below."
+        />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {COMPONENT_GROUPS.map((g) => (
+            <Card key={g.name} padding="md" className="flex flex-col">
+              <div className="flex items-center justify-between gap-2">
+                <h3 className="text-sm font-semibold">{g.name}</h3>
+                <Badge variant="brand" size="sm">
+                  {g.items.length}
+                </Badge>
+              </div>
+              <ul className="mt-3 flex flex-wrap gap-1.5">
+                {g.items.map((c) => (
+                  <li key={c.name}>
+                    <a
+                      href={c.href}
+                      className="inline-flex items-center rounded-lg border border-surface-200 bg-surface-50 px-2 py-1 font-mono text-[11px] text-surface-600 transition-colors hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700"
+                    >
+                      {c.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------- data viz demo --------------------------- */
+
+const weeklySeries = (base: number, slope: number, points = 28) =>
+  Array.from({ length: points }, (_, i) => base + slope * i + Math.sin(i * 0.9) * base * 0.05);
+
+const HEATMAP_VALUES = Array.from({ length: 70 }, (_, i) => ((i * 7) % 11 + (i % 4)) % 5);
+
+function DataVizDemo() {
+  return (
+    <section id="data-viz" className="border-y border-surface-200 bg-gradient-to-b from-surface-50 to-surface-0">
+      <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
+        <SectionHeading
+          kicker="Data Viz Pro · Phase 3 · live"
+          title="Charts without a chart library"
+          desc="Pure SVG, token-driven, zero dependencies. KPI cards animate their counters, gauges are threshold-aware, and the heatmap reflows to any width."
+        />
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <KpiCard label="Revenue" value={24890} delta={12.4} format={(n) => `$${Math.round(n).toLocaleString()}`} trend={weeklySeries(12000, 480)} hint="vs last month" />
+          <KpiCard label="Active users" value={1284} delta={4.2} trend={weeklySeries(900, 18)} hint="last 28 days" />
+          <KpiCard label="Conversion" value={3.2} delta={0.6} format={(n) => `${n.toFixed(1)}%`} trend={weeklySeries(2.15, 0.06)} hint="checkout → paid" />
+          <KpiCard label="Refund rate" value={0.9} delta={-0.3} format={(n) => `${n.toFixed(1)}%`} trend={weeklySeries(1.35, -0.03)} hint="lower is better" />
+        </div>
+
+        <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_1.3fr]">
+          <Card padding="lg">
+            <h3 className="text-sm font-semibold">Cluster gauges</h3>
+            <p className="mt-1 text-xs text-surface-400">ProgressRadial — arcs color by threshold, animated on mount.</p>
+            <div className="mt-5 flex flex-wrap items-center justify-around gap-6">
+              <ProgressRadial value={42} sublabel="CPU" />
+              <ProgressRadial value={78} tone="warning" sublabel="Storage" />
+              <ProgressRadial value={91} tone="danger" sublabel="Memory" />
+              <ProgressRadial value={64} sublabel="Load" />
+            </div>
+          </Card>
+          <Card padding="lg">
+            <div className="mb-3 flex items-center justify-between">
+              <h3 className="text-sm font-semibold">Activity heatmap</h3>
+              <Badge variant="neutral" size="sm">
+                10 weeks
+              </Badge>
+            </div>
+            <HeatmapCalendar values={HEATMAP_VALUES} weeks={10} monthEvery={5} />
+          </Card>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------- commerce demo --------------------------- */
+
+const COMMERCE_PLANS: PricingPlan[] = [
+  { id: "free", name: "Free", price: "$0", period: "/ forever", cta: "Start free" },
+  { id: "pro", name: "Pro", price: "$49", period: "/ once", cta: "Buy Pro", highlight: true },
+  { id: "team", name: "Team", price: "$149", period: "/ once", cta: "Contact sales" },
+];
+
+const COMMERCE_FEATURES: PricingFeature[] = [
+  { label: "Components", tooltip: "Number of production-ready components included.", values: { free: "12", pro: "40+", team: "All kits" } },
+  { label: "Token theming", tooltip: "Override one CSS file to re-brand the whole kit.", values: { free: "Basic", pro: true, team: true } },
+  { label: "Source access", tooltip: "Readable, forkable TypeScript source.", values: { free: false, pro: true, team: true } },
+  { label: "Seats", values: { free: "1", pro: "1", team: "5" } },
+  { label: "Future kits", tooltip: "Dev Tools & Project Mgmt kits at no extra cost.", values: { free: false, pro: true, team: true } },
+  { label: "Support", values: { free: "Community", pro: "Email", team: "Priority" } },
+];
+
+function CommerceDemo() {
+  const [open, setOpen] = useState(false);
+  const [cart, setCart] = useState<CartItem[]>([
+    { id: "k1", name: "AI Agent Kit — Pro", price: 49, qty: 1, emoji: "🤖" },
+    { id: "k2", name: "Data Viz Pro", price: 39, qty: 1, emoji: "📈" },
+  ]);
+  const upsell: UpsellItem = { id: "cart-upsell", name: "Commerce Kit — Pro", price: 39, emoji: "🛒" };
+
+  const addUpsell = (u: UpsellItem) =>
+    setCart((c) => (c.some((i) => i.id === u.id) ? c : [...c, { ...u, qty: 1 }]));
+
+  return (
+    <section id="commerce" className="border-y border-surface-200 bg-surface-0">
+      <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
+        <SectionHeading
+          kicker="Commerce Kit · Phase 4 · live"
+          title="Checkout, pricing & refunds — done properly"
+          desc="The purchase side of the marketplace: add Commerce Kit to the cart via the upsell, switch installments, compare plans in the feature matrix, and run a refund end-to-end."
+        />
+
+        <div className="grid gap-6 lg:grid-cols-[1fr_1.1fr]">
+          <Card padding="lg">
+            <h3 className="text-sm font-semibold">Installment toggle</h3>
+            <div className="mt-3 rounded-xl border border-surface-200 bg-surface-50 p-4">
+              <InstallmentToggle price={49} months={6} />
+            </div>
+
+            <h3 className="mt-6 text-sm font-semibold">Inventory status</h3>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <InventoryChip level="in" />
+              <InventoryChip level="low" count={3} />
+              <InventoryChip level="out" restockDate="Mar 4" />
+            </div>
+
+            <Button
+              fullWidth
+              size="lg"
+              className="mt-6"
+              leadingIcon={
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="size-4" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                </svg>
+              }
+              onClick={() => setOpen(true)}
+            >
+              Open cart drawer
+            </Button>
+          </Card>
+
+          <RefundWizard amount={129} />
+        </div>
+
+        <h3 className="mt-10 mb-4 text-sm font-semibold">Feature matrix</h3>
+        <PricingTable plans={COMMERCE_PLANS} features={COMMERCE_FEATURES} />
+
+        <CartDrawer
+          open={open}
+          onClose={() => setOpen(false)}
+          items={cart}
+          onQtyChange={(id, qty) => setCart((c) => c.map((i) => (i.id === id ? { ...i, qty } : i)))}
+          onRemove={(id) => setCart((c) => c.filter((i) => i.id !== id))}
+          onAddUpsell={addUpsell}
+          upsell={upsell}
+          onCheckout={() => setOpen(false)}
+        />
+      </div>
+    </section>
+  );
+}
 
 /* -------------------------------- footer -------------------------------- */
 

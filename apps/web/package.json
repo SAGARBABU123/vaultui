@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "@vault/ai-chat": "workspace:*",
+    "@vault/commerce": "workspace:*",
+    "@vault/data-viz": "workspace:*",
     "@vault/tokens": "workspace:*",
     "@vault/ui": "workspace:*",
     "@vault/utils": "workspace:*",

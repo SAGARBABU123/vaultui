@@ -75,6 +75,12 @@ importers:
       '@vault/ai-chat':
         specifier: workspace:*
         version: link:../../packages/ai-chat
+      '@vault/commerce':
+        specifier: workspace:*
+        version: link:../../packages/commerce
+      '@vault/data-viz':
+        specifier: workspace:*
+        version: link:../../packages/data-viz
       '@vault/tokens':
         specifier: workspace:*
         version: link:../../packages/tokens
@@ -153,7 +159,69 @@ importers:
         specifier: ^5.7.0
         version: 5.9.3
 
+  packages/commerce:
+    dependencies:
+      '@vault/tokens':
+        specifier: workspace:*
+        version: link:../tokens
+      '@vault/ui':
+        specifier: workspace:*
+        version: link:../ui
+      '@vault/utils':
+        specifier: workspace:*
+        version: link:../utils
+    devDependencies:
+      '@types/react':
+        specifier: ^18.3.0
+        version: 18.3.31
+      '@types/react-dom':
+        specifier: ^18.3.0
+        version: 18.3.7(@types/react@18.3.31)
+      '@vault/configs':
+        specifier: workspace:*
+        version: link:../configs
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
+      typescript:
+        specifier: ^5.7.0
+        version: 5.9.3
+
   packages/configs: {}
+
+  packages/data-viz:
+    dependencies:
+      '@vault/tokens':
+        specifier: workspace:*
+        version: link:../tokens
+      '@vault/ui':
+        specifier: workspace:*
+        version: link:../ui
+      '@vault/utils':
+        specifier: workspace:*
+        version: link:../utils
+    devDependencies:
+      '@types/react':
+        specifier: ^18.3.0
+        version: 18.3.31
+      '@types/react-dom':
+        specifier: ^18.3.0
+        version: 18.3.7(@types/react@18.3.31)
+      '@vault/configs':
+        specifier: workspace:*
+        version: link:../configs
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
+      typescript:
+        specifier: ^5.7.0
+        version: 5.9.3
 
   packages/tokens:
     devDependencies:
