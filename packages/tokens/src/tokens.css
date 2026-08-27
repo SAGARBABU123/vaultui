@@ -3,7 +3,11 @@
  *
  * Every component in the monorepo consumes these tokens, so a consumer
  * can re-brand Vault components by overriding the CSS variables below.
+ *
+ * Fonts: Inter Variable (bundled locally via @fontsource — no CDN).
+ * Swap by replacing this import, e.g. "@fontsource-variable/geist".
  */
+@import "@fontsource-variable/inter/opsz.css";
 @import "tailwindcss";
 
 @theme {
@@ -41,8 +45,8 @@
   --color-info-500: #0ea5e9;
 
   /* ===== Type ===== */
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", monospace;
+  --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
   /* ===== Radii ===== */
   --radius-xs: 0.25rem;
