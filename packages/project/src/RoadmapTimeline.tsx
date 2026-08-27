@@ -52,7 +52,7 @@ export function RoadmapTimeline({
   className,
 }: RoadmapTimelineProps) {
   return (
-    <div className={cn("overflow-x-auto rounded-2xl border border-surface-200 bg-surface-0 shadow-soft", className)}>
+    <div className={cn("overflow-x-auto rounded-2xl border-0 bg-surface-0 shadow-soft", className)}>
       <div className="min-w-[640px]">
         {/* Month header */}
         <div className="grid grid-cols-[160px_repeat(12,minmax(0,1fr))] border-b border-surface-200 bg-surface-50">

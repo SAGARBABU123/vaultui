@@ -72,7 +72,7 @@ export function AgentOrchestrationCanvas({ graph, className }: AgentOrchestratio
   return (
     <div
       className={cn(
-        "rounded-2xl border border-surface-200 bg-surface-50 p-4 shadow-soft sm:p-5",
+        "rounded-2xl border-0 bg-surface-100 shadow-inset p-4 shadow-soft sm:p-5",
         className,
       )}
     >

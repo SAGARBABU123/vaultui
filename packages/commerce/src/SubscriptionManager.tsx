@@ -103,7 +103,7 @@ export function SubscriptionManager({ subscription, onAction, className }: Subsc
               setPlan(e.target.value);
               if (status === "active") fire("change", "active");
             }}
-            className="h-9 cursor-pointer rounded-lg border border-surface-200 bg-surface-50 px-2 text-sm outline-none focus:border-brand-400"
+            className="h-9 cursor-pointer rounded-lg border-0 bg-surface-100 shadow-inset px-2 text-sm outline-none focus:border-brand-400"
           >
             {["Starter", "Pro", "Team"].map((p) => (
               <option key={p}>{p}</option>
@@ -133,7 +133,7 @@ export function SubscriptionManager({ subscription, onAction, className }: Subsc
 
       {/* confirm step */}
       {confirming && (
-        <div className="mt-4 flex flex-col gap-3 rounded-xl border border-surface-200 bg-surface-50 p-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-4 flex flex-col gap-3 rounded-xl border-0 bg-surface-100 shadow-inset p-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-surface-600">
             {confirming === "pause" ? "Pause billing — you'll keep access until the cycle ends." : "Cancel the plan and lose access at cycle end?"}
           </p>

@@ -57,7 +57,7 @@ export function LiveCursors({
   useEffect(() => () => { if (frame.current !== null) cancelAnimationFrame(frame.current); }, []);
 
   return (
-    <div id="live-cursors" className={cn("relative overflow-hidden rounded-2xl border border-surface-200 bg-surface-50 shadow-soft", heightClass, className)}>
+    <div id="live-cursors" className={cn("relative overflow-hidden rounded-2xl border-0 bg-surface-50 shadow-soft", heightClass, className)}>
       {/* fake "document" */}
       <div className="absolute inset-0 p-4">
         {[48, 34, 40, 26, 30].map((w, i) => (

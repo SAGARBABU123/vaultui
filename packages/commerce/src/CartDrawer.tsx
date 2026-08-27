@@ -114,7 +114,7 @@ export function CartDrawer({
                     {currency}
                     {item.price.toFixed(2)} each
                   </p>
-                  <div className="mt-1.5 inline-flex items-center rounded-lg border border-surface-200">
+                  <div className="mt-1.5 inline-flex items-center rounded-lg border-0 bg-surface-100 shadow-inset">
                     <QtyButton label="Decrease quantity" onClick={() => onQtyChange(item.id, Math.max(1, item.qty - 1))}>
                       −
                     </QtyButton>

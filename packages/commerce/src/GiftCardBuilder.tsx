@@ -107,7 +107,7 @@ export function GiftCardBuilder({ onAddToCart, currency = "$", className }: Gift
             value={recipient}
             onChange={(e) => setRecipient(e.target.value)}
             placeholder="friend@example.com"
-            className="h-10 w-full rounded-lg border border-surface-200 bg-surface-0 px-3 text-sm outline-none placeholder:text-surface-400 focus:border-brand-400"
+            className="h-10 w-full rounded-xl border-0 bg-surface-100 shadow-inset px-3 text-sm outline-none placeholder:text-surface-400 focus:border-brand-400"
           />
         </label>
 
@@ -125,7 +125,7 @@ export function GiftCardBuilder({ onAddToCart, currency = "$", className }: Gift
       </div>
 
       {/* Preview */}
-      <div className="flex flex-col items-center justify-center rounded-2xl border border-surface-200 bg-surface-50 p-4">
+      <div className="flex flex-col items-center justify-center rounded-2xl border-0 bg-surface-100 shadow-inset p-4">
         <div
           className={cn(
             "relative aspect-[16/10] w-full max-w-72 overflow-hidden rounded-xl bg-gradient-to-br p-5 text-white shadow-raised",

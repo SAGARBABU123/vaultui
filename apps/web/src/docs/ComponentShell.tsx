@@ -52,7 +52,7 @@ export function ComponentShell({ entry, prev, next, onNavigate }: ComponentShell
       {entry.props.length > 0 && (
         <section className="mt-8">
           <SectionLabel>API</SectionLabel>
-          <div className="overflow-x-auto rounded-2xl border border-surface-200 bg-surface-0 shadow-soft">
+          <div className="overflow-x-auto rounded-2xl border-0 bg-surface-0 shadow-soft">
             <table className="w-full min-w-[560px] border-collapse text-left">
               <thead>
                 <tr className="border-b border-surface-200 bg-surface-50">
@@ -85,7 +85,7 @@ export function ComponentShell({ entry, prev, next, onNavigate }: ComponentShell
             interactive
           </Badge>
         </div>
-        <div className="rounded-2xl border border-surface-200 bg-surface-50 p-4 shadow-soft sm:p-6">{entry.demo}</div>
+        <div className="rounded-2xl border-0 bg-surface-100 shadow-inset p-4 shadow-soft sm:p-6">{entry.demo}</div>
       </section>
 
       {/* Prev / Next */}

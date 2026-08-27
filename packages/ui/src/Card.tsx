@@ -34,7 +34,7 @@ export function Card({
   className,
   padding = "md",
   shadow = "soft",
-  bordered = true,
+  bordered = false,
   hover = false,
   children,
   ...props
@@ -46,7 +46,7 @@ export function Card({
         paddingClasses[padding],
         shadowClasses[shadow],
         bordered && "border border-surface-200",
-        hover && "transition-colors duration-200 hover:border-brand-300",
+        hover && "transition-shadow duration-200 hover:shadow-raised",
         className,
       )}
       {...props}

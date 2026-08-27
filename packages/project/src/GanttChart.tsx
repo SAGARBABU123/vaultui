@@ -34,7 +34,7 @@ export function GanttChart({ tasks, weeks = 16, className }: GanttChartProps) {
   const axis = Array.from({ length: weeks }, (_, i) => (i % 4 === 0 ? `W${i + 1}` : ""));
 
   return (
-    <div className={cn("overflow-x-auto rounded-2xl border border-surface-200 bg-surface-0 shadow-soft", className)}>
+    <div className={cn("overflow-x-auto rounded-2xl border-0 bg-surface-0 shadow-soft", className)}>
       <div className="min-w-[720px]">
         {/* Axis */}
         <div

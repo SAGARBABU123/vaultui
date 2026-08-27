@@ -76,14 +76,14 @@ export function ApiPlayground({ baseUrl = "https://api.vault.dev", className }: 
     setHeaders((hs) => hs.map((h) => (h.id === id ? { ...h, [field]: value } : h)));
 
   return (
-    <div className={cn("overflow-hidden rounded-2xl border border-surface-200 bg-surface-0 shadow-soft", className)}>
+    <div className={cn("overflow-hidden rounded-2xl border-0 bg-surface-0 shadow-soft", className)}>
       {/* Request bar */}
       <div className="flex flex-col gap-2 border-b border-surface-200 p-3 sm:flex-row">
         <select
           value={method}
           onChange={(e) => setMethod(e.target.value as HttpMethod)}
           className={cn(
-            "h-9 shrink-0 cursor-pointer rounded-lg border border-surface-200 bg-surface-50 px-2 font-mono text-xs font-bold outline-none",
+            "h-9 shrink-0 cursor-pointer rounded-lg border-0 bg-surface-100 shadow-inset px-2 font-mono text-xs font-bold outline-none",
             method === "GET" && "text-info-500",
             method === "POST" && "text-success-500",
             method === "DELETE" && "text-danger-500",
@@ -100,7 +100,7 @@ export function ApiPlayground({ baseUrl = "https://api.vault.dev", className }: 
           onChange={(e) => setUrl(e.target.value)}
           spellCheck={false}
           aria-label="Request URL"
-          className="h-9 w-full flex-1 rounded-lg border border-surface-200 bg-surface-50 px-3 font-mono text-xs text-surface-700 outline-none focus:border-brand-400"
+          className="h-9 w-full flex-1 rounded-lg border-0 bg-surface-100 shadow-inset px-3 font-mono text-xs text-surface-700 outline-none focus:border-brand-400"
         />
         <button
           type="button"
@@ -131,14 +131,14 @@ export function ApiPlayground({ baseUrl = "https://api.vault.dev", className }: 
                   onChange={(e) => patchHeader(h.id, "key", e.target.value)}
                   placeholder="Header"
                   aria-label="Header name"
-                  className="h-9 w-2/5 rounded-md border border-surface-200 bg-surface-50 px-2 font-mono text-xs outline-none focus:border-brand-400"
+                  className="h-9 w-2/5 rounded-md border-0 bg-surface-100 shadow-inset px-2 font-mono text-xs outline-none focus:border-brand-400"
                 />
                 <input
                   value={h.value}
                   onChange={(e) => patchHeader(h.id, "value", e.target.value)}
                   placeholder="Value"
                   aria-label="Header value"
-                  className="h-9 w-3/5 rounded-md border border-surface-200 bg-surface-50 px-2 font-mono text-xs outline-none focus:border-brand-400"
+                  className="h-9 w-3/5 rounded-md border-0 bg-surface-100 shadow-inset px-2 font-mono text-xs outline-none focus:border-brand-400"
                 />
               </div>
             ))}
@@ -157,7 +157,7 @@ export function ApiPlayground({ baseUrl = "https://api.vault.dev", className }: 
               rows={5}
               spellCheck={false}
               aria-label="Request body"
-              className="mt-3 w-full resize-y rounded-lg border border-surface-200 bg-surface-50 p-2 font-mono text-xs leading-relaxed text-surface-700 outline-none focus:border-brand-400"
+              className="mt-3 w-full resize-y rounded-lg border-0 bg-surface-100 shadow-inset p-2 font-mono text-xs leading-relaxed text-surface-700 outline-none focus:border-brand-400"
             />
           )}
         </div>

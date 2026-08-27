@@ -34,7 +34,7 @@ export function Sidebar({ groups, activeId, onSelect, search, onSearchChange }: 
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Filter components…"
-            className="h-10 w-full rounded-lg border border-surface-200 bg-surface-0 pl-9 pr-3 text-sm text-surface-800 outline-none placeholder:text-surface-400 focus:border-brand-400 focus:ring-2 focus:ring-brand-500/20"
+            className="h-10 w-full rounded-xl border-0 bg-surface-100 shadow-inset pl-9 pr-3 text-sm text-surface-800 outline-none placeholder:text-surface-400 focus:border-brand-400 focus:ring-2 focus:ring-brand-500/20"
           />
         </label>
       </div>

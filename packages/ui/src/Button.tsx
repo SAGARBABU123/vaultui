@@ -25,11 +25,12 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
  */
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    "bg-brand-600 text-white shadow-soft hover:bg-brand-500 focus-visible:ring-brand-500",
+    "bg-brand-600 text-white shadow-soft hover:bg-brand-500 active:shadow-pressed focus-visible:ring-brand-500",
   secondary:
-    "bg-surface-100 text-surface-700 hover:bg-surface-200 focus-visible:ring-surface-400",
-  ghost: "bg-transparent text-surface-600 hover:bg-surface-100 focus-visible:ring-surface-400",
-  danger: "bg-danger-500 text-white hover:bg-danger-400 focus-visible:ring-danger-500",
+    "bg-surface-0 text-surface-700 shadow-soft hover:bg-surface-50 active:shadow-pressed focus-visible:ring-surface-400",
+  ghost:
+    "bg-transparent text-surface-600 hover:bg-surface-100 active:shadow-inset focus-visible:ring-surface-400",
+  danger: "bg-danger-500 text-white shadow-soft hover:bg-danger-400 active:shadow-pressed focus-visible:ring-danger-500",
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
@@ -44,9 +45,8 @@ const focusClasses =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-0";
 
 /**
- * The foundation Button — token-driven, demonstrates the theme engine.
- * Every visual property comes from @vault/tokens CSS variables,
- * so consumers can re-brand it by overriding tokens.
+ * Soft-UI (neumorphic) Button — surfaces lift via dual light/dark
+ * shadows; `active:shadow-pressed` sinks the button into the canvas.
  */
 export function Button({
   className,

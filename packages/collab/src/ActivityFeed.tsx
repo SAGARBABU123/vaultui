@@ -44,7 +44,7 @@ export function ActivityFeed({ events: initial, className }: ActivityFeedProps) 
   const markAllRead = () => setEvents((ev) => ev.map((e) => ({ ...e, unread: false })));
 
   return (
-    <div className={cn("rounded-2xl border border-surface-200 bg-surface-0 shadow-soft", className)}>
+    <div className={cn("rounded-2xl border-0 bg-surface-0 shadow-soft", className)}>
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-surface-200 px-4 py-3">
         <div className="flex items-center gap-2">
           <h3 className="text-sm font-semibold">Activity</h3>

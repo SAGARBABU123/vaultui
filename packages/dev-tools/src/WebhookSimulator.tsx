@@ -79,7 +79,7 @@ export function WebhookSimulator({
   };
 
   return (
-    <div className={cn("rounded-2xl border border-surface-200 bg-surface-0 shadow-soft", className)}>
+    <div className={cn("rounded-2xl border-0 bg-surface-0 shadow-soft", className)}>
       {/* Endpoint */}
       <div className="flex flex-col gap-2 border-b border-surface-200 p-3 sm:flex-row">
         <input
@@ -87,7 +87,7 @@ export function WebhookSimulator({
           onChange={(e) => setUrl(e.target.value)}
           spellCheck={false}
           aria-label="Webhook endpoint"
-          className="h-9 w-full flex-1 rounded-lg border border-surface-200 bg-surface-50 px-3 font-mono text-xs outline-none focus:border-brand-400"
+          className="h-9 w-full flex-1 rounded-lg border-0 bg-surface-100 shadow-inset px-3 font-mono text-xs outline-none focus:border-brand-400"
         />
         <button
           type="button"

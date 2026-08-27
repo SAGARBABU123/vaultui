@@ -63,7 +63,7 @@ export function SqlBuilder({ columns, table = "users", onQueryChange, className 
   };
 
   return (
-    <div className={cn("overflow-hidden rounded-2xl border border-surface-200 bg-surface-0 shadow-soft", className)}>
+    <div className={cn("overflow-hidden rounded-2xl border-0 bg-surface-0 shadow-soft", className)}>
       <div className="grid gap-0 lg:grid-cols-[1fr_1.2fr]">
         {/* Builder */}
         <div className="border-b border-surface-200 p-4 lg:border-b-0 lg:border-r">
@@ -83,7 +83,7 @@ export function SqlBuilder({ columns, table = "users", onQueryChange, className 
                   value={w.col}
                   onChange={(e) => setWheres((ws) => ws.map((x) => (x.id === w.id ? { ...x, col: e.target.value } : x)))}
                   aria-label="Column"
-                  className="h-8 w-28 rounded-md border border-surface-200 bg-surface-50 px-1.5 text-xs outline-none"
+                  className="h-8 w-28 rounded-md border-0 bg-surface-100 shadow-inset px-1.5 text-xs outline-none"
                 >
                   {columns.map((c) => (
                     <option key={c}>{c}</option>
@@ -93,7 +93,7 @@ export function SqlBuilder({ columns, table = "users", onQueryChange, className 
                   value={w.op}
                   onChange={(e) => setWheres((ws) => ws.map((x) => (x.id === w.id ? { ...x, op: e.target.value } : x)))}
                   aria-label="Operator"
-                  className="h-8 w-16 rounded-md border border-surface-200 bg-surface-50 px-1.5 text-xs outline-none"
+                  className="h-8 w-16 rounded-md border-0 bg-surface-100 shadow-inset px-1.5 text-xs outline-none"
                 >
                   {OPS.map((op) => (
                     <option key={op}>{op}</option>
@@ -104,7 +104,7 @@ export function SqlBuilder({ columns, table = "users", onQueryChange, className 
                   onChange={(e) => setWheres((ws) => ws.map((x) => (x.id === w.id ? { ...x, value: e.target.value } : x)))}
                   placeholder="value"
                   aria-label="Value"
-                  className="h-8 w-full min-w-0 rounded-md border border-surface-200 bg-surface-50 px-2 text-xs outline-none focus:border-brand-400"
+                  className="h-8 w-full min-w-0 rounded-md border-0 bg-surface-100 shadow-inset px-2 text-xs outline-none focus:border-brand-400"
                 />
                 <button
                   type="button"
@@ -133,7 +133,7 @@ export function SqlBuilder({ columns, table = "users", onQueryChange, className 
                 min={1}
                 value={limit}
                 onChange={(e) => setLimit(Number(e.target.value))}
-                className="h-8 w-20 rounded-md border border-surface-200 bg-surface-50 px-2 text-xs outline-none focus:border-brand-400"
+                className="h-8 w-20 rounded-md border-0 bg-surface-100 shadow-inset px-2 text-xs outline-none focus:border-brand-400"
               />
             </label>
           </div>

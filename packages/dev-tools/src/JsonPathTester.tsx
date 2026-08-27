@@ -100,7 +100,7 @@ export function JsonPathTester({ defaultJson = DEFAULT_JSON, defaultPath = "$.us
             onBlur={pushHistory}
             placeholder=".user.projects[0].name"
             aria-label="JSON path"
-            className="h-10 w-full min-w-0 rounded-lg border border-surface-200 bg-surface-0 px-3 font-mono text-sm outline-none focus:border-brand-400"
+            className="h-10 w-full min-w-0 rounded-xl border-0 bg-surface-100 shadow-inset px-3 font-mono text-sm outline-none focus:border-brand-400"
           />
         </div>
         {paths.length > 0 && (

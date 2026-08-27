@@ -64,7 +64,7 @@ export function KanbanBoard({ columns: initial, onChange, className }: KanbanBoa
     );
 
   return (
-    <div className={cn("overflow-x-auto rounded-2xl border border-surface-200 bg-surface-50 shadow-soft", className)}>
+    <div className={cn("overflow-x-auto rounded-2xl border-0 bg-surface-50 shadow-soft", className)}>
       <div className="flex items-stretch gap-3 p-3 sm:gap-4 sm:p-4">
         {columns.map((col, colIdx) => {
           const overWip = col.cards.length > col.wipLimit;
@@ -185,7 +185,7 @@ function MoveBtn({
       aria-label={label}
       disabled={disabled}
       onClick={onClick}
-      className="flex size-7 items-center justify-center rounded-md border border-surface-200 bg-surface-50 text-sm text-surface-600 transition-colors hover:bg-surface-100 disabled:opacity-30 disabled:hover:bg-surface-50"
+      className="flex size-7 items-center justify-center rounded-md border-0 bg-surface-100 shadow-inset text-sm text-surface-600 transition-colors hover:bg-surface-100 disabled:opacity-30 disabled:hover:bg-surface-50"
     >
       {children}
     </button>

@@ -37,7 +37,7 @@ export function GeoMap({ regions, landmasses = DEFAULT_LAND, className }: GeoMap
   return (
     <div
       className={cn(
-        "relative aspect-[16/9] w-full overflow-hidden rounded-xl border border-surface-200 bg-surface-50",
+        "relative aspect-[16/9] w-full overflow-hidden rounded-xl border-0 bg-surface-100 shadow-inset",
         className,
       )}
       role="img"

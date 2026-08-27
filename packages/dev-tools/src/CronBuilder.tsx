@@ -116,7 +116,7 @@ export function CronBuilder({ defaultValue = "*/15 * * * *", onChange, className
               value={fields[i] ?? "*"}
               onChange={(e) => patchField(i, e.target.value)}
               aria-label={f.label}
-              className="h-9 w-full cursor-pointer rounded-lg border border-surface-200 bg-surface-50 px-1 text-center font-mono text-xs outline-none focus:border-brand-400"
+              className="h-9 w-full cursor-pointer rounded-lg border-0 bg-surface-100 shadow-inset px-1 text-center font-mono text-xs outline-none focus:border-brand-400"
             >
               {f.options.map((o) => (
                 <option key={o}>{o}</option>

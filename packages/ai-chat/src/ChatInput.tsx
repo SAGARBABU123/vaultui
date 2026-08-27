@@ -69,7 +69,7 @@ export function ChatInput({
               type="button"
               disabled={disabled}
               onClick={() => setValue(s)}
-              className="rounded-full border border-surface-200 bg-surface-50 px-2.5 py-1 text-xs text-surface-600 transition-colors hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700 disabled:opacity-50"
+              className="rounded-full border-0 bg-surface-100 shadow-inset px-2.5 py-1 text-xs text-surface-600 transition-colors hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700 disabled:opacity-50"
             >
               {s}
             </button>

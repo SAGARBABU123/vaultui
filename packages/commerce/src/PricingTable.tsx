@@ -31,7 +31,7 @@ export interface PricingTableProps {
  */
 export function PricingTable({ plans, features, className }: PricingTableProps) {
   return (
-    <div className={cn("overflow-x-auto rounded-2xl border border-surface-200 bg-surface-0 shadow-soft", className)}>
+    <div className={cn("overflow-x-auto rounded-2xl border-0 bg-surface-0 shadow-soft", className)}>
       <table className="w-full min-w-[600px] border-collapse text-left">
         <thead>
           <tr>

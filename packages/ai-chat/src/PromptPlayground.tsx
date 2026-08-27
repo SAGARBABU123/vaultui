@@ -50,7 +50,7 @@ export function PromptPlayground({
   };
 
   return (
-    <div className={cn("rounded-2xl border border-surface-200 bg-surface-50 shadow-soft", className)}>
+    <div className={cn("rounded-2xl border-0 bg-surface-50 shadow-soft", className)}>
       {/* toolbar */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-surface-200 bg-surface-0 px-4 py-3">
         <div className="flex items-center gap-2">
@@ -201,7 +201,7 @@ function PromptPane({
   onChange: (t: string) => void;
 }) {
   return (
-    <div className="flex min-h-0 flex-col rounded-xl border border-surface-200 bg-surface-0 shadow-soft">
+    <div className="flex min-h-0 flex-col rounded-xl border-0 bg-surface-0 shadow-soft">
       <div className="flex items-center justify-between border-b border-surface-200 px-3 py-1.5">
         <span className="text-xs font-semibold uppercase tracking-wide text-surface-400">
           {label}
@@ -236,7 +236,7 @@ function ResponsePane({
   onSelectVariant: (id: string) => void;
 }) {
   return (
-    <div className="flex min-w-0 flex-col rounded-xl border border-surface-200 bg-surface-0 shadow-soft">
+    <div className="flex min-w-0 flex-col rounded-xl border-0 bg-surface-0 shadow-soft">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-surface-200 px-3 py-1.5">
         <div className="flex items-center gap-2">
           <span className="text-xs font-semibold uppercase tracking-wide text-brand-600">
@@ -246,7 +246,7 @@ function ResponsePane({
             <select
               value={variant.id}
               onChange={(e) => onSelectVariant(e.target.value)}
-              className="cursor-pointer rounded-md border border-surface-200 bg-surface-50 px-1.5 py-0.5 text-xs font-medium text-surface-600 outline-none"
+              className="cursor-pointer rounded-md border-0 bg-surface-100 shadow-inset px-1.5 py-0.5 text-xs font-medium text-surface-600 outline-none"
               aria-label="Response variant"
             >
               {variants.map((v) => (

@@ -122,7 +122,7 @@ function IconBtn({ children, onClick, label }: { children: React.ReactNode; onCl
       type="button"
       aria-label={label}
       onClick={onClick}
-      className="flex size-8 items-center justify-center rounded-lg border border-surface-200 bg-surface-50 text-surface-600 transition-colors hover:bg-surface-100"
+      className="flex size-8 items-center justify-center rounded-lg border-0 bg-surface-100 shadow-inset text-surface-600 transition-colors hover:bg-surface-100"
     >
       {children}
     </button>

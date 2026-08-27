@@ -45,7 +45,7 @@ export function FeatureFlagBoard({ flags: initial, onChange, className }: Featur
     commit(flags.map((f) => (f.id === id ? { ...f, ...patch } : f)));
 
   return (
-    <div className={cn("overflow-hidden rounded-2xl border border-surface-200 bg-surface-0 shadow-soft", className)}>
+    <div className={cn("overflow-hidden rounded-2xl border-0 bg-surface-0 shadow-soft", className)}>
       <div className="flex flex-col gap-1 overflow-x-auto">
         {flags.map((f) => {
           const tone = rolloutTone(f.rollout);

@@ -148,7 +148,7 @@ export function RefundWizard({
       )}
 
       {step === 2 && (
-        <div className="rounded-xl border border-surface-200 bg-surface-50 p-4 text-sm">
+        <div className="rounded-xl border-0 bg-surface-100 shadow-inset p-4 text-sm">
           <h3 className="font-semibold text-surface-800">Review your refund</h3>
           <dl className="mt-3 space-y-2">
             <Row label="Order" value={orderId} />

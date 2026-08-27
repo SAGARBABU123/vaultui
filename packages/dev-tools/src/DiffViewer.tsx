@@ -77,7 +77,7 @@ export function DiffViewer({
   const removed = diff.filter((l) => l.type === "del").length;
 
   return (
-    <div className={cn("overflow-hidden rounded-2xl border border-surface-200 bg-surface-0 shadow-soft", className)}>
+    <div className={cn("overflow-hidden rounded-2xl border-0 bg-surface-0 shadow-soft", className)}>
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-surface-200 bg-surface-50 px-3 py-2">
         <div className="flex items-center gap-2">

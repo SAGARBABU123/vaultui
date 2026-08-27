@@ -779,7 +779,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
           { name: "currency", type: "string", default: "\"$\"", description: "Currency symbol." },
         ],
         demo: (
-          <div className="rounded-xl border border-surface-200 bg-surface-50 p-4">
+          <div className="rounded-xl border-0 bg-surface-100 shadow-inset p-4">
             <InstallmentToggle price={49} months={6} />
           </div>
         ),

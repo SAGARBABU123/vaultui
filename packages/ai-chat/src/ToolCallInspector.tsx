@@ -34,7 +34,7 @@ export function ToolCallInspector({
   return (
     <div
       className={cn(
-        "overflow-hidden rounded-xl border border-surface-200 bg-surface-0 shadow-soft",
+        "overflow-hidden rounded-xl border-0 bg-surface-0 shadow-soft",
         className,
       )}
     >
