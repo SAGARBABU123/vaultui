@@ -1,6 +1,6 @@
 {
   "name": "@vaultui/tokens",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Design tokens & theme engine for Vault UI (Tailwind v4 CSS first)",
   "license": "MIT",
   "main": "./src/index.ts",
