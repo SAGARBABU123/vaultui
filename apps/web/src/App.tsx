@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Badge, Button } from "@vaultui/ui";
 import { cn } from "@vaultui/utils";
 import { COMPONENT_GROUPS } from "./docs/registry";
@@ -87,6 +87,33 @@ export default function App() {
 
 /* --------------------------------- header -------------------------------- */
 
+function useNpmMeta() {
+  const [meta, setMeta] = useState<{ version?: string; downloads?: string }>({});
+
+  useEffect(() => {
+    let alive = true;
+    Promise.all([
+      fetch("https://registry.npmjs.org/@vaultui/ui/latest").then((r) => (r.ok ? r.json() : null)),
+      fetch("https://api.npmjs.org/downloads/point/last-month/@vaultui/ui").then((r) => (r.ok ? r.json() : null)),
+    ])
+      .then(([pkg, dl]) => {
+        if (!alive) return;
+        setMeta({
+          version: pkg?.version,
+          downloads: dl?.downloads !== undefined ? `${(dl.downloads / 1000).toFixed(1)}k` : undefined,
+        });
+      })
+      .catch(() => {
+        /* offline — keep local fallback */
+      });
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  return meta;
+}
+
 function Header({
   total,
   onOpenDrawer,
@@ -96,6 +123,7 @@ function Header({
   onOpenDrawer: () => void;
   onHome: () => void;
 }) {
+  const { version, downloads } = useNpmMeta();
   return (
     <header className="sticky top-0 z-30 border-b border-surface-200 bg-surface-0/80 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
@@ -106,7 +134,8 @@ function Header({
           <span>
             Vault&nbsp;UI
             <span className="ml-2 hidden rounded-full bg-brand-100 px-2 py-0.5 text-xs font-medium text-brand-700 sm:inline-block">
-              v0.1.0
+              v{version ?? "0.1.1"}
+              {downloads ? ` · ${downloads} dl${downloads === "1.0k" ? "" : "s"}/mo` : ""}
             </span>
           </span>
         </button>
