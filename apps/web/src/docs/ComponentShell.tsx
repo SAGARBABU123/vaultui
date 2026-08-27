@@ -1,4 +1,4 @@
-import { Badge, Button } from "@vault/ui";
+import { Badge } from "@vault/ui";
 import { cn } from "@vault/utils";
 import { useState } from "react";
 import type { ComponentEntry } from "./types";
@@ -90,30 +90,34 @@ export function ComponentShell({ entry, prev, next, onNavigate }: ComponentShell
       {/* Prev / Next */}
       <footer className="mt-10 flex items-center justify-between gap-3 border-t border-surface-200 pt-5">
         {prev ? (
-          <Button
-            variant="secondary"
-            size="sm"
-            leadingIcon={<ArrowL />}
+          <button
+            type="button"
             onClick={() => onNavigate(prev.id)}
-            className="flex-col items-start !gap-0"
+            className="group flex max-w-full flex-col items-start gap-0.5 rounded-lg px-3 py-2 text-left transition-colors hover:bg-surface-100"
           >
-            <span className="text-[11px] font-normal text-surface-400">Previous</span>
-            {prev.name}
-          </Button>
+            <span className="flex items-center gap-1 text-xs text-surface-400">
+              <ArrowL /> Previous
+            </span>
+            <span className="truncate text-sm font-semibold text-surface-800 group-hover:text-brand-700">
+              {prev.name}
+            </span>
+          </button>
         ) : (
           <span />
         )}
         {next ? (
-          <Button
-            variant="secondary"
-            size="sm"
-            trailingIcon={<ArrowR />}
+          <button
+            type="button"
             onClick={() => onNavigate(next.id)}
-            className="flex-col items-end !gap-0"
+            className="group flex max-w-full flex-col items-end gap-0.5 rounded-lg px-3 py-2 text-right transition-colors hover:bg-surface-100"
           >
-            <span className="text-[11px] font-normal text-surface-400">Next</span>
-            {next.name}
-          </Button>
+            <span className="flex items-center gap-1 text-xs text-surface-400">
+              Next <ArrowR />
+            </span>
+            <span className="truncate text-sm font-semibold text-surface-800 group-hover:text-brand-700">
+              {next.name}
+            </span>
+          </button>
         ) : (
           <span />
         )}
