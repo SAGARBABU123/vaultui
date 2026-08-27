@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/@vaultui/ui?color=5b66e8&label=npm%20v)](https://www.npmjs.com/package/@vaultui/ui)
 [![npm downloads](https://img.shields.io/npm/dm/@vaultui/ui?color=5b66e8)](https://www.npmjs.com/package/@vaultui/ui)
 [![license](https://img.shields.io/badge/license-MIT%20%2B%20Commercial-5b66e8)](./LICENSE)
-[![typecheck + build](https://img.shields.io/badge/CI-typecheck%20%2B%20build-5b66e8)](https://github.com/)
+[![CI](https://github.com/SAGARBABU123/vaultui/actions/workflows/ci.yml/badge.svg)](https://github.com/SAGARBABU123/vaultui/actions/workflows/ci.yml)
 
 **Premium React + Tailwind components — the ones you can't find elsewhere.**
 
