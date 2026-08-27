@@ -114,6 +114,8 @@ function useNpmMeta() {
   return meta;
 }
 
+const REPO_URL = "https://github.com/SAGARBABU123/vaultui";
+
 function Header({
   total,
   onOpenDrawer,
@@ -145,10 +147,16 @@ function Header({
         </Badge>
 
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" className="hidden sm:inline-flex" leadingIcon={<GitHubIcon />}>
+          <Button
+            variant="secondary"
+            size="sm"
+            className="hidden sm:inline-flex"
+            leadingIcon={<GitHubIcon />}
+            onClick={() => window.open(REPO_URL, "_blank", "noopener,noreferrer")}
+          >
             GitHub
           </Button>
-          <Button size="sm" className="hidden sm:inline-flex">
+          <Button size="sm" className="hidden sm:inline-flex" onClick={onHome}>
             Get started
           </Button>
           {/* Mobile sidebar trigger */}

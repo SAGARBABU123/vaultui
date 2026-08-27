@@ -1,4 +1,4 @@
-import { Badge } from "@vaultui/ui";
+import { Badge, Button } from "@vaultui/ui";
 import { cn } from "@vaultui/utils";
 import { Check, Copy, Download, Package, Terminal } from "lucide-react";
 import { useState } from "react";
@@ -193,24 +193,27 @@ function OverviewHero() {
         </p>
 
         <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
-          <button
-            type="button"
+          <Button
+            size="lg"
+            fullWidth
+            className="sm:w-auto"
             onClick={handleDownload}
             disabled={downloading}
-            className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-brand-600 px-6 text-base font-semibold text-white shadow-soft transition-all hover:bg-brand-500 active:shadow-pressed disabled:opacity-60"
+            leadingIcon={downloading ? <Package className="size-5 animate-pulse" /> : <Download className="size-5" />}
           >
-            {downloading ? <Package className="size-5 animate-pulse" /> : <Download className="size-5" />}
             {downloading ? "Packing zip…" : "Download kit (.zip)"}
-          </button>
+          </Button>
 
-          <button
-            type="button"
+          <Button
+            variant="secondary"
+            size="lg"
+            fullWidth
+            className="sm:w-auto"
             onClick={copyInstall}
-            className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-surface-0 px-6 text-base font-semibold text-surface-700 shadow-soft transition-all hover:bg-surface-50 active:shadow-pressed"
+            leadingIcon={copied ? <Check className="size-5 text-success-500" /> : <Terminal className="size-5" />}
           >
-            {copied ? <Check className="size-5 text-success-500" /> : <Terminal className="size-5" />}
             {copied ? "Copied!" : "Copy install command"}
-          </button>
+          </Button>
         </div>
 
         <div className="mt-6 flex flex-wrap items-center gap-2">
