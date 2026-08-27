@@ -121,7 +121,6 @@ function Message({
   }
 
   const isUser = role === "user";
-  const hasTools = !!message.toolCalls?.length;
   const hasSources = !!message.sources?.length;
 
   return (

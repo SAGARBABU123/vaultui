@@ -25,7 +25,8 @@
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit",
-    "prepublishOnly": "pnpm run build"
+    "prepublishOnly": "pnpm run build",
+    "lint": "eslint src"
   },
   "dependencies": {
     "@vault/tokens": "workspace:*",

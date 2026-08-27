@@ -8,10 +8,12 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint src"
   },
   "dependencies": {
     "@vault/ai-chat": "workspace:*",
+    "@vault/collab": "workspace:*",
     "@vault/commerce": "workspace:*",
     "@vault/data-viz": "workspace:*",
     "@vault/dev-tools": "workspace:*",

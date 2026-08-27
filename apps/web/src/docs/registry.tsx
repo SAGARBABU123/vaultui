@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
 import { Badge, Button, Card } from "@vault/ui";
 import {
   AgentOrchestrationCanvas,
@@ -18,7 +18,6 @@ import {
   type ModelOption,
   type PromptVariant,
   type SourceCitationItem,
-  type ToolCall,
 } from "@vault/ai-chat";
 import {
   AnimatedCounter,
@@ -45,7 +44,6 @@ import {
   LogStream,
   type FeatureFlag,
   type LogEntry,
-  type LogLevel,
 } from "@vault/dev-tools";
 import {
   GanttChart,
@@ -54,7 +52,7 @@ import {
   type KanbanColumn,
   type RoadmapItem,
 } from "@vault/project";
-import type { ComponentEntry, ComponentGroup } from "./types";
+import type { ComponentGroup } from "./types";
 
 /* =============================== demo constants ============================== */
 

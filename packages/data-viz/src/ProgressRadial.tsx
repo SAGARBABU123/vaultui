@@ -52,6 +52,8 @@ export function ProgressRadial({
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
+    // Animate the arc from 0 on mount / when the value changes.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setProgress(clamped);
   }, [clamped]);
 

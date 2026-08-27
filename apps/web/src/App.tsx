@@ -1,19 +1,35 @@
 import { useState } from "react";
 import { Badge, Button } from "@vault/ui";
 import { cn } from "@vault/utils";
-import { COMPONENT_GROUPS, FLAT_COMPONENTS, TOTAL_COMPONENTS } from "./docs/registry";
+import { COMPONENT_GROUPS } from "./docs/registry";
+import { EXTRA_GROUPS } from "./docs/registry-extra";
 import { Sidebar } from "./docs/Sidebar";
 import { ComponentShell } from "./docs/ComponentShell";
 
+/** Merge extra entries into their matching groups (Collab Kit is new). */
+function mergeGroups(base: typeof COMPONENT_GROUPS, extra: typeof EXTRA_GROUPS) {
+  const merged = base.map((g) => ({ ...g, items: [...g.items] }));
+  for (const eg of extra) {
+    const target = merged.find((g) => g.group === eg.group);
+    if (target) target.items.push(...eg.items);
+    else merged.push({ ...eg, items: [...eg.items] });
+  }
+  return merged;
+}
+
+const ALL_GROUPS = mergeGroups(COMPONENT_GROUPS, EXTRA_GROUPS);
+const ALL_COMPONENTS = ALL_GROUPS.flatMap((g) => g.items);
+const TOTAL = ALL_COMPONENTS.length - 1; // minus overview
+
 export default function App() {
-  const [activeId, setActiveId] = useState(FLAT_COMPONENTS[0]!.id);
+  const [activeId, setActiveId] = useState(ALL_COMPONENTS[0]!.id);
   const [search, setSearch] = useState("");
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const activeIndex = FLAT_COMPONENTS.findIndex((e) => e.id === activeId);
-  const active = FLAT_COMPONENTS[activeIndex] ?? FLAT_COMPONENTS[0]!;
-  const prev = FLAT_COMPONENTS[activeIndex - 1] ?? null;
-  const next = FLAT_COMPONENTS[activeIndex + 1] ?? null;
+  const activeIndex = ALL_COMPONENTS.findIndex((e) => e.id === activeId);
+  const active = ALL_COMPONENTS[activeIndex] ?? ALL_COMPONENTS[0]!;
+  const prev = ALL_COMPONENTS[activeIndex - 1] ?? null;
+  const next = ALL_COMPONENTS[activeIndex + 1] ?? null;
 
   const navigate = (id: string) => {
     setActiveId(id);
@@ -24,7 +40,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-surface-50 text-surface-900">
       <Header
-        total={TOTAL_COMPONENTS}
+        total={TOTAL}
         onOpenDrawer={() => setDrawerOpen(true)}
         onHome={() => navigate("overview")}
       />
@@ -32,7 +48,7 @@ export default function App() {
       <div className="mx-auto flex max-w-[1400px]">
         {/* Desktop sidebar */}
         <aside className="sticky top-16 hidden h-[calc(100vh-4rem)] w-72 shrink-0 overflow-y-auto border-r border-surface-200 bg-surface-0/60 lg:block">
-          <Sidebar groups={COMPONENT_GROUPS} activeId={activeId} onSelect={navigate} search={search} onSearchChange={setSearch} />
+          <Sidebar groups={ALL_GROUPS} activeId={activeId} onSelect={navigate} search={search} onSearchChange={setSearch} />
         </aside>
 
         {/* Mobile drawer */}
@@ -52,7 +68,7 @@ export default function App() {
                 </Button>
               </div>
               <div className="min-h-0 flex-1 overflow-y-auto">
-                <Sidebar groups={COMPONENT_GROUPS} activeId={activeId} onSelect={navigate} search={search} onSearchChange={setSearch} />
+                <Sidebar groups={ALL_GROUPS} activeId={activeId} onSelect={navigate} search={search} onSearchChange={setSearch} />
               </div>
             </div>
           </div>
@@ -96,7 +112,7 @@ function Header({
         </button>
 
         <Badge variant="neutral" size="sm" className="hidden md:inline-flex">
-          {total} components · 5 kits
+          {total} components · 6 kits
         </Badge>
 
         <div className="flex items-center gap-2">

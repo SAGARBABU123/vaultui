@@ -63,19 +63,13 @@ export function DiffViewer({
 }: DiffViewerProps) {
   const diff = useMemo(() => diffLines(oldText.split("\n"), newText.split("\n")), [oldText, newText]);
 
-  let leftIdx = 0;
-  let rightIdx = 0;
   const rows: { left: DiffLine | null; right: DiffLine | null }[] = diff.map((line) => {
     if (line.type === "eq") {
-      leftIdx++;
-      rightIdx++;
       return { left: line, right: line };
     }
     if (line.type === "del") {
-      leftIdx++;
       return { left: line, right: null };
     }
-    rightIdx++;
     return { left: null, right: line };
   });
 

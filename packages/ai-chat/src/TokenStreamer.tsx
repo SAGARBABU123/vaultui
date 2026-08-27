@@ -21,8 +21,9 @@ export function useStreamingText(
   const [count, setCount] = useState<number>(streaming ? 0 : tokens.length);
   const doneRef = useRef(false);
 
-  // Reset when text or streaming mode changes
   useEffect(() => {
+    // Reset the reveal when the message or streaming mode changes.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCount(streaming ? 0 : tokens.length);
     doneRef.current = false;
   }, [tokens, streaming]);

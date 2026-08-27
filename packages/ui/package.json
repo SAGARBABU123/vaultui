@@ -14,13 +14,19 @@
       "require": "./dist/index.cjs"
     }
   },
-  "files": ["dist", "src"],
-  "publishConfig": { "access": "public" },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "sideEffects": false,
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit",
-    "prepublishOnly": "pnpm run build"
+    "prepublishOnly": "pnpm run build",
+    "lint": "eslint src"
   },
   "dependencies": {
     "@vault/tokens": "workspace:*",
@@ -39,11 +45,22 @@
     "typescript": "^5.7.0"
   },
   "tsup": {
-    "entry": ["src/index.ts"],
-    "format": ["esm", "cjs"],
+    "entry": [
+      "src/index.ts"
+    ],
+    "format": [
+      "esm",
+      "cjs"
+    ],
     "dts": true,
     "clean": true,
     "sourcemap": true,
-    "external": ["react", "react-dom", "react/jsx-runtime", "@vault/utils", "@vault/tokens"]
+    "external": [
+      "react",
+      "react-dom",
+      "react/jsx-runtime",
+      "@vault/utils",
+      "@vault/tokens"
+    ]
   }
 }

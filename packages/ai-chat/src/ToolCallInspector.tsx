@@ -27,7 +27,6 @@ export function ToolCallInspector({
   status = "success",
   defaultOpen = false,
   className,
-  id,
 }: ToolCallInspectorProps) {
   const [open, setOpen] = useState(defaultOpen);
   const meta = statusMeta[status];

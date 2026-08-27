@@ -1,8 +1,8 @@
 {
-  "name": "@vault/utils",
+  "name": "@vault/collab",
   "version": "0.1.0",
-  "description": "Shared utilities for Vault UI components",
-  "license": "MIT",
+  "description": "Collab Kit — PresenceList, LiveCursors, ActivityFeed",
+  "license": "SEE LICENSE IN ../COMMERCIAL-LICENSE.md",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -29,11 +29,21 @@
     "lint": "eslint src"
   },
   "dependencies": {
-    "clsx": "^2.1.1",
-    "tailwind-merge": "^2.5.0"
+    "@vault/tokens": "workspace:*",
+    "@vault/ui": "workspace:*",
+    "@vault/utils": "workspace:*",
+    "lucide-react": "^1.34.0"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
   },
   "devDependencies": {
     "@vault/configs": "workspace:*",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "typescript": "^5.7.0"
   },
   "tsup": {
@@ -48,8 +58,13 @@
     "clean": true,
     "sourcemap": true,
     "external": [
-      "clsx",
-      "tailwind-merge"
+      "react",
+      "react-dom",
+      "react/jsx-runtime",
+      "lucide-react",
+      "@vault/tokens",
+      "@vault/ui",
+      "@vault/utils"
     ]
   }
 }

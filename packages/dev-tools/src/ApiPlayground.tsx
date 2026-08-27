@@ -30,7 +30,6 @@ function fakeResponse(method: HttpMethod, url: string, body: string, latency: nu
       "x-vault-demo": "true",
     },
     latency,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     json: {
       ok: status >= 200 && status < 300,
       method,

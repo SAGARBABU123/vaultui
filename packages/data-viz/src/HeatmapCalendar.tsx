@@ -64,7 +64,7 @@ export function HeatmapCalendar({
 
       <div className="flex items-center justify-end gap-1 text-xs text-surface-400">
         Less
-        {LEVEL_CLASSES.map((c, i) => (
+        {LEVEL_CLASSES.map((c) => (
           <span key={c} className={cn("size-3 rounded-[3px]", c)} />
         ))}
         More

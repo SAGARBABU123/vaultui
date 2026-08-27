@@ -25,6 +25,8 @@ export function AnimatedCounter({
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      // No animation for reduced motion — jump straight to the value.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDisplay(value);
       prevRef.current = value;
       return;
