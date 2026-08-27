@@ -1,4 +1,5 @@
 import { cn } from "@vault/utils";
+import { Check, Copy } from "lucide-react";
 import { Children, isValidElement, useState, type ReactElement, type ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -34,15 +35,15 @@ function CodeBlock({ language, code }: { language?: string; code: string }) {
         <button
           type="button"
           onClick={copy}
+          aria-label={copied ? "Copied to clipboard" : "Copy code to clipboard"}
           className={cn(
-            "inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium transition-colors",
+            "inline-flex items-center rounded-md p-1.5 transition-colors",
             copied
               ? "bg-success-500/20 text-success-400"
               : "text-surface-400 hover:bg-surface-800 hover:text-surface-200",
           )}
         >
-          {copied ? <CheckIcon className="size-3" /> : <CopyIcon className="size-3" />}
-          {copied ? "Copied" : "Copy"}
+          {copied ? <Check className="size-3.5" strokeWidth={2.5} /> : <Copy className="size-3.5" strokeWidth={2.5} />}
         </button>
       </div>
       <pre className="overflow-x-auto px-4 py-3 text-[13px] leading-relaxed text-surface-200">
@@ -127,22 +128,3 @@ export function Markdown({ children, className }: MarkdownProps) {
 
 /* --------------------------------- icons --------------------------------- */
 
-function CopyIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" className={className} aria-hidden="true">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M7 7h9.5a1.5 1.5 0 011.5 1.5v9a1.5 1.5 0 01-1.5 1.5H8.5A1.5 1.5 0 017 17.5v-9A1.5 1.5 0 018.5 7H7zm0 0V4.5A1.5 1.5 0 018.5 3H16a1.5 1.5 0 011.5 1.5V16" transform="translate(-1 -1)" />
-    </svg>
-  );
-}
-
-function CheckIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 20 20" fill="currentColor" className={className} aria-hidden="true">
-      <path
-        fillRule="evenodd"
-        d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-        clipRule="evenodd"
-      />
-    </svg>
-  );
-}

@@ -1,5 +1,6 @@
 import { Badge } from "@vault/ui";
 import { cn } from "@vault/utils";
+import { Check, Copy } from "lucide-react";
 import { useState } from "react";
 import type { ComponentEntry } from "./types";
 
@@ -148,12 +149,13 @@ function CodeBlock({ title, code }: { title: string; code: string }) {
         <button
           type="button"
           onClick={copy}
+          aria-label={copied ? "Copied to clipboard" : "Copy to clipboard"}
           className={cn(
-            "inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium transition-colors",
+            "inline-flex items-center rounded-md p-1.5 transition-colors",
             copied ? "bg-success-500/20 text-success-400" : "text-surface-400 hover:bg-surface-800 hover:text-surface-200",
           )}
         >
-          {copied ? "Copied ✓" : "Copy"}
+          {copied ? <Check className="size-4" strokeWidth={2.5} /> : <Copy className="size-4" strokeWidth={2.5} />}
         </button>
       </div>
       <pre className="overflow-x-auto p-4 font-mono text-[13px] leading-relaxed text-surface-200">
