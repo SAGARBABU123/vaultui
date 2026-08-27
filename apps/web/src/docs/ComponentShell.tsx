@@ -1,7 +1,8 @@
 import { Badge } from "@vault/ui";
 import { cn } from "@vault/utils";
-import { Check, Copy } from "lucide-react";
+import { Check, Copy, Download, Package, Terminal } from "lucide-react";
 import { useState } from "react";
+import { INSTALL_COMMAND, downloadKit } from "./downloadKit";
 import type { ComponentEntry } from "./types";
 
 export interface ComponentShellProps {
@@ -12,6 +13,17 @@ export interface ComponentShellProps {
 }
 
 export function ComponentShell({ entry, prev, next, onNavigate }: ComponentShellProps) {
+  if (entry.id === "overview") {
+    return (
+      <article key={entry.id} className="animate-rise">
+        <OverviewHero />
+        <section className="mt-8">
+          <SectionLabel>What's inside</SectionLabel>
+          <div className="rounded-2xl border-0 bg-surface-50 p-4 shadow-soft sm:p-6">{entry.demo}</div>
+        </section>
+      </article>
+    );
+  }
   return (
     <article key={entry.id} className="animate-rise">
       {/* Header */}
@@ -124,6 +136,91 @@ export function ComponentShell({ entry, prev, next, onNavigate }: ComponentShell
         )}
       </footer>
     </article>
+  );
+}
+
+function OverviewHero() {
+  const [copied, setCopied] = useState(false);
+  const [downloading, setDownloading] = useState(false);
+
+  const copyInstall = async () => {
+    try {
+      await navigator.clipboard.writeText(INSTALL_COMMAND);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1800);
+    } catch {
+      /* ignore */
+    }
+  };
+
+  const handleDownload = async () => {
+    setDownloading(true);
+    try {
+      await downloadKit();
+    } finally {
+      setDownloading(false);
+    }
+  };
+
+  return (
+    <div className="relative overflow-hidden rounded-3xl bg-surface-0 p-8 shadow-raised sm:p-12">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-20 -top-20 size-72 rounded-full bg-brand-200/40 blur-3xl"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -bottom-24 -left-16 size-64 rounded-full bg-info-200/40 blur-3xl"
+      />
+
+      <div className="relative">
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge variant="brand" size="sm" dot>
+            Soft UI · 48 components
+          </Badge>
+          <Badge variant="neutral" size="sm">6 kits · 8 packages</Badge>
+        </div>
+
+        <h1 className="mt-5 max-w-xl text-3xl font-bold tracking-tight sm:text-5xl">
+          The whole kit.
+          <br />
+          <span className="text-brand-600">One download.</span>
+        </h1>
+        <p className="mt-4 max-w-xl leading-relaxed text-surface-500">
+          Neumorphic design tokens, theme, and all 48 components — packed into a
+          single bundle with install commands, per-component usage snippets, and
+          a ready-to-run starter app.
+        </p>
+
+        <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <button
+            type="button"
+            onClick={handleDownload}
+            disabled={downloading}
+            className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-brand-600 px-6 text-base font-semibold text-white shadow-soft transition-all hover:bg-brand-500 active:shadow-pressed disabled:opacity-60"
+          >
+            {downloading ? <Package className="size-5 animate-pulse" /> : <Download className="size-5" />}
+            {downloading ? "Packing zip…" : "Download kit (.zip)"}
+          </button>
+
+          <button
+            type="button"
+            onClick={copyInstall}
+            className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-surface-0 px-6 text-base font-semibold text-surface-700 shadow-soft transition-all hover:bg-surface-50 active:shadow-pressed"
+          >
+            {copied ? <Check className="size-5 text-success-500" /> : <Terminal className="size-5" />}
+            {copied ? "Copied!" : "Copy install command"}
+          </button>
+        </div>
+
+        <div className="mt-6 flex flex-wrap items-center gap-2">
+          <Copy className="size-3.5 text-surface-400" />
+          <code className="rounded-lg bg-surface-100 px-2.5 py-1 font-mono text-xs text-surface-600 shadow-inset">
+            {INSTALL_COMMAND}
+          </code>
+        </div>
+      </div>
+    </div>
   );
 }
 
