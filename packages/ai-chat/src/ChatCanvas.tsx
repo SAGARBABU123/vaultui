@@ -16,6 +16,8 @@ export interface ChatCanvasProps {
   speed?: number;
   /** Called when a source citation chip is clicked. */
   onCitationClick?: (citation: SourceCitationItem) => void;
+  /** Called when a streaming message finishes revealing its tokens. */
+  onStreamComplete?: (messageId: string) => void;
   /** Rendered when there are no messages. */
   emptyState?: ReactNode;
   /** Height of the scrollable viewport. */
@@ -41,6 +43,7 @@ export function ChatCanvas({
   isTyping = false,
   speed = 15,
   onCitationClick,
+  onStreamComplete,
   emptyState,
   heightClass = "h-[420px] sm:h-[520px]",
   className,
@@ -70,7 +73,15 @@ export function ChatCanvas({
         {messages.length === 0 && emptyState !== undefined ? (
           emptyState
         ) : (
-          messages.map((m) => <Message key={m.id} message={m} onCitationClick={onCitationClick} speed={speed} />)
+          messages.map((m) => (
+            <Message
+              key={m.id}
+              message={m}
+              onCitationClick={onCitationClick}
+              onStreamComplete={onStreamComplete}
+              speed={speed}
+            />
+          ))
         )}
 
         {isTyping && (
@@ -92,10 +103,12 @@ function Message({
   message,
   speed,
   onCitationClick,
+  onStreamComplete,
 }: {
   message: ChatMessage;
   speed: number;
   onCitationClick?: (c: SourceCitationItem) => void;
+  onStreamComplete?: (messageId: string) => void;
 }) {
   const { role } = message;
 
@@ -142,7 +155,12 @@ function Message({
             )}
           >
             {message.streaming ? (
-              <TokenStreamer text={message.content} speed={speed} streaming />
+              <TokenStreamer
+                text={message.content}
+                speed={speed}
+                streaming
+                onComplete={() => onStreamComplete?.(message.id)}
+              />
             ) : (
               <Markdown>{message.content}</Markdown>
             )}

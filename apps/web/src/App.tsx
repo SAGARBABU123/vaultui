@@ -1,12 +1,20 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Badge, Button, Card } from "@vault/ui";
 import {
+  AgentOrchestrationCanvas,
   ChatCanvas,
+  ChatInput,
+  ConstraintBadge,
+  MemoryTimeline,
   ModelPicker,
+  PromptPlayground,
   ToolCallInspector,
   TypingIndicator,
+  type AgentGraph,
   type ChatMessage,
+  type MemoryEntry,
   type ModelOption,
+  type PromptVariant,
   type ToolCall,
 } from "@vault/ai-chat";
 import { cn } from "@vault/utils";
@@ -100,6 +108,8 @@ export default function App() {
         <CardsShowcase />
         <ResponsiveDemo />
         <AiKitDemo />
+        <AgentDemo />
+        <PlaygroundDemo />
         <TokensShowcase />
         <KitsShowcase />
       </main>
@@ -113,6 +123,7 @@ export default function App() {
 
 const NAV_LINKS = [
   { label: "AI Kit", href: "#ai-demo" },
+  { label: "Playground", href: "#playground" },
   { label: "Components", href: "#components" },
   { label: "Pricing", href: "#pricing" },
   { label: "Tokens", href: "#tokens" },
@@ -592,9 +603,69 @@ function demoMessages(): ChatMessage[] {
   ];
 }
 
+const DEMO_REPLY = (text: string) =>
+  `Got it — "${text.length > 90 ? text.slice(0, 90) + "…" : text}"\n\nHere's how I'd approach it with the **AI Agent Kit**:\n\n1. **ChatCanvas** hosts the conversation and auto-scrolls\n2. **TokenStreamer** reveals this reply token-by-token\n3. **ToolCallInspector** (above) shows my function call\n4. **SourceCitation** footnotes the docs I referenced\n\n` +
+  "```tsx\n<ChatCanvas\n  messages={messages}\n  isTyping={busy}\n  onStreamComplete={(id) => markDone(id)}\n/>\n```" +
+  `\n\nTap the tool-call card above to inspect its JSON in/out.`;
+
 function AiKitDemo() {
   const [run, setRun] = useState(0);
   const [model, setModel] = useState(AI_MODELS[0]!.id);
+  const [messages, setMessages] = useState<ChatMessage[]>(() => demoMessages());
+  const [isTyping, setIsTyping] = useState(false);
+
+  const handleSend = useCallback((text: string) => {
+    const userId = `u-${Date.now()}`;
+    const answerId = `a-${Date.now()}`;
+    setMessages((prev) => [...prev, { id: userId, role: "user", content: text }]);
+    setIsTyping(true);
+
+    // Simulate the API round-trip, then add an assistant message that streams.
+    window.setTimeout(() => {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: answerId,
+          role: "assistant",
+          streaming: true,
+          content: DEMO_REPLY(text),
+          toolCalls: [
+            {
+              id: `t-${Date.now()}`,
+              name: "generate_answer",
+              args: { prompt: text.slice(0, 60), model: "vault-pro" },
+              result: { ok: true, latency_ms: 1842 },
+              status: "success",
+            },
+          ],
+          sources: [
+            { id: "s1", index: 1, title: "Responsive-first contract", domain: "docs.vault.dev/responsive" },
+            { id: "s2", index: 2, title: "ChatCanvas API", domain: "docs.vault.dev/chat-canvas" },
+          ],
+        },
+      ]);
+      setIsTyping(false);
+    }, 650);
+  }, []);
+
+  // When a stream finishes, flip to rendered markdown.
+  const handleStreamComplete = useCallback((messageId: string) => {
+    setMessages((prev) =>
+      prev.map((m) => (m.id === messageId ? { ...m, streaming: false } : m)),
+    );
+  }, []);
+
+  const replay = () => {
+    setRun((r) => r + 1);
+    setMessages(demoMessages());
+    setIsTyping(false);
+  };
+
+  const totalChars = messages.reduce((sum, m) => sum + (m.content?.length ?? 0), 0);
+  const tokenEstimate = Math.ceil(totalChars / 4);
+  const lastAssistantStreaming = [...messages]
+    .reverse()
+    .some((m) => m.role === "assistant" && m.streaming);
 
   return (
     <section
@@ -603,13 +674,13 @@ function AiKitDemo() {
     >
       <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
         <SectionHeading
-          kicker="AI Agent Kit · Phase 1 · live"
-          title="A working chat, streaming right now"
-          desc="Assistant message streams token-by-token with a caret, shows a collapsible tool-call inspector, and cites its sources. Press Replay to watch it again — resize the window to see the responsive rules in action."
+          kicker="AI Agent Kit · Phase 1 · interactive"
+          title="A working chat — send a message, watch it stream"
+          desc="Ask anything: a user message is appended, the assistant 'thinks', then streams token-by-token with a caret, a collapsible tool-call inspector, and source citations. Replay restarts the demo — resize the window to see the responsive rules."
         />
 
         <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
-          {/* Chat demo */}
+          {/* Chat */}
           <div className="flex flex-col overflow-hidden rounded-2xl border border-surface-200 bg-surface-0 shadow-raised">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-surface-200 px-4 py-3">
               <div className="flex items-center gap-2">
@@ -636,18 +707,50 @@ function AiKitDemo() {
                       />
                     </svg>
                   }
-                  onClick={() => setRun((r) => r + 1)}
+                  onClick={replay}
                 >
                   Replay
                 </Button>
               </div>
             </div>
-            <ChatCanvas key={run} messages={demoMessages()} heightClass="h-[430px] sm:h-[540px]" />
-            <div className="flex items-center gap-2 border-t border-surface-200 px-4 py-3 text-xs text-surface-400">
-              <Badge variant="info" size="sm" dot>
-                streaming
-              </Badge>
-              Vault Pro · 128k context
+
+            <ChatCanvas
+              key={run}
+              messages={messages}
+              isTyping={isTyping}
+              onStreamComplete={handleStreamComplete}
+              heightClass="h-[380px] sm:h-[480px]"
+            />
+
+            <div className="border-t border-surface-200 p-3 sm:p-4">
+              <ConstraintBadge
+                items={[
+                  {
+                    label: "Tokens",
+                    value: `${tokenEstimate} / 128k`,
+                    percent: Math.max(0.5, Math.min(99, (tokenEstimate / 128000) * 100)),
+                  },
+                  { label: "Rate", value: "28 / 60 rpm", percent: 47 },
+                  {
+                    label: "Latency",
+                    value: lastAssistantStreaming ? "streaming…" : "1.9s",
+                    kind: "latency",
+                  },
+                  { label: "Cost", value: "$0.0042", kind: "cost" },
+                ]}
+              />
+              <div className="mt-3">
+                <ChatInput
+                  onSend={handleSend}
+                  disabled={isTyping}
+                  placeholder="Ask the agent something…"
+                  suggestions={[
+                    "Make it responsive on mobile",
+                    "Explain the tool calls",
+                    "How do I stream it?",
+                  ]}
+                />
+              </div>
             </div>
           </div>
 
@@ -658,10 +761,12 @@ function AiKitDemo() {
               <ul className="mt-3 space-y-2.5">
                 {[
                   ["ChatCanvas", "messages + streaming + citations + tool calls"],
+                  ["ChatInput", "Enter-to-send, IME-safe, token count"],
                   ["TokenStreamer", "token-by-token reveal, blinking caret"],
                   ["ToolCallInspector", "collapsible JSON in/out per call"],
                   ["SourceCitation", "footnote chips that cite the docs"],
-                  ["ModelPicker", "styled native select — accessible on mobile"],
+                  ["ConstraintBadge", "token / rate / cost / latency meters"],
+                  ["ModelPicker", "styled native select — mobile-friendly"],
                   ["TypingIndicator", "'thinking' dots, aria-announced"],
                 ].map(([name, desc]) => (
                   <li key={name} className="flex items-start gap-2">
@@ -678,7 +783,7 @@ function AiKitDemo() {
             </Card>
 
             <Card padding="lg">
-              <h3 className="text-sm font-semibold">Standalone building blocks</h3>
+              <h3 className="text-sm font-semibold">Standalone blocks</h3>
               <div className="mt-3 flex items-center justify-between gap-2 rounded-xl border border-surface-200 bg-surface-50 px-3 py-2.5">
                 <span className="text-sm font-medium text-surface-600">TypingIndicator</span>
                 <TypingIndicator />
@@ -699,6 +804,165 @@ function AiKitDemo() {
     </section>
   );
 }
+
+/* ------------------------------ agent + memory --------------------------- */
+
+const AGENT_GRAPH: AgentGraph = {
+  id: "run-1",
+  name: "Build Fixer Agent",
+  model: "Vault Pro",
+  latencyMs: 4820,
+  costUsd: 0.0123,
+  batches: [
+    [{ id: "in", kind: "input", label: "User request", detail: "Fix failing build on push", status: "success" }],
+    [{ id: "pl", kind: "agent", label: "Planner", detail: "Parsed intent → 2 tools needed", status: "success", durationMs: 410 }],
+    [
+      { id: "t1", kind: "tool", label: "search_issues", detail: "match: build-error #341", status: "success", durationMs: 720 },
+      { id: "t2", kind: "tool", label: "get_logs", detail: "pipeline #8841 tail", status: "running" },
+    ],
+    [{ id: "ag2", kind: "agent", label: "Resolver", detail: "Chose patch strategy", status: "success", durationMs: 950 }],
+    [{ id: "t3", kind: "tool", label: "apply_patch", detail: "patch: turbo.json cache keys", status: "success", durationMs: 310 }],
+    [{ id: "out", kind: "output", label: "Fixed", detail: "Build green — PR ready", status: "success" }],
+  ],
+};
+
+const MEMORY_ENTRIES: MemoryEntry[] = [
+  {
+    id: "m1",
+    type: "preference",
+    title: "Prefers TypeScript strict mode",
+    detail: "Always enables noUncheckedIndexedAccess in the shared tsconfig.",
+    confidence: 0.95,
+    timestamp: "2h ago",
+  },
+  {
+    id: "m2",
+    type: "fact",
+    title: "Uses Vite 5 + Tailwind v4",
+    detail: "Token-driven theming via @vault/tokens/tokens.css.",
+    confidence: 0.9,
+    timestamp: "4h ago",
+  },
+  {
+    id: "m3",
+    type: "task",
+    title: "Fix landing page buttons",
+    detail: "Sizes felt cramped on mobile; shipped xs→xl scale.",
+    confidence: 0.7,
+    timestamp: "Yesterday",
+  },
+  {
+    id: "m4",
+    type: "event",
+    title: "Deployed v0.0.1",
+    detail: "First monorepo commit: Phase 0 foundation.",
+    timestamp: "Mon",
+  },
+];
+
+function AgentDemo() {
+  return (
+    <ShowcaseShell>
+      <SectionHeading
+        kicker="AI Agent Kit · Orchestration + Memory"
+        title="Watch the agent's run — and what it remembers"
+        desc="AgentOrchestrationCanvas renders input → planner → parallel tool batches → output with live status. MemoryTimeline shows what the agent remembers, with confidence bars."
+      />
+
+      <div className="grid gap-6 lg:grid-cols-[1.5fr_1fr]">
+        <AgentOrchestrationCanvas graph={AGENT_GRAPH} />
+        <Card padding="lg">
+          <div className="mb-4 flex items-center justify-between gap-2">
+            <h3 className="text-sm font-semibold">Agent memory</h3>
+            <Badge variant="info" size="sm" dot>
+              4 memories
+            </Badge>
+          </div>
+          <MemoryTimeline entries={MEMORY_ENTRIES} heightClass="h-[380px]" />
+        </Card>
+      </div>
+    </ShowcaseShell>
+  );
+}
+
+/* ------------------------------- playground ------------------------------ */
+
+const PLAYGROUND_VARIANTS: PromptVariant[] = [
+  {
+    id: "a",
+    name: "A",
+    system: "You are a senior React + Tailwind engineer. Always answer with responsive-first, token-driven code.",
+    user: "Build a Card component that works on mobile and desktop.",
+    response: `Here's a responsive-first Card:
+
+\`\`\`tsx
+export function Card({ title, children }) {
+  return (
+    <div className="rounded-2xl border border-surface-200 p-4 shadow-soft sm:p-6">
+      <h3 className="font-semibold">{title}</h3>
+      {children}
+    </div>
+  );
+}
+\`\`\`
+
+On phones the padding is 16px; at the sm breakpoint it steps up to 24px.\n\n\nExact padding comes from the design tokens, so re-branding is a one-file change.`,
+    meta: { tokens: 148, latencyMs: 830, costUsd: 0.0004 },
+  },
+  {
+    id: "b",
+    name: "B",
+    system: "You are concise. Give short, code-only answers that assume Tailwind v4.",
+    user: "Build a Card component that works on mobile and desktop.",
+    response: `\`\`\`tsx
+<div className="rounded-2xl border border-surface-200 p-4 sm:p-6 shadow-soft">
+  <h3 className="font-semibold">{title}</h3>
+  {children}
+</div>
+\`\`\`
+
+Note: p-4 base, sm:p-6 upgrade — same rule as every Vault component.`,
+    meta: { tokens: 52, latencyMs: 610, costUsd: 0.0002 },
+  },
+  {
+    id: "c",
+    name: "C",
+    system: "You are a product engineer who explains trade-offs and alternatives before answering.",
+    user: "Build a Card component that works on mobile and desktop.",
+    response: `Two options:
+
+1. **Static breakpoints** (fastest): use responsive padding utilities.
+2. **Fluid via clamp()**: scale padding with the viewport for buttery feel.
+
+Given a component marketplace, option 1 is better — it's predictable and token-driven. Here's the implementation:
+
+\`\`\`tsx
+<div className="rounded-2xl border border-surface-200 p-4 sm:p-6 shadow-soft">
+  ...
+</div>
+\`\`\`
+
+Trade-off: you lose fluidity on ultra-wide screens, but you gain cacheable, framework-agnostic styles.`,
+    meta: { tokens: 210, latencyMs: 1240, costUsd: 0.0006 },
+  },
+];
+
+function PlaygroundDemo() {
+  return (
+    <section id="playground" className="border-y border-surface-200 bg-surface-0">
+      <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
+        <SectionHeading
+          kicker="AI Agent Kit · PromptPlayground"
+          title="Iterate on prompts, A/B the responses"
+          desc="Three variants of the same task with editable system/user prompts, temperature and max-token sliders, and a two-pane compare. Toggle A/B compare and pick a variant per pane."
+        />
+        <PromptPlayground variants={PLAYGROUND_VARIANTS} />
+      </div>
+    </section>
+  );
+}
+
+/* -------------------------------- footer -------------------------------- */
 
 /* -------------------------------- footer -------------------------------- */
 
