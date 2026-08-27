@@ -1,5 +1,14 @@
 import { useState } from "react";
 import { Badge, Button, Card } from "@vault/ui";
+import {
+  ChatCanvas,
+  ModelPicker,
+  ToolCallInspector,
+  TypingIndicator,
+  type ChatMessage,
+  type ModelOption,
+  type ToolCall,
+} from "@vault/ai-chat";
 import { cn } from "@vault/utils";
 
 /* ---------------------------------- data ---------------------------------- */
@@ -90,6 +99,7 @@ export default function App() {
         <BadgesShowcase />
         <CardsShowcase />
         <ResponsiveDemo />
+        <AiKitDemo />
         <TokensShowcase />
         <KitsShowcase />
       </main>
@@ -102,9 +112,10 @@ export default function App() {
 /* --------------------------------- header -------------------------------- */
 
 const NAV_LINKS = [
+  { label: "AI Kit", href: "#ai-demo" },
   { label: "Components", href: "#components" },
-  { label: "Tokens", href: "#tokens" },
   { label: "Pricing", href: "#pricing" },
+  { label: "Tokens", href: "#tokens" },
   { label: "Kits", href: "#kits" },
 ];
 
@@ -542,7 +553,154 @@ function KitsShowcase() {
   );
 }
 
-/* --------------------------------- footer -------------------------------- */
+/* ------------------------------ AI Kit demo ------------------------------ */
+
+const AI_MODELS: ModelOption[] = [
+  { id: "vault-mini", label: "Vault Mini", context: "64k", badge: "Fast" },
+  { id: "vault-pro", label: "Vault Pro", context: "128k", badge: "Best" },
+  { id: "vault-max", label: "Vault Max", context: "1M", badge: "Preview" },
+];
+
+const DEMO_SEARCH_CALL: ToolCall = {
+  id: "t1",
+  name: "search_docs",
+  args: { query: "responsive-first components", k: 3 },
+  result: { hits: 3, top: "docs.vault.dev/responsive" },
+  status: "success",
+};
+
+const DEMO_ANSWER = `Great question! The **AI Agent Kit** is responsive-first at its core:\n\n- **ChatCanvas** caps bubbles at 85% width on phones and 78% on desktop\n- **ToolCallInspector** renders JSON in an overlay scroller — it never breaks the layout on narrow screens\n- **SourceCitation** chips truncate titles while keeping the footnote index visible\n- **TokenStreamer** streams tokens at 15ms pace with a blinking caret\n\nHere's what it takes to embed it:\n\n\\` + "```tsx\nimport { ChatCanvas } from '@vault/ai-chat';\n\n<ChatCanvas\n  messages={messages}\n  isTyping={streaming}\n  onCitationClick={openSource}\n/>\n```" + `\n\nEvery token, shadow, and accent comes from [design tokens](#tokens) — override one file and the whole kit re-brands.`;
+
+function demoMessages(): ChatMessage[] {
+  return [
+    {
+      id: "u1",
+      role: "user",
+      content: "How does the AI Agent Kit stay responsive on mobile?",
+    },
+    {
+      id: "a1",
+      role: "assistant",
+      streaming: true,
+      content: DEMO_ANSWER,
+      toolCalls: [DEMO_SEARCH_CALL],
+      sources: [
+        { id: "s1", index: 1, title: "Responsive-first contract", domain: "docs.vault.dev/responsive" },
+        { id: "s2", index: 2, title: "TokenStreamer API", domain: "docs.vault.dev/token-streamer" },
+      ],
+    },
+  ];
+}
+
+function AiKitDemo() {
+  const [run, setRun] = useState(0);
+  const [model, setModel] = useState(AI_MODELS[0]!.id);
+
+  return (
+    <section
+      id="ai-demo"
+      className="border-y border-surface-200 bg-gradient-to-b from-surface-0 to-surface-50"
+    >
+      <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
+        <SectionHeading
+          kicker="AI Agent Kit · Phase 1 · live"
+          title="A working chat, streaming right now"
+          desc="Assistant message streams token-by-token with a caret, shows a collapsible tool-call inspector, and cites its sources. Press Replay to watch it again — resize the window to see the responsive rules in action."
+        />
+
+        <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
+          {/* Chat demo */}
+          <div className="flex flex-col overflow-hidden rounded-2xl border border-surface-200 bg-surface-0 shadow-raised">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-surface-200 px-4 py-3">
+              <div className="flex items-center gap-2">
+                <span className="relative flex size-2">
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-success-500 animate-pulse-ring" />
+                  <span className="relative inline-flex size-2 rounded-full bg-success-500" />
+                </span>
+                <span className="text-sm font-semibold">Vault Assistant</span>
+                <Badge variant="success" size="sm" dot>
+                  Online
+                </Badge>
+              </div>
+              <div className="flex items-center gap-2">
+                <ModelPicker models={AI_MODELS} value={model} onChange={setModel} />
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  leadingIcon={
+                    <svg viewBox="0 0 20 20" fill="currentColor" className="size-3.5" aria-hidden="true">
+                      <path
+                        fillRule="evenodd"
+                        d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0V5.36l-.31-.31A7 7 0 003.239 8.188a.75.75 0 101.448.389A5.5 5.5 0 0113.89 6.11l.311.31h-2.432a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  }
+                  onClick={() => setRun((r) => r + 1)}
+                >
+                  Replay
+                </Button>
+              </div>
+            </div>
+            <ChatCanvas key={run} messages={demoMessages()} heightClass="h-[430px] sm:h-[540px]" />
+            <div className="flex items-center gap-2 border-t border-surface-200 px-4 py-3 text-xs text-surface-400">
+              <Badge variant="info" size="sm" dot>
+                streaming
+              </Badge>
+              Vault Pro · 128k context
+            </div>
+          </div>
+
+          {/* Side rails */}
+          <div className="flex flex-col gap-4">
+            <Card padding="lg">
+              <h3 className="text-sm font-semibold">The kit behind the demo</h3>
+              <ul className="mt-3 space-y-2.5">
+                {[
+                  ["ChatCanvas", "messages + streaming + citations + tool calls"],
+                  ["TokenStreamer", "token-by-token reveal, blinking caret"],
+                  ["ToolCallInspector", "collapsible JSON in/out per call"],
+                  ["SourceCitation", "footnote chips that cite the docs"],
+                  ["ModelPicker", "styled native select — accessible on mobile"],
+                  ["TypingIndicator", "'thinking' dots, aria-announced"],
+                ].map(([name, desc]) => (
+                  <li key={name} className="flex items-start gap-2">
+                    <span className="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded bg-brand-100 text-[10px] font-bold text-brand-700">
+                      ✓
+                    </span>
+                    <span className="text-sm text-surface-600">
+                      <code className="font-mono text-[12px] font-semibold text-surface-800">{name}</code>
+                      <span className="text-surface-400"> — {desc}</span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+
+            <Card padding="lg">
+              <h3 className="text-sm font-semibold">Standalone building blocks</h3>
+              <div className="mt-3 flex items-center justify-between gap-2 rounded-xl border border-surface-200 bg-surface-50 px-3 py-2.5">
+                <span className="text-sm font-medium text-surface-600">TypingIndicator</span>
+                <TypingIndicator />
+              </div>
+              <div className="mt-2">
+                <ToolCallInspector
+                  name="embed_context"
+                  args={{ source: "docs.vault.dev", min_score: 0.4 }}
+                  result={{ ok: true, tokens: 2048 }}
+                  status="running"
+                  defaultOpen
+                />
+              </div>
+            </Card>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* -------------------------------- footer -------------------------------- */
 
 function Footer() {
   return (

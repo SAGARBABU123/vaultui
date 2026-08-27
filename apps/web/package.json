@@ -11,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vault/ai-chat": "workspace:*",
     "@vault/tokens": "workspace:*",
     "@vault/ui": "workspace:*",
     "@vault/utils": "workspace:*",

@@ -13,6 +13,7 @@ vault-ui/
 ├── apps/
 │   └── showroom/     # Storybook — the storefront
 ├── packages/
+│   ├── ai-chat/      # 🤖 AI Agent Kit — ChatCanvas, TokenStreamer, ToolCallInspector…
 │   ├── configs/      # shared tsconfig
 │   ├── tokens/       # design tokens / theme engine (Tailwind v4 CSS-first)
 │   ├── utils/        # cn() + shared helpers
