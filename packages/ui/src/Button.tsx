@@ -1,11 +1,14 @@
 import { cn } from "@vault/utils";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 
+export type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
+export type ButtonSize = "xs" | "sm" | "md" | "lg" | "xl";
+
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /** Visual style of the button. */
-  variant?: "primary" | "secondary" | "ghost" | "danger";
-  /** Size of the button. */
-  size?: "sm" | "md" | "lg";
+  variant?: ButtonVariant;
+  /** Size. `xs` = dense rows · `sm` = minimum comfortable touch (36px) · `md` = default · `lg`/`xl` = hero CTAs. */
+  size?: ButtonSize;
   /** Optional leading icon node. */
   leadingIcon?: ReactNode;
   /** Optional trailing icon node. */
@@ -16,7 +19,11 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   fullWidth?: boolean;
 }
 
-const variantClasses: Record<NonNullable<ButtonProps["variant"]>, string> = {
+/**
+ * Responsive-first: pass `fullWidth` + `className="w-full sm:w-auto"`
+ * to switch between stacked (mobile) and inline (desktop) layouts.
+ */
+const variantClasses: Record<ButtonVariant, string> = {
   primary:
     "bg-brand-600 text-white shadow-soft hover:bg-brand-500 focus-visible:ring-brand-500",
   secondary:
@@ -25,11 +32,16 @@ const variantClasses: Record<NonNullable<ButtonProps["variant"]>, string> = {
   danger: "bg-danger-500 text-white hover:bg-danger-400 focus-visible:ring-danger-500",
 };
 
-const sizeClasses: Record<NonNullable<ButtonProps["size"]>, string> = {
-  sm: "h-8 px-3 text-xs gap-1.5",
-  md: "h-10 px-4 text-sm gap-2",
-  lg: "h-12 px-6 text-base gap-2",
+const sizeClasses: Record<ButtonSize, string> = {
+  xs: "h-7 px-2.5 text-xs gap-1.5 rounded-md",
+  sm: "h-9 px-3.5 text-sm gap-1.5 rounded-md",
+  md: "h-10 px-4 text-sm gap-2 rounded-lg",
+  lg: "h-12 px-5 text-base gap-2 rounded-lg",
+  xl: "h-14 px-7 text-base gap-2.5 rounded-lg",
 };
+
+const focusClasses =
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-0";
 
 /**
  * The foundation Button — token-driven, demonstrates the theme engine.
@@ -56,12 +68,13 @@ export function Button({
       type={type}
       disabled={isDisabled}
       className={cn(
-        "inline-flex select-none items-center justify-center rounded-md font-medium transition-colors",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+        "relative inline-flex select-none items-center justify-center whitespace-nowrap font-medium leading-none",
+        "transition-[background-color,box-shadow,transform] duration-150 active:scale-[0.98]",
         "disabled:pointer-events-none disabled:opacity-50",
         variantClasses[variant],
         sizeClasses[size],
         fullWidth && "w-full",
+        focusClasses,
         className,
       )}
       {...props}
@@ -69,10 +82,12 @@ export function Button({
       {loading ? (
         <Spinner className="size-4" />
       ) : (
-        leadingIcon && <span aria-hidden="true">{leadingIcon}</span>
+        leadingIcon && <span aria-hidden="true" className="shrink-0">{leadingIcon}</span>
       )}
-      {children}
-      {!loading && trailingIcon && <span aria-hidden="true">{trailingIcon}</span>}
+      <span className="truncate">{children}</span>
+      {!loading && trailingIcon && (
+        <span aria-hidden="true" className="shrink-0">{trailingIcon}</span>
+      )}
     </button>
   );
 }
@@ -80,7 +95,7 @@ export function Button({
 function Spinner({ className }: { className?: string }) {
   return (
     <svg
-      className={cn("animate-spin", className)}
+      className={cn("animate-spin shrink-0", className)}
       viewBox="0 0 24 24"
       fill="none"
       aria-hidden="true"
