@@ -56,14 +56,14 @@ export function RoadmapTimeline({
       <div className="min-w-[640px]">
         {/* Month header */}
         <div className="grid grid-cols-[160px_repeat(12,minmax(0,1fr))] border-b border-surface-200 bg-surface-50">
-          <div className="px-4 py-2 text-[11px] font-semibold uppercase tracking-wide text-surface-400">
+          <div className="px-4 py-2 text-xs font-semibold uppercase tracking-wide text-surface-400">
             Initiative
           </div>
           {months.map((m, i) => (
             <div
               key={m}
               className={cn(
-                "border-l border-surface-100 px-2 py-2 text-[11px] font-medium",
+                "border-l border-surface-100 px-2 py-2 text-xs font-medium",
                 i === now ? "text-brand-600" : "text-surface-400",
               )}
             >
@@ -87,7 +87,7 @@ export function RoadmapTimeline({
                 {label && <Badge variant={label.variant} size="sm" className="hidden lg:inline-flex">{label.label}</Badge>}
               </div>
 
-              <div className="relative col-span-12 flex h-10 items-center">
+              <div className="relative col-span-12 flex h-12 items-center">
                 {/* Month column guides */}
                 {months.map((_, i) => (
                   <div key={i} className="absolute inset-y-0 w-[8.3333%] border-l border-surface-100 first:border-l-0" style={{ left: `${i * 8.3333}%` }} />
@@ -98,11 +98,11 @@ export function RoadmapTimeline({
                 </div>
                 {/* bar */}
                 <div
-                  className={cn("relative z-10 h-5 rounded-full opacity-90 shadow-soft", bar)}
+                  className={cn("relative z-10 h-6 rounded-full opacity-90 shadow-soft", bar)}
                   style={{ gridColumn: undefined, left: `${item.start * 8.3333}%`, width: `${Math.max(1.5, (item.end - item.start) * 8.3333)}%` }}
                 >
                   {item.milestone && (
-                    <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 text-[10px]" aria-hidden="true">
+                    <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 text-xs" aria-hidden="true">
                       ◆
                     </span>
                   )}

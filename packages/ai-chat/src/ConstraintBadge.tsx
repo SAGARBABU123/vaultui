@@ -46,15 +46,15 @@ export function ConstraintBadge({ items, compact = false, className }: Constrain
         >
           <KindIcon kind={item.kind ?? "tokens"} />
           {!compact && (
-            <span className="hidden text-[11px] font-medium text-surface-400 sm:inline">
+            <span className="hidden text-xs font-medium text-surface-400 sm:inline">
               {item.label}
             </span>
           )}
-          <span className={cn("font-mono text-[11px] font-semibold", toneText[item.tone ?? "normal"])}>
+          <span className={cn("font-mono text-xs font-semibold", toneText[item.tone ?? "normal"])}>
             {item.value}
           </span>
           {item.percent !== undefined && (
-            <span className="ml-0.5 inline-block h-1 w-8 overflow-hidden rounded-full bg-surface-100">
+            <span className="ml-0.5 inline-block h-1.5 w-12 overflow-hidden rounded-full bg-surface-100">
               <span
                 className={cn("block h-full rounded-full transition-all", toneBar[item.tone ?? "normal"])}
                 style={{ width: `${Math.min(100, Math.max(0, item.percent))}%` }}

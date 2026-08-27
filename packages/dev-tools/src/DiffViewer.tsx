@@ -87,15 +87,15 @@ export function DiffViewer({
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-surface-200 bg-surface-50 px-3 py-2">
         <div className="flex items-center gap-2">
-          <span className="font-mono text-[11px] font-semibold text-surface-500">{language}</span>
-          <span className="rounded-full bg-danger-500/10 px-2 py-0.5 font-mono text-[11px] font-semibold text-danger-500">
+          <span className="font-mono text-xs font-semibold text-surface-500">{language}</span>
+          <span className="rounded-full bg-danger-500/10 px-2 py-0.5 font-mono text-xs font-semibold text-danger-500">
             -{removed}
           </span>
-          <span className="rounded-full bg-success-500/10 px-2 py-0.5 font-mono text-[11px] font-semibold text-success-500">
+          <span className="rounded-full bg-success-500/10 px-2 py-0.5 font-mono text-xs font-semibold text-success-500">
             +{added}
           </span>
         </div>
-        <div className="hidden items-center gap-3 font-mono text-[11px] text-surface-400 sm:flex">
+        <div className="hidden items-center gap-3 font-mono text-xs text-surface-400 sm:flex">
           <span className="flex items-center gap-1">
             <span className="h-2 w-2 rounded-sm bg-danger-500/70" /> {oldLabel}
           </span>
@@ -106,7 +106,7 @@ export function DiffViewer({
       </div>
 
       {/* Body — side by side */}
-      <div className="grid max-h-80 grid-cols-2 overflow-auto font-mono text-[12px] leading-5">
+      <div className="grid max-h-80 grid-cols-2 overflow-auto font-mono text-[13px] leading-5">
         <div className="min-w-0 border-r border-surface-200">
           {rows.map((row, i) => (
             <Line key={i} line={row.left} side="left" />

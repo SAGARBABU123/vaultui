@@ -92,7 +92,7 @@ export function ProgressRadial({
           {label ?? `${Math.round(clamped)}%`}
         </span>
         {sublabel && (
-          <span className="mt-0.5 text-[10px] font-medium text-surface-400">{sublabel}</span>
+          <span className="mt-0.5 text-xs font-medium text-surface-400">{sublabel}</span>
         )}
       </div>
     </div>

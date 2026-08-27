@@ -203,10 +203,10 @@ function PromptPane({
   return (
     <div className="flex min-h-0 flex-col rounded-xl border border-surface-200 bg-surface-0 shadow-soft">
       <div className="flex items-center justify-between border-b border-surface-200 px-3 py-1.5">
-        <span className="text-[11px] font-semibold uppercase tracking-wide text-surface-400">
+        <span className="text-xs font-semibold uppercase tracking-wide text-surface-400">
           {label}
         </span>
-        <span className="text-[10px] text-surface-400">{text.length} chars</span>
+        <span className="text-xs text-surface-400">{text.length} chars</span>
       </div>
       <textarea
         readOnly={!editable}
@@ -214,7 +214,7 @@ function PromptPane({
         rows={6}
         onChange={(e) => onChange(e.target.value)}
         spellCheck={false}
-        className="h-full min-h-[7rem] w-full resize-none bg-transparent p-3 font-mono text-xs leading-relaxed text-surface-700 outline-none read-only:cursor-default"
+        className="h-full min-h-[7rem] w-full resize-none bg-transparent p-3 font-mono text-[13px] leading-relaxed text-surface-700 outline-none read-only:cursor-default"
       />
     </div>
   );
@@ -239,14 +239,14 @@ function ResponsePane({
     <div className="flex min-w-0 flex-col rounded-xl border border-surface-200 bg-surface-0 shadow-soft">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-surface-200 px-3 py-1.5">
         <div className="flex items-center gap-2">
-          <span className="text-[11px] font-semibold uppercase tracking-wide text-brand-600">
+          <span className="text-xs font-semibold uppercase tracking-wide text-brand-600">
             Response · Variant {variant.name}
           </span>
           {variants.length > 1 && (
             <select
               value={variant.id}
               onChange={(e) => onSelectVariant(e.target.value)}
-              className="cursor-pointer rounded-md border border-surface-200 bg-surface-50 px-1.5 py-0.5 text-[11px] font-medium text-surface-600 outline-none"
+              className="cursor-pointer rounded-md border border-surface-200 bg-surface-50 px-1.5 py-0.5 text-xs font-medium text-surface-600 outline-none"
               aria-label="Response variant"
             >
               {variants.map((v) => (
@@ -257,7 +257,7 @@ function ResponsePane({
             </select>
           )}
         </div>
-        <span className="rounded-full bg-surface-100 px-2 py-0.5 text-[10px] font-medium text-surface-500">
+        <span className="rounded-full bg-surface-100 px-2 py-0.5 text-xs font-medium text-surface-500">
           temp {temperature} · {maxTokens} tok
         </span>
       </div>

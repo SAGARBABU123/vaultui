@@ -134,7 +134,7 @@ export function CartDrawer({
                   <button
                     type="button"
                     onClick={() => onRemove(item.id)}
-                    className="text-[11px] font-medium text-surface-400 underline-offset-2 hover:text-danger-500 hover:underline"
+                    className="text-xs font-medium text-surface-400 underline-offset-2 hover:text-danger-500 hover:underline"
                   >
                     Remove
                   </button>
@@ -212,7 +212,7 @@ function QtyButton({
       type="button"
       aria-label={label}
       onClick={onClick}
-      className="flex size-7 items-center justify-center text-sm text-surface-600 transition-colors hover:bg-surface-100"
+      className="flex size-8 items-center justify-center text-sm text-surface-600 transition-colors hover:bg-surface-100"
     >
       {children}
     </button>

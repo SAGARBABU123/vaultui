@@ -48,7 +48,7 @@ export function InstallmentToggle({
         </div>
 
         {plan && (
-          <ul className="mt-2 space-y-1 text-xs text-surface-500">
+          <ul className="mt-2 space-y-1.5 text-sm text-surface-500">
             <li className="flex items-center gap-1.5">
               <span className="text-success-500">✓</span> Interest-free · total {currency}
               {formatMoney(total)}
@@ -69,7 +69,7 @@ export function InstallmentToggle({
             aria-pressed={(!plan && mode === "once") || (plan && mode === "plan")}
             onClick={() => setPlan(mode === "plan")}
             className={cn(
-              "rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors",
+              "rounded-full px-4 py-2 text-sm font-semibold transition-colors",
               (mode === "once" && !plan) || (mode === "plan" && plan)
                 ? "bg-surface-0 text-surface-900 shadow-soft"
                 : "text-surface-500 hover:text-surface-700",

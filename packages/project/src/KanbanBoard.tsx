@@ -80,7 +80,7 @@ export function KanbanBoard({ columns: initial, onChange, className }: KanbanBoa
                 </div>
                 <span
                   className={cn(
-                    "shrink-0 rounded-full px-1.5 py-0.5 font-mono text-[10px] font-semibold",
+                    "shrink-0 rounded-full px-1.5 py-0.5 font-mono text-xs font-semibold",
                     overWip ? "bg-warning-500/15 text-warning-500" : "bg-surface-200/70 text-surface-500",
                   )}
                   title={`WIP limit ${col.wipLimit}`}
@@ -97,7 +97,7 @@ export function KanbanBoard({ columns: initial, onChange, className }: KanbanBoa
                     {card.tag && (
                       <span
                         className={cn(
-                          "mt-1.5 inline-block rounded-full px-1.5 py-0.5 text-[10px] font-semibold",
+                          "mt-1.5 inline-block rounded-full px-1.5 py-0.5 text-xs font-semibold",
                           card.tagColor === "success" && "bg-success-500/10 text-success-500",
                           card.tagColor === "warning" && "bg-warning-500/10 text-warning-500",
                           card.tagColor === "danger" && "bg-danger-500/10 text-danger-500",
@@ -126,7 +126,7 @@ export function KanbanBoard({ columns: initial, onChange, className }: KanbanBoa
                         type="button"
                         onClick={() => removeCard(col.id, card.id)}
                         aria-label={`Delete ${card.title}`}
-                        className="text-[11px] font-medium text-surface-400 transition-colors hover:text-danger-500"
+                        className="text-xs font-medium text-surface-400 transition-colors hover:text-danger-500"
                       >
                         Remove
                       </button>
@@ -185,7 +185,7 @@ function MoveBtn({
       aria-label={label}
       disabled={disabled}
       onClick={onClick}
-      className="flex size-6 items-center justify-center rounded-md border border-surface-200 bg-surface-50 text-xs text-surface-600 transition-colors hover:bg-surface-100 disabled:opacity-30 disabled:hover:bg-surface-50"
+      className="flex size-7 items-center justify-center rounded-md border border-surface-200 bg-surface-50 text-sm text-surface-600 transition-colors hover:bg-surface-100 disabled:opacity-30 disabled:hover:bg-surface-50"
     >
       {children}
     </button>

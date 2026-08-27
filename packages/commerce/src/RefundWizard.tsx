@@ -67,7 +67,7 @@ export function RefundWizard({
           <div key={s} className="flex flex-1 items-center gap-2">
             <span
               className={cn(
-                "flex size-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold transition-colors",
+                "flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-bold transition-colors",
                 i < step
                   ? "bg-brand-600 text-white"
                   : i === step

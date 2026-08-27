@@ -193,7 +193,7 @@ function Avatar({ error = false }: { error?: boolean }) {
   return (
     <div
       className={cn(
-        "flex size-8 shrink-0 select-none items-center justify-center rounded-full text-xs font-bold text-white shadow-soft",
+        "flex size-9 shrink-0 select-none items-center justify-center rounded-full text-[13px] font-bold text-white shadow-soft",
         error ? "bg-danger-500" : "bg-gradient-to-br from-brand-500 to-brand-700",
       )}
       aria-hidden="true"

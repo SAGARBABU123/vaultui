@@ -123,7 +123,7 @@ export function ApiPlayground({ baseUrl = "https://api.vault.dev", className }: 
       <div className="grid gap-0 lg:grid-cols-2">
         {/* Request */}
         <div className="min-w-0 border-b border-surface-200 p-3 lg:border-b-0 lg:border-r">
-          <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-surface-400">Request</h3>
+          <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-surface-400">Request</h3>
           <div className="space-y-1.5">
             {headers.map((h) => (
               <div key={h.id} className="flex gap-1.5">
@@ -132,21 +132,21 @@ export function ApiPlayground({ baseUrl = "https://api.vault.dev", className }: 
                   onChange={(e) => patchHeader(h.id, "key", e.target.value)}
                   placeholder="Header"
                   aria-label="Header name"
-                  className="h-8 w-2/5 rounded-md border border-surface-200 bg-surface-50 px-2 font-mono text-[11px] outline-none focus:border-brand-400"
+                  className="h-9 w-2/5 rounded-md border border-surface-200 bg-surface-50 px-2 font-mono text-xs outline-none focus:border-brand-400"
                 />
                 <input
                   value={h.value}
                   onChange={(e) => patchHeader(h.id, "value", e.target.value)}
                   placeholder="Value"
                   aria-label="Header value"
-                  className="h-8 w-3/5 rounded-md border border-surface-200 bg-surface-50 px-2 font-mono text-[11px] outline-none focus:border-brand-400"
+                  className="h-9 w-3/5 rounded-md border border-surface-200 bg-surface-50 px-2 font-mono text-xs outline-none focus:border-brand-400"
                 />
               </div>
             ))}
             <button
               type="button"
               onClick={() => setHeaders((hs) => [...hs, { id: Date.now(), key: "", value: "" }])}
-              className="text-[11px] font-medium text-brand-600 hover:text-brand-700"
+              className="text-xs font-medium text-brand-600 hover:text-brand-700"
             >
               + Add header
             </button>
@@ -158,7 +158,7 @@ export function ApiPlayground({ baseUrl = "https://api.vault.dev", className }: 
               rows={5}
               spellCheck={false}
               aria-label="Request body"
-              className="mt-3 w-full resize-y rounded-lg border border-surface-200 bg-surface-50 p-2 font-mono text-[11px] leading-relaxed text-surface-700 outline-none focus:border-brand-400"
+              className="mt-3 w-full resize-y rounded-lg border border-surface-200 bg-surface-50 p-2 font-mono text-xs leading-relaxed text-surface-700 outline-none focus:border-brand-400"
             />
           )}
         </div>
@@ -166,7 +166,7 @@ export function ApiPlayground({ baseUrl = "https://api.vault.dev", className }: 
         {/* Response */}
         <div className="min-w-0 p-3">
           <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-            <h3 className="text-[11px] font-semibold uppercase tracking-wide text-surface-400">Response</h3>
+            <h3 className="text-xs font-semibold uppercase tracking-wide text-surface-400">Response</h3>
             {response && (
               <div className="flex flex-wrap items-center gap-1.5">
                 <Badge variant={response.status < 300 ? "success" : "danger"} size="sm" dot>
@@ -178,7 +178,7 @@ export function ApiPlayground({ baseUrl = "https://api.vault.dev", className }: 
               </div>
             )}
           </div>
-          <div className="rounded-lg bg-surface-950 p-3 font-mono text-[11px] leading-relaxed">
+          <div className="rounded-lg bg-surface-950 p-3 font-mono text-xs leading-relaxed">
             {response ? (
               <>
                 <p className="text-surface-400">

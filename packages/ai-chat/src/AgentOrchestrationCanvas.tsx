@@ -159,9 +159,9 @@ function StepCard({ step }: { step: AgentStep }) {
           {sb.label}
         </Badge>
       </div>
-      {step.detail && <p className="truncate text-[11px] text-surface-500">{step.detail}</p>}
+      {step.detail && <p className="truncate text-xs text-surface-500">{step.detail}</p>}
       {step.durationMs !== undefined && (
-        <span className="text-[10px] font-mono text-surface-400">{step.durationMs}ms</span>
+        <span className="text-xs font-mono text-surface-400">{step.durationMs}ms</span>
       )}
     </div>
   );

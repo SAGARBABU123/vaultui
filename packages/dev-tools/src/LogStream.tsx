@@ -60,7 +60,7 @@ export function LogStream({ entries, heightClass = "h-72 sm:h-80", className }: 
               type="button"
               onClick={() => setFilter(lv)}
               className={cn(
-                "rounded-md px-2 py-1 text-[11px] font-semibold transition-colors",
+                "rounded-md px-2 py-1 text-xs font-semibold transition-colors",
                 filter === lv
                   ? "bg-surface-700 text-surface-100"
                   : "text-surface-400 hover:text-surface-200",
@@ -75,7 +75,7 @@ export function LogStream({ entries, heightClass = "h-72 sm:h-80", className }: 
           onClick={() => setFollow((f) => !f)}
           aria-pressed={follow}
           className={cn(
-            "flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] font-semibold transition-colors",
+            "flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-semibold transition-colors",
             follow ? "bg-brand-600 text-white" : "text-surface-400 hover:text-surface-200",
           )}
         >
@@ -95,7 +95,7 @@ export function LogStream({ entries, heightClass = "h-72 sm:h-80", className }: 
         }}
         role="log"
         aria-live="polite"
-        className={cn("overflow-y-auto px-3 py-2 font-mono text-[11px] leading-5 sm:text-xs", heightClass)}
+        className={cn("overflow-y-auto px-3 py-2 font-mono text-xs leading-5 sm:text-xs", heightClass)}
       >
         {shown.length === 0 && (
           <p className="py-6 text-center text-surface-600">No {filter} entries.</p>
@@ -103,7 +103,7 @@ export function LogStream({ entries, heightClass = "h-72 sm:h-80", className }: 
         {shown.map((e) => {
           const meta = levelMeta[e.level];
           return (
-            <div key={e.id} className="flex items-start gap-2 py-0.5">
+            <div key={e.id} className="flex items-start gap-2 py-1">
               <span className="select-none text-surface-600">{e.timestamp}</span>
               <span className={cn("w-12 shrink-0 select-none font-bold", meta.text)}>{meta.label}</span>
               <span className="min-w-0 flex-1 text-surface-200">{e.message}</span>

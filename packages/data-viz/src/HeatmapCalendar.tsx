@@ -43,7 +43,7 @@ export function HeatmapCalendar({
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
       {monthEvery > 0 && (
-        <div className="flex gap-1 text-[10px] font-medium text-surface-400">
+        <div className="flex gap-1 text-xs font-medium text-surface-400">
           {Array.from({ length: Math.ceil(weeks / monthEvery) }).map((_, m) => (
             <span key={m} style={{ width: `${monthEvery * (100 / weeks)}%` }}>
               {"JanFebMarAprMayJunJulAugSepOctNovDec".slice(m * 3, m * 3 + 3)}
@@ -56,16 +56,16 @@ export function HeatmapCalendar({
         {Array.from({ length: cells }).map((_, i) => (
           <span
             key={i}
-            className={cn("aspect-square w-full rounded-[3px] sm:rounded", LEVEL_CLASSES[levelFor(i)])}
+            className={cn("aspect-square w-full rounded-[4px] sm:rounded", LEVEL_CLASSES[levelFor(i)])}
             title={`${values[i] ?? 0} activity`}
           />
         ))}
       </div>
 
-      <div className="flex items-center justify-end gap-1 text-[10px] text-surface-400">
+      <div className="flex items-center justify-end gap-1 text-xs text-surface-400">
         Less
         {LEVEL_CLASSES.map((c, i) => (
-          <span key={c} className={cn("size-2.5 rounded-[2px]", c)} />
+          <span key={c} className={cn("size-3 rounded-[3px]", c)} />
         ))}
         More
       </div>

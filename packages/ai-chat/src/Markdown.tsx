@@ -28,14 +28,14 @@ function CodeBlock({ language, code }: { language?: string; code: string }) {
   return (
     <div className="my-2 overflow-hidden rounded-xl border border-surface-800 bg-surface-950 shadow-soft">
       <div className="flex items-center justify-between gap-2 border-b border-surface-800 bg-surface-900 px-3 py-1.5">
-        <span className="text-[11px] font-medium uppercase tracking-wide text-surface-400">
+        <span className="text-xs font-medium uppercase tracking-wide text-surface-400">
           {language ?? "code"}
         </span>
         <button
           type="button"
           onClick={copy}
           className={cn(
-            "inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] font-medium transition-colors",
+            "inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium transition-colors",
             copied
               ? "bg-success-500/20 text-success-400"
               : "text-surface-400 hover:bg-surface-800 hover:text-surface-200",

@@ -38,10 +38,10 @@ export function GanttChart({ tasks, weeks = 16, className }: GanttChartProps) {
       <div className="min-w-[720px]">
         {/* Axis */}
         <div
-          className="grid grid-cols-[180px_repeat(16,minmax(0,1fr))] border-b border-surface-200 bg-surface-50 text-[10px] font-medium text-surface-400"
+          className="grid grid-cols-[180px_repeat(16,minmax(0,1fr))] border-b border-surface-200 bg-surface-50 text-xs font-medium text-surface-400"
           style={{ gridTemplateColumns: `180px repeat(${weeks}, minmax(0,1fr))` }}
         >
-          <div className="px-4 py-2 text-[11px] font-semibold uppercase tracking-wide">Task</div>
+          <div className="px-4 py-2 text-xs font-semibold uppercase tracking-wide">Task</div>
           {axis.map((label, i) => (
             <div key={i} className="border-l border-surface-100 px-1 py-2 text-center">
               {label}
@@ -60,13 +60,13 @@ export function GanttChart({ tasks, weeks = 16, className }: GanttChartProps) {
               className="grid border-b border-surface-100 last:border-b-0"
               style={{ gridTemplateColumns: `180px repeat(${weeks}, minmax(0,1fr))`, gridTemplateRows: "auto" }}
             >
-              <div className="truncate px-4 py-2.5 text-[12px] font-medium text-surface-700">{task.name}</div>
-              <div className="relative col-span-16 h-8">
+              <div className="truncate px-4 py-2.5 text-[13px] font-medium text-surface-700">{task.name}</div>
+              <div className="relative col-span-16 h-9">
                 {axis.map((_, i) => (
                   <div key={i} className="absolute inset-y-0 w-[6.25%] border-l border-surface-50 first:border-l-0" style={{ left: `${i * 6.25}%` }} />
                 ))}
                 <div
-                  className={cn("absolute top-1/2 z-10 flex h-3.5 -translate-y-1/2 items-center overflow-hidden rounded-full shadow-soft", barColor)}
+                  className={cn("absolute top-1/2 z-10 flex h-4 -translate-y-1/2 items-center overflow-hidden rounded-full shadow-soft", barColor)}
                   style={{ left: `${startPct}%`, width: `${Math.min(widthPct, 100 - startPct)}%` }}
                 >
                   <span
@@ -76,7 +76,7 @@ export function GanttChart({ tasks, weeks = 16, className }: GanttChartProps) {
                 </div>
                 {task.end <= weeks && (
                   <span
-                    className="absolute top-1/2 z-20 -translate-x-1/2 -translate-y-1/2 text-[9px] text-surface-400"
+                    className="absolute top-1/2 z-20 -translate-x-1/2 -translate-y-1/2 text-xs text-surface-400"
                     style={{ left: `${startPct + widthPct}%` }}
                   >
                     ◈

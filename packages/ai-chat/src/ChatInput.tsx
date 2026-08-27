@@ -92,7 +92,7 @@ export function ChatInput({
       />
 
       <div className="mt-1 flex items-center justify-between gap-2 px-1">
-        <div className="flex items-center gap-3 text-[11px] text-surface-400">
+        <div className="flex items-center gap-3 text-xs text-surface-400">
           {showTokenCount && (
             <span aria-label={`about ${Math.ceil(value.length / 4)} tokens`}>
               ≈{Math.ceil(value.length / 4)} tok
@@ -109,7 +109,7 @@ export function ChatInput({
           disabled={!canSend}
           aria-label="Send message"
           className={cn(
-            "inline-flex size-8 items-center justify-center rounded-lg transition-colors",
+            "inline-flex size-9 items-center justify-center rounded-lg transition-colors",
             canSend
               ? "bg-brand-600 text-white shadow-soft hover:bg-brand-500"
               : "bg-surface-100 text-surface-400",

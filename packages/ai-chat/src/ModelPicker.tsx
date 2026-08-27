@@ -42,7 +42,7 @@ export function ModelPicker({ models, value, onChange, className }: ModelPickerP
       </select>
       <ChevronIcon className="pointer-events-none absolute right-2 size-3.5 text-surface-400" />
       {current?.badge && (
-        <span className="hidden rounded-full bg-brand-100 px-2 py-0.5 text-[11px] font-medium text-brand-700 sm:inline-block">
+        <span className="hidden rounded-full bg-brand-100 px-2 py-0.5 text-xs font-medium text-brand-700 sm:inline-block">
           {current.badge}
         </span>
       )}

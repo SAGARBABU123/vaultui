@@ -73,11 +73,11 @@ export function MemoryTimeline({
                   {entry.title}
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <span className="rounded-full bg-surface-100 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-surface-500">
+                  <span className="rounded-full bg-surface-100 px-1.5 py-0.5 text-xs font-medium uppercase tracking-wide text-surface-500">
                     {meta.label}
                   </span>
                   {entry.timestamp && (
-                    <span className="text-[10px] text-surface-400">{entry.timestamp}</span>
+                    <span className="text-xs text-surface-400">{entry.timestamp}</span>
                   )}
                 </span>
               </div>
@@ -94,7 +94,7 @@ export function MemoryTimeline({
                       style={{ width: `${Math.round(entry.confidence * 100)}%` }}
                     />
                   </span>
-                  <span className="text-[10px] font-medium text-surface-400">
+                  <span className="text-xs font-medium text-surface-400">
                     {Math.round(entry.confidence * 100)}%
                   </span>
                 </div>

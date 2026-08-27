@@ -184,7 +184,7 @@ function Header({
           </span>
           <span>
             Vault&nbsp;UI
-            <span className="ml-2 hidden rounded-full bg-brand-100 px-2 py-0.5 text-[11px] font-medium text-brand-700 sm:inline-block">
+            <span className="ml-2 hidden rounded-full bg-brand-100 px-2 py-0.5 text-xs font-medium text-brand-700 sm:inline-block">
               v0.0.1
             </span>
           </span>
@@ -595,7 +595,7 @@ function KitsShowcase() {
                 <Badge variant={kit.status === "live" ? "success" : "info"} size="sm" dot>
                   {kit.status === "live" ? "Live" : "Coming"}
                 </Badge>
-                <span className="text-[11px] text-surface-400">{kit.phase}</span>
+                <span className="text-xs text-surface-400">{kit.phase}</span>
               </div>
               {kit.status === "live" ? (
                 <Button
@@ -824,11 +824,11 @@ function AiKitDemo() {
                   ["TypingIndicator", "'thinking' dots, aria-announced"],
                 ].map(([name, desc]) => (
                   <li key={name} className="flex items-start gap-2">
-                    <span className="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded bg-brand-100 text-[10px] font-bold text-brand-700">
+                    <span className="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded bg-brand-100 text-xs font-bold text-brand-700">
                       ✓
                     </span>
                     <span className="text-sm text-surface-600">
-                      <code className="font-mono text-[12px] font-semibold text-surface-800">{name}</code>
+                      <code className="font-mono text-[13px] font-semibold text-surface-800">{name}</code>
                       <span className="text-surface-400"> — {desc}</span>
                     </span>
                   </li>
@@ -1109,7 +1109,7 @@ function ComponentsRegistry() {
                   <li key={c.name}>
                     <a
                       href={c.href}
-                      className="inline-flex items-center rounded-lg border border-surface-200 bg-surface-50 px-2 py-1 font-mono text-[11px] text-surface-600 transition-colors hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700"
+                      className="inline-flex items-center rounded-lg border border-surface-200 bg-surface-50 px-2 py-1 font-mono text-xs text-surface-600 transition-colors hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700"
                     >
                       {c.name}
                     </a>

@@ -88,12 +88,12 @@ export function FeatureFlagBoard({ flags: initial, onChange, className }: Featur
                       }
                       label={`${env} ${f.environments[env] ? "on" : "off"}`}
                     />
-                    <span className="text-[11px] font-medium text-surface-500">{env}</span>
+                    <span className="text-xs font-medium text-surface-500">{env}</span>
                   </label>
                 ))}
                 <span
                   className={cn(
-                    "hidden rounded-full px-2 py-0.5 text-[10px] font-semibold xl:inline-block",
+                    "hidden rounded-full px-2 py-0.5 text-xs font-semibold xl:inline-block",
                     es.variant === "success" && "bg-success-500/10 text-success-500",
                     es.variant === "warning" && "bg-warning-500/10 text-warning-500",
                     es.variant === "neutral" && "bg-surface-100 text-surface-500",
@@ -119,14 +119,14 @@ function Switch({ on, onToggle, label }: { on: boolean; onToggle: () => void; la
       aria-label={label}
       onClick={onToggle}
       className={cn(
-        "relative h-4 w-7 shrink-0 rounded-full transition-colors",
+        "relative h-5 w-9 shrink-0 rounded-full transition-colors",
         on ? "bg-brand-600" : "bg-surface-300",
       )}
     >
       <span
         className={cn(
-          "absolute top-0.5 size-3 rounded-full bg-white shadow-soft transition-transform",
-          on ? "translate-x-3.5" : "translate-x-0.5",
+          "absolute top-0.5 size-4 rounded-full bg-white shadow-soft transition-transform",
+          on ? "translate-x-[18px]" : "translate-x-0.5",
         )}
       />
     </button>

@@ -28,7 +28,7 @@ export function TypingIndicator({
       {Array.from({ length: dots }).map((_, i) => (
         <span
           key={i}
-          className="size-1.5 rounded-full bg-surface-400 animate-bounce-dot"
+          className="size-2 rounded-full bg-surface-400 animate-bounce-dot"
           style={{ animationDelay: `${i * 0.15}s` }}
         />
       ))}

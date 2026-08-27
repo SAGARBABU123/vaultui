@@ -34,7 +34,7 @@ export function SourceCitation({
     >
       <span
         className={cn(
-          "flex size-4 shrink-0 items-center justify-center rounded-full text-[10px] font-bold",
+          "flex size-5 shrink-0 items-center justify-center rounded-full text-[12px] font-bold",
           active ? "bg-white/20" : "bg-surface-100 text-surface-500 group-hover:bg-brand-100 group-hover:text-brand-700",
         )}
       >
