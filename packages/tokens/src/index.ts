@@ -1,0 +1,1 @@
+export const VAULT_THEME = "vault" as const;

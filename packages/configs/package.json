@@ -1,0 +1,7 @@
+{
+  "name": "@vault/configs",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Shared TypeScript / tooling configs for the Vault UI monorepo",
+  "files": ["tsconfig.base.json"]
+}

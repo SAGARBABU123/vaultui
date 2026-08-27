@@ -1,0 +1,25 @@
+{
+  "name": "vault-ui",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Vault UI — premium React + Tailwind component marketplace (monorepo)",
+  "packageManager": "pnpm@11.5.2",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "typecheck": "turbo run typecheck",
+    "storybook": "pnpm --filter @vault/showroom storybook",
+    "clean": "turbo run clean && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "turbo": "^2.5.0",
+    "typescript": "^5.7.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "@parcel/watcher",
+      "sharp"
+    ]
+  }
+}
