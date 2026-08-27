@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Badge, Button } from "@vaultui/ui";
 import { cn } from "@vaultui/utils";
+import { LandingPage } from "./landing/LandingPage";
+import { ThemeDropdown } from "./components/ThemeDropdown";
 import { COMPONENT_GROUPS } from "./docs/registry";
 import { EXTRA_GROUPS } from "./docs/registry-extra";
 import { Sidebar } from "./docs/Sidebar";
@@ -22,9 +24,22 @@ const ALL_COMPONENTS = ALL_GROUPS.flatMap((g) => g.items);
 const TOTAL = ALL_COMPONENTS.length - 1; // minus overview
 
 export default function App() {
+  const [view, setView] = useState<"landing" | "docs">("landing");
   const [activeId, setActiveId] = useState(ALL_COMPONENTS[0]!.id);
   const [search, setSearch] = useState("");
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  if (view === "landing") {
+    return (
+      <LandingPage
+        onBrowse={() => {
+          setView("docs");
+          setActiveId(ALL_COMPONENTS[0]!.id);
+          window.scrollTo({ top: 0 });
+        }}
+      />
+    );
+  }
 
   const activeIndex = ALL_COMPONENTS.findIndex((e) => e.id === activeId);
   const active = ALL_COMPONENTS[activeIndex] ?? ALL_COMPONENTS[0]!;
@@ -38,11 +53,15 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-surface-50 text-surface-900">
+    <div className="min-h-screen text-surface-900">
       <Header
         total={TOTAL}
         onOpenDrawer={() => setDrawerOpen(true)}
-        onHome={() => navigate("overview")}
+        onLogo={() => {
+          setView("landing");
+          window.scrollTo({ top: 0 });
+        }}
+        onGetStarted={() => navigate("overview")}
       />
 
       <div className="mx-auto flex max-w-[1400px]">
@@ -119,17 +138,19 @@ const REPO_URL = "https://github.com/SAGARBABU123/vaultui";
 function Header({
   total,
   onOpenDrawer,
-  onHome,
+  onLogo,
+  onGetStarted,
 }: {
   total: number;
   onOpenDrawer: () => void;
-  onHome: () => void;
+  onLogo: () => void;
+  onGetStarted: () => void;
 }) {
   const { version, downloads } = useNpmMeta();
   return (
     <header className="sticky top-0 z-30 border-b border-surface-200 bg-surface-0/80 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
-        <button type="button" onClick={onHome} className="flex items-center gap-2 text-left font-semibold">
+        <button type="button" onClick={onLogo} className="flex items-center gap-2 text-left font-semibold" title="Back to the landing page">
           <span className="flex size-7 items-center justify-center rounded-lg bg-brand-600 text-sm text-white">
             V
           </span>
@@ -147,6 +168,7 @@ function Header({
         </Badge>
 
         <div className="flex items-center gap-2">
+          <ThemeDropdown />
           <Button
             variant="secondary"
             size="sm"
@@ -156,7 +178,7 @@ function Header({
           >
             GitHub
           </Button>
-          <Button size="sm" className="hidden sm:inline-flex" onClick={onHome}>
+          <Button size="sm" className="hidden sm:inline-flex" onClick={onGetStarted}>
             Get started
           </Button>
           {/* Mobile sidebar trigger */}

@@ -1,6 +1,6 @@
 import { Badge, Button } from "@vaultui/ui";
 import { cn } from "@vaultui/utils";
-import { Check, Copy, Download, Package, Terminal } from "lucide-react";
+import { Check, Copy, Download, Grab, Package, Terminal } from "lucide-react";
 import { useState } from "react";
 import { INSTALL_COMMAND, downloadKit } from "./downloadKit";
 import type { ComponentEntry } from "./types";
@@ -46,6 +46,15 @@ export function ComponentShell({ entry, prev, next, onNavigate }: ComponentShell
 
       {entry.id !== "overview" && (
         <>
+          {/* React grab — select + comment + copy (first thing you see) */}
+          <section className="mt-6">
+            <SectionLabel>React grab</SectionLabel>
+            <p className="mb-3 text-sm leading-relaxed text-surface-500">
+              Grab this component — type a comment and it gets dropped into the copied snippet.
+            </p>
+            <ReactGrab entry={entry} />
+          </section>
+
           {/* Usage */}
           <section className="mt-8">
             <SectionLabel>Usage</SectionLabel>
@@ -229,6 +238,90 @@ function OverviewHero() {
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-surface-400">{children}</h2>;
+}
+
+/**
+ * React grab — type a comment, copy the component's React snippet with the
+ * comment prepended (each line becomes a `// comment`).
+ */
+function ReactGrab({ entry }: { entry: ComponentEntry }) {
+  const [comment, setComment] = useState("");
+  const [copied, setCopied] = useState(false);
+
+  const entered = comment.trim();
+  const commentBlock = (entered ? entered.split("\n") : ["your comment"])
+    .map((line) => `// ${line}`)
+    .join("\n");
+  const importLine = `import ${entry.importName} from "${entry.package}";`;
+  const snippet = `${commentBlock}\n${importLine}\n\n${entry.usage}`;
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(snippet);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1500);
+    } catch {
+      /* ignore */
+    }
+  };
+
+  return (
+    <div className="overflow-hidden rounded-2xl border border-surface-800 bg-surface-950 shadow-soft">
+      <div className="flex items-center justify-between gap-2 border-b border-surface-800 bg-surface-900 px-3 py-2">
+        <span className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-surface-400">
+          <Grab className="size-4" strokeWidth={2} />
+          {entry.name} · react grab
+        </span>
+        <button
+          type="button"
+          onClick={copy}
+          aria-label={copied ? "Copied to clipboard" : "Copy snippet to clipboard"}
+          className={cn(
+            "inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium transition-colors",
+            copied
+              ? "bg-success-500/20 text-success-400"
+              : "text-surface-400 hover:bg-surface-800 hover:text-surface-200",
+          )}
+        >
+          {copied ? (
+            <>
+              <Check className="size-3.5" strokeWidth={2.5} /> Copied
+            </>
+          ) : (
+            <>
+              <Copy className="size-3.5" strokeWidth={2.5} /> Copy
+            </>
+          )}
+        </button>
+      </div>
+
+      {/* Comment line — editable, becomes the top of the snippet */}
+      <div className="border-b border-surface-800">
+        <textarea
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          rows={entered ? Math.min(entered.split("\n").length, 4) + 1 : 1}
+          placeholder="// your comment — it lands on top of the snippet"
+          spellCheck={false}
+          className="w-full resize-none bg-transparent px-4 py-2.5 font-mono text-[13px] leading-relaxed text-surface-200 placeholder:text-surface-600 focus:outline-none"
+        />
+      </div>
+
+      {/* Live preview with the comment attached */}
+      <pre className="max-h-80 overflow-auto p-4 font-mono text-[13px] leading-relaxed text-surface-200">
+        <code>
+          {commentBlock.split("\n").map((line, i) => (
+            <span key={i} className="block italic text-surface-500">
+              {line}
+            </span>
+          ))}
+          <span className="block text-brand-300">{importLine}</span>
+          <span className="block">&nbsp;</span>
+          {entry.usage}
+        </code>
+      </pre>
+    </div>
+  );
 }
 
 function CodeBlock({ title, code }: { title: string; code: string }) {

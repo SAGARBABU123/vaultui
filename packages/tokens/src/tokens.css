@@ -127,3 +127,119 @@
     color: var(--color-brand-900);
   }
 }
+
+/* ==========================================================================
+ * THEME SWITCHER
+ * --------------------------------------------------------------------------
+ * The app sets `data-theme` on <html>. The default theme (Neumorphic) is the
+ * @theme block above (its variables live on :root). Each additional theme is
+ * ONE override block below — utilities (bg-surface-50, shadow-soft, …) read
+ * var(--color-*) / var(--shadow-*) at runtime, so overriding the custom
+ * properties re-skins every component and the landing page, no rebuild.
+ *
+ * html[data-theme="…"] has higher specificity than :root, so overrides win.
+ * Add your next theme here, e.g.:
+ *
+ *   html[data-theme="neon"] {
+ *     --color-brand-50: …; …; --color-brand-950: …;
+ *     --color-surface-0: …; …;
+ *     --color-success-500: …; --color-warning-500: …;
+ *     --color-danger-500: …; --color-info-500: …;
+ *     --shadow-soft: …; --shadow-raised: …; --shadow-popover: …;
+ *     --shadow-inset: …; --shadow-pressed: …;
+ *   }
+ *
+ * Also register the theme in src/themes.ts so the dropdown lists it.
+ * ======================================================================== */
+
+/* --------------------------------------------------------------------------
+ * SHADOW RE-BIND (required)
+ * Tailwind v4 inlines shadow *values* into utilities at build time — only
+ * colors are var()-driven. To make elevation themeable we point each shadow
+ * utility at its --shadow-* token on the element itself. This global block
+ * applies to every theme (data-theme is always set), so new themes only need
+ * to define their --shadow-* values in their block below.
+ * ------------------------------------------------------------------------ */
+html[data-theme] :is(.shadow-soft, .hover\:shadow-soft:hover) {
+  --tw-shadow: var(--shadow-soft);
+}
+html[data-theme] :is(.shadow-raised, .hover\:shadow-raised:hover) {
+  --tw-shadow: var(--shadow-raised);
+}
+html[data-theme] :is(.shadow-popover) {
+  --tw-shadow: var(--shadow-popover);
+}
+html[data-theme] :is(.shadow-inset, .active\:shadow-inset:active) {
+  --tw-shadow: var(--shadow-inset);
+}
+html[data-theme] :is(.shadow-pressed, .active\:shadow-pressed:active) {
+  --tw-shadow: var(--shadow-pressed);
+}
+
+/* --------------------------------------------------------------------------
+ * GLASSMORPHISM — uistyleguide.com spec: frosted glass, backdrop blur,
+ * 1px rgba(white .2) borders, vibrant blue/purple on deep indigo, secondary
+ * pink + teal. Panels are translucent white; the page paints a vivid,
+ * fixed gradient that the glass blurs behind it.
+ * ------------------------------------------------------------------------ */
+html[data-theme="glassmorphism"] {
+  /* Brand: from spec primary #0080FF */
+  --color-brand-50: #e7f3ff;
+  --color-brand-100: #cfe9ff;
+  --color-brand-200: #9fd3ff;
+  --color-brand-300: #6ebdff;
+  --color-brand-400: #35a2ff;
+  --color-brand-500: #0080ff;
+  --color-brand-600: #0068d6;
+  --color-brand-700: #0052ad;
+  --color-brand-800: #003f85;
+  --color-brand-900: #002c5e;
+  --color-brand-950: #001b3a;
+
+  /* Surfaces: frosted glass panels over the gradient. Low-mid steps double
+     as light text (borders and labels share the same token). */
+  --color-surface-0: rgba(255, 255, 255, 0.12);
+  --color-surface-50: rgba(255, 255, 255, 0.07);
+  --color-surface-100: rgba(255, 255, 255, 0.16);
+  --color-surface-200: rgba(255, 255, 255, 0.55);
+  --color-surface-300: rgba(255, 255, 255, 0.7);
+  --color-surface-400: rgba(228, 233, 255, 0.62);
+  --color-surface-500: rgba(228, 233, 255, 0.72);
+  --color-surface-600: rgba(235, 240, 255, 0.82);
+  --color-surface-700: rgba(240, 244, 255, 0.9);
+  --color-surface-800: rgba(245, 248, 255, 0.94);
+  --color-surface-900: #f7f9ff;
+  --color-surface-950: rgba(13, 10, 36, 0.62);
+
+  /* Semantic: spec secondary colors */
+  --color-success-500: #20b2aa;
+  --color-warning-500: #ffb31a;
+  --color-danger-500: #ff1493;
+  --color-info-500: #8b00ff;
+
+  /* Elevation: soft drop glows (no more dual neumorphic shadows) */
+  --shadow-soft: 0 8px 28px rgb(10 7 34 / 0.32);
+  --shadow-raised: 0 16px 44px rgb(10 7 34 / 0.42);
+  --shadow-popover: 0 24px 64px rgb(10 7 34 / 0.5);
+  --shadow-inset: inset 0 1px 1px rgb(255 255 255 / 0.2);
+  --shadow-pressed: 0 4px 14px rgb(10 7 34 / 0.35), inset 0 1px 0 rgb(255 255 255 / 0.18);
+}
+
+/* Vivid fixed backdrop — this is what the frosted panels blur. */
+html[data-theme="glassmorphism"] body {
+  background-color: #100d2b;
+  background-image:
+    radial-gradient(at 18% 8%, rgb(139 0 255 / 0.3), transparent 46%),
+    radial-gradient(at 86% 12%, rgb(0 128 255 / 0.26), transparent 46%),
+    radial-gradient(at 62% 88%, rgb(255 20 147 / 0.14), transparent 50%),
+    radial-gradient(at 8% 78%, rgb(32 178 170 / 0.12), transparent 42%),
+    linear-gradient(180deg, #161238, #0c0a24);
+  background-attachment: fixed;
+}
+
+/* Frost any surface-toned panel so it reads as real glass. */
+html[data-theme="glassmorphism"]
+  :where(.bg-surface-0, .bg-surface-50, .bg-surface-100, .bg-surface-950) {
+  backdrop-filter: blur(16px) saturate(1.3);
+  -webkit-backdrop-filter: blur(16px) saturate(1.3);
+}
