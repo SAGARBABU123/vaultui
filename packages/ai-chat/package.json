@@ -1,5 +1,5 @@
 {
-  "name": "@vault/ai-chat",
+  "name": "@gudipudimani/ai-chat",
   "version": "0.1.0",
   "description": "AI Agent Kit — ChatCanvas, TokenStreamer, ToolCallInspector, ModelPicker, PromptPlayground + more",
   "license": "SEE LICENSE IN ../COMMERCIAL-LICENSE.md",
@@ -29,9 +29,9 @@
     "lint": "eslint src"
   },
   "dependencies": {
-    "@vault/tokens": "workspace:*",
-    "@vault/ui": "workspace:*",
-    "@vault/utils": "workspace:*",
+    "@gudipudimani/tokens": "workspace:*",
+    "@gudipudimani/ui": "workspace:*",
+    "@gudipudimani/utils": "workspace:*",
     "lucide-react": "^1.34.0",
     "react-markdown": "^9.0.1",
     "remark-gfm": "^4.0.0"
@@ -43,7 +43,7 @@
   "devDependencies": {
     "@types/react": "^18.3.0",
     "@types/react-dom": "^18.3.0",
-    "@vault/configs": "workspace:*",
+    "@gudipudimani/configs": "workspace:*",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "typescript": "^5.7.0"
@@ -63,9 +63,9 @@
       "react",
       "react-dom",
       "react/jsx-runtime",
-      "@vault/tokens",
-      "@vault/ui",
-      "@vault/utils",
+      "@gudipudimani/tokens",
+      "@gudipudimani/ui",
+      "@gudipudimani/utils",
       "lucide-react",
       "react-markdown",
       "remark-gfm"

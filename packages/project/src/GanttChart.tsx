@@ -1,4 +1,4 @@
-import { cn } from "@vault/utils";
+import { cn } from "@gudipudimani/utils";
 
 export interface GanttTask {
   id: string;

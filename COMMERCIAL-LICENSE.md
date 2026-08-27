@@ -1,9 +1,9 @@
 # Vault UI — Commercial License
 
 This license applies to the **paid kits** in this repository
-(`@vault/ai-chat`, `@vault/data-viz`, `@vault/commerce`, `@vault/dev-tools`, `@vault/project`)
+(`@gudipudimani/ai-chat`, `@gudipudimani/data-viz`, `@gudipudimani/commerce`, `@gudipudimani/dev-tools`, `@gudipudimani/project`)
 and their source code, minus the free-tier packages
-(`@vault/tokens`, `@vault/utils`, `@vault/ui`), which are MIT.
+(`@gudipudimani/tokens`, `@gudipudimani/utils`, `@gudipudimani/ui`), which are MIT.
 
 ## Grant
 

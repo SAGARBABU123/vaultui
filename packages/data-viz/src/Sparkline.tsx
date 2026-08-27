@@ -1,4 +1,4 @@
-import { cn } from "@vault/utils";
+import { cn } from "@gudipudimani/utils";
 import { useId } from "react";
 
 export interface SparklineProps {

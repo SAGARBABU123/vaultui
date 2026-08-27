@@ -1,5 +1,5 @@
-import { Badge, Button } from "@vault/ui";
-import { cn } from "@vault/utils";
+import { Badge, Button } from "@gudipudimani/ui";
+import { cn } from "@gudipudimani/utils";
 
 export interface PricingPlan {
   id: string;

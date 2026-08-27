@@ -1,5 +1,5 @@
-import { Badge } from "@vault/ui";
-import { cn } from "@vault/utils";
+import { Badge } from "@gudipudimani/ui";
+import { cn } from "@gudipudimani/utils";
 import { Check, Copy, Download, Package, Terminal } from "lucide-react";
 import { useState } from "react";
 import { INSTALL_COMMAND, downloadKit } from "./downloadKit";

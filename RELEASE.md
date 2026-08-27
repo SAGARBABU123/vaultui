@@ -6,14 +6,14 @@ How to ship Vault UI packages to npm.
 
 | Package | License | Tier |
 | --- | --- | --- |
-| `@vault/tokens` | MIT | Free — theme engine |
-| `@vault/utils` | MIT | Free — `cn()` helper |
-| `@vault/ui` | MIT | Free — Button, Badge, Card |
-| `@vault/ai-chat` | Commercial | Paid kit |
-| `@vault/data-viz` | Commercial | Paid kit |
-| `@vault/commerce` | Commercial | Paid kit |
-| `@vault/dev-tools` | Commercial | Paid kit |
-| `@vault/project` | Commercial | Paid kit |
+| `@gudipudimani/tokens` | MIT | Free — theme engine |
+| `@gudipudimani/utils` | MIT | Free — `cn()` helper |
+| `@gudipudimani/ui` | MIT | Free — Button, Badge, Card |
+| `@gudipudimani/ai-chat` | Commercial | Paid kit |
+| `@gudipudimani/data-viz` | Commercial | Paid kit |
+| `@gudipudimani/commerce` | Commercial | Paid kit |
+| `@gudipudimani/dev-tools` | Commercial | Paid kit |
+| `@gudipudimani/project` | Commercial | Paid kit |
 
 ## How publishing works
 
@@ -33,33 +33,33 @@ pnpm login --scope @vault
 ### Publish the free tier first (order matters)
 
 ```bash
-pnpm --filter @vault/tokens publish
-pnpm --filter @vault/utils publish
-pnpm --filter @vault/ui publish
+pnpm --filter @gudipudimani/tokens publish
+pnpm --filter @gudipudimani/utils publish
+pnpm --filter @gudipudimani/ui publish
 ```
 
 ### Preview a paid kit (dry run)
 
 ```bash
-pnpm --filter @vault/ai-chat pack --dry-run   # inspect tarball contents
+pnpm --filter @gudipudimani/ai-chat pack --dry-run   # inspect tarball contents
 ```
 
 ### Publish a paid kit
 
 ```bash
-pnpm --filter @vault/ai-chat publish --access public
+pnpm --filter @gudipudimani/ai-chat publish --access public
 # then the rest:
-pnpm --filter @vault/data-viz publish
-pnpm --filter @vault/commerce publish
-pnpm --filter @vault/dev-tools publish
-pnpm --filter @vault/project publish
+pnpm --filter @gudipudimani/data-viz publish
+pnpm --filter @gudipudimani/commerce publish
+pnpm --filter @gudipudimani/dev-tools publish
+pnpm --filter @gudipudimani/project publish
 ```
 
 ## Version workflow
 
 ```bash
-pnpm --filter @vault/ui version 0.2.0    # then commit + tag
-pnpm --filter @vault/web run build       # sanity check consumers
+pnpm --filter @gudipudimani/ui version 0.2.0    # then commit + tag
+pnpm --filter @gudipudimani/web run build       # sanity check consumers
 ```
 
 ## Monetization checklist (before real sales)
@@ -77,7 +77,7 @@ pnpm --filter @vault/web run build       # sanity check consumers
 
 ```bash
 # in a fresh project:
-npm i @vault/tokens @vault/ui
-echo '@import "@vault/tokens/tokens.css";' > src/index.css
+npm i @gudipudimani/tokens @gudipudimani/ui
+echo '@import "@gudipudimani/tokens/tokens.css";' > src/index.css
 # render <Button> in React — themed by tokens
 ```

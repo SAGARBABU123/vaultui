@@ -4,18 +4,18 @@ import { EXTRA_GROUPS } from "./registry-extra";
 import type { ComponentEntry } from "./types";
 
 /** The live theme source, exported raw so the zip ships the real tokens. */
-import tokensCss from "@vault/tokens/tokens.css?raw";
+import tokensCss from "@gudipudimani/tokens/tokens.css?raw";
 
 const KIT_PACKAGES = [
-  "@vault/tokens",
-  "@vault/utils",
-  "@vault/ui",
-  "@vault/ai-chat",
-  "@vault/data-viz",
-  "@vault/commerce",
-  "@vault/dev-tools",
-  "@vault/project",
-  "@vault/collab",
+  "@gudipudimani/tokens",
+  "@gudipudimani/utils",
+  "@gudipudimani/ui",
+  "@gudipudimani/ai-chat",
+  "@gudipudimani/data-viz",
+  "@gudipudimani/commerce",
+  "@gudipudimani/dev-tools",
+  "@gudipudimani/project",
+  "@gudipudimani/collab",
 ];
 
 const TIERS: Record<string, string> = {
@@ -48,10 +48,10 @@ function buildReadme(entries: ComponentEntry[]): string {
     "The full soft-UI theme lives in `tokens/theme.css` (design tokens for",
     "Tailwind v4: palette, radii, neumorphic shadows, motion, Inter Variable).",
     "",
-    "For npm consumers: `pnpm add @vault/tokens` then import in your CSS entry:",
+    "For npm consumers: `pnpm add @gudipudimani/tokens` then import in your CSS entry:",
     "",
     "```css",
-    "@import \"@vault/tokens/tokens.css\";",
+    "@import \"@gudipudimani/tokens/tokens.css\";",
     "```",
     "",
     "## 2 · Install all packages",
@@ -60,7 +60,7 @@ function buildReadme(entries: ComponentEntry[]): string {
     INSTALL_COMMAND,
     "```",
     "",
-    "Note: `@vault/tokens`, `@vault/utils`, `@vault/ui` are MIT; the kits are",
+    "Note: `@gudipudimani/tokens`, `@gudipudimani/utils`, `@gudipudimani/ui` are MIT; the kits are",
     "paid components (see COMMERCIAL-LICENSE.md in the repo).",
     "",
     "## 3 · Components",
@@ -98,13 +98,13 @@ function buildReadme(entries: ComponentEntry[]): string {
 }
 
 function buildStarterApp(entries: ComponentEntry[]): string {
-  const free = entries.filter((e) => e.package === "@vault/ui" && e.id !== "overview");
+  const free = entries.filter((e) => e.package === "@gudipudimani/ui" && e.id !== "overview");
   const ai = entries.find((e) => e.id === "chat-canvas");
   const kpi = entries.find((e) => e.id === "kpi-card");
   const code = [
-    "import { Badge, Button, Card } from \"@vault/ui\";",
-    ai ? `import { ChatCanvas } from "@vault/ai-chat";` : "",
-    kpi ? `import { KpiCard } from "@vault/data-viz";` : "",
+    "import { Badge, Button, Card } from \"@gudipudimani/ui\";",
+    ai ? `import { ChatCanvas } from "@gudipudimani/ai-chat";` : "",
+    kpi ? `import { KpiCard } from "@gudipudimani/data-viz";` : "",
     "",
     `export function App() {`,
     `  return (`,
@@ -149,9 +149,9 @@ export async function buildKitZip(): Promise<Blob> {
         dependencies: {
           react: "^18.3.1",
           "react-dom": "^18.3.1",
-          "@vault/tokens": "latest",
-          "@vault/utils": "latest",
-          "@vault/ui": "latest",
+          "@gudipudimani/tokens": "latest",
+          "@gudipudimani/utils": "latest",
+          "@gudipudimani/ui": "latest",
         },
         devDependencies: {
           "@tailwindcss/vite": "^4.0.0",
@@ -169,7 +169,7 @@ export async function buildKitZip(): Promise<Blob> {
   );
   starter.file("index.html", '<div id="root"></div>\n<script type="module" src="/src/main.tsx"></script>');
   starter.file("vite.config.ts", 'import react from "@vitejs/plugin-react";\nimport tailwindcss from "@tailwindcss/vite";\nimport { defineConfig } from "vite";\n\nexport default defineConfig({ plugins: [react(), tailwindcss()] });');
-  starter.file("src/main.tsx", 'import { StrictMode } from "react";\nimport { createRoot } from "react-dom/client";\nimport "@vault/tokens/tokens.css";\nimport { App } from "./App";\n\ncreateRoot(document.getElementById("root")!).render(<StrictMode><App /></StrictMode>);');
+  starter.file("src/main.tsx", 'import { StrictMode } from "react";\nimport { createRoot } from "react-dom/client";\nimport "@gudipudimani/tokens/tokens.css";\nimport { App } from "./App";\n\ncreateRoot(document.getElementById("root")!).render(<StrictMode><App /></StrictMode>);');
   starter.file("src/App.tsx", buildStarterApp(entries));
 
   return zip.generateAsync({ type: "blob" });

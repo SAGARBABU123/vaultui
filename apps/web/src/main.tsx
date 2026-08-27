@@ -1,6 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import "@vault/tokens/tokens.css";
+import "@gudipudimani/tokens/tokens.css";
 import App from "./App";
 
 createRoot(document.getElementById("root")!).render(

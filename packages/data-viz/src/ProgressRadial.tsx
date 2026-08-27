@@ -1,4 +1,4 @@
-import { cn } from "@vault/utils";
+import { cn } from "@gudipudimani/utils";
 import { useEffect, useState } from "react";
 
 export type RadialTone = "brand" | "success" | "warning" | "danger";

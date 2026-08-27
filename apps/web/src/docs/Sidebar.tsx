@@ -1,4 +1,4 @@
-import { cn } from "@vault/utils";
+import { cn } from "@gudipudimani/utils";
 import type { ComponentGroup } from "./types";
 
 export interface SidebarProps {

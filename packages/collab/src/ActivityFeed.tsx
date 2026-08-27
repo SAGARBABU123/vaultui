@@ -1,4 +1,4 @@
-import { cn } from "@vault/utils";
+import { cn } from "@gudipudimani/utils";
 import { MessageSquare, PencilLine, PlusCircle, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 

@@ -1,5 +1,5 @@
-import { Badge } from "@vault/ui";
-import { cn } from "@vault/utils";
+import { Badge } from "@gudipudimani/ui";
+import { cn } from "@gudipudimani/utils";
 import type { ReactNode } from "react";
 
 export type AgentStepKind = "input" | "agent" | "tool" | "output";

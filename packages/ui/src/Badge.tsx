@@ -1,4 +1,4 @@
-import { cn } from "@vault/utils";
+import { cn } from "@gudipudimani/utils";
 import type { HTMLAttributes } from "react";
 
 export type BadgeVariant =

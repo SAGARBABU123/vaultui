@@ -103,18 +103,18 @@ focus border, error color, placeholder color.
 
 Ordered by "most eyes":
 
-1. **ChatCanvas bubble + ChatInput** (`@vault/ai-chat`) — chat is your flagship
+1. **ChatCanvas bubble + ChatInput** (`@gudipudimani/ai-chat`) — chat is your flagship
    demo. Decisions: bubble shape (radius+corner pin), avatar style, streaming
    caret color, input box treatment.
-2. **KpiCard + Sparkline + ProgressRadial** (`@vault/data-viz`) — your charts'
+2. **KpiCard + Sparkline + ProgressRadial** (`@gudipudimani/data-viz`) — your charts'
    first impression. Tune value typography, delta badge, gauge stroke caps.
-3. **PricingTable + CartDrawer** (`@vault/commerce`) — trust + money screens.
+3. **PricingTable + CartDrawer** (`@gudipudimani/commerce`) — trust + money screens.
    Decisions: table header treatment, drawer surface (does it blur? border?),
    CTA emphasis.
-4. **KanbanBoard** (`@vault/project`) — dot colors, card shadows, column bg.
-5. **LogStream + DiffViewer** (`@vault/dev-tools`) — dark-mode surfaces; pick
+4. **KanbanBoard** (`@gudipudimani/project`) — dot colors, card shadows, column bg.
+5. **LogStream + DiffViewer** (`@gudipudimani/dev-tools`) — dark-mode surfaces; pick
    YOUR dark tones (don't keep the default slate-950 unless persona says so).
-6. **PresenceList + LiveCursors + ActivityFeed** (`@vault/collab`) — avatar
+6. **PresenceList + LiveCursors + ActivityFeed** (`@gudipudimani/collab`) — avatar
    treatment, cursor shape, feed icons (lucide already).
 
 For each: same 10-min loop →

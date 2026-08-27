@@ -1,5 +1,5 @@
 {
-  "name": "@vault/commerce",
+  "name": "@gudipudimani/commerce",
   "version": "0.1.0",
   "description": "Commerce Kit — CartDrawer, PricingTable, RefundWizard, InstallmentToggle, InventoryChip",
   "license": "SEE LICENSE IN ../COMMERCIAL-LICENSE.md",
@@ -29,16 +29,16 @@
     "lint": "eslint src"
   },
   "dependencies": {
-    "@vault/tokens": "workspace:*",
-    "@vault/ui": "workspace:*",
-    "@vault/utils": "workspace:*"
+    "@gudipudimani/tokens": "workspace:*",
+    "@gudipudimani/ui": "workspace:*",
+    "@gudipudimani/utils": "workspace:*"
   },
   "peerDependencies": {
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
   },
   "devDependencies": {
-    "@vault/configs": "workspace:*",
+    "@gudipudimani/configs": "workspace:*",
     "@types/react": "^18.3.0",
     "@types/react-dom": "^18.3.0",
     "react": "^18.3.1",
@@ -60,9 +60,9 @@
       "react",
       "react-dom",
       "react/jsx-runtime",
-      "@vault/tokens",
-      "@vault/ui",
-      "@vault/utils"
+      "@gudipudimani/tokens",
+      "@gudipudimani/ui",
+      "@gudipudimani/utils"
     ]
   }
 }

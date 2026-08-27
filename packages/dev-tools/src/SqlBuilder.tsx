@@ -1,6 +1,6 @@
 import { Copy, Plus, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { cn } from "@vault/utils";
+import { cn } from "@gudipudimani/utils";
 
 export interface SqlBuilderProps {
   /** Schema columns shown in the pickers. */

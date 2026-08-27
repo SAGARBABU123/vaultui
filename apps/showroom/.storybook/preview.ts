@@ -1,7 +1,7 @@
 import type { Preview } from "@storybook/react";
 
 // Load design tokens globally so every story is themed
-import "@vault/tokens/tokens.css";
+import "@gudipudimani/tokens/tokens.css";
 
 const preview: Preview = {
   parameters: {

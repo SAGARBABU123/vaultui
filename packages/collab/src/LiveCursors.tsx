@@ -1,4 +1,4 @@
-import { cn } from "@vault/utils";
+import { cn } from "@gudipudimani/utils";
 import { useEffect, useRef, useState } from "react";
 
 export interface LiveCursor {
