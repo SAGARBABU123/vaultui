@@ -10,7 +10,8 @@
     "typecheck": "turbo run typecheck",
     "lint": "turbo run lint",
     "storybook": "pnpm --filter @vault/showroom storybook",
-    "clean": "turbo run clean && rm -rf node_modules"
+    "clean": "turbo run clean && rm -rf node_modules",
+    "publish:free": "pnpm --filter @vault/tokens build && pnpm --filter @vault/utils build && pnpm --filter @vault/ui build && pnpm --filter @vault/tokens publish && pnpm --filter @vault/utils publish && pnpm --filter @vault/ui publish"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
