@@ -187,9 +187,9 @@ function OverviewHero() {
           <span className="text-brand-600">One download.</span>
         </h1>
         <p className="mt-4 max-w-xl leading-relaxed text-surface-500">
-          Neumorphic design tokens, theme, and all 48 components — packed into a
-          single bundle with install commands, per-component usage snippets, and
-          a ready-to-run starter app.
+          The free core — design tokens, theme and {47} components — installs with one
+          line from npm. Premium kits come with a license. Download the bundle for
+          the real theme file, per-component usage snippets, and a runnable starter app.
         </p>
 
         <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">

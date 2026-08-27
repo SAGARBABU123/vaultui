@@ -6,17 +6,10 @@ import type { ComponentEntry } from "./types";
 /** The live theme source, exported raw so the zip ships the real tokens. */
 import tokensCss from "@vaultui/tokens/tokens.css?raw";
 
-const KIT_PACKAGES = [
-  "@vaultui/tokens",
-  "@vaultui/utils",
-  "@vaultui/ui",
-  "@vaultui/ai-chat",
-  "@vaultui/data-viz",
-  "@vaultui/commerce",
-  "@vaultui/dev-tools",
-  "@vaultui/project",
-  "@vaultui/collab",
-];
+const KIT_PACKAGES = ["@vaultui/tokens", "@vaultui/utils", "@vaultui/ui"];
+
+const PREMIUM_NOTICE =
+  "Premium kits (@vaultui/ai-chat, @vaultui/data-viz, @vaultui/commerce, @vaultui/dev-tools, @vaultui/project, @vaultui/collab) are distributed via purchase license — they are intentionally not on the public registry.";
 
 const TIERS: Record<string, string> = {
   free: "Free · MIT",
@@ -54,7 +47,7 @@ function buildReadme(entries: ComponentEntry[]): string {
     "@import \"@vaultui/tokens/tokens.css\";",
     "```",
     "",
-    "## 2 · Install all packages",
+    "## 2 · Install the free core (public npm, no account needed)",
     "",
     "```bash",
     INSTALL_COMMAND,
