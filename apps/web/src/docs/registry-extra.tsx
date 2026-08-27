@@ -7,25 +7,25 @@ import {
   TimelineSlider,
   TreeMap,
   WaterfallChart,
-} from "@gudipudimani/data-viz";
+} from "@vaultui/data-viz";
 import {
   CheckoutProgressRail,
   GiftCardBuilder,
   SubscriptionManager,
-} from "@gudipudimani/commerce";
+} from "@vaultui/commerce";
 import {
   CronBuilder,
   JsonPathTester,
   SqlBuilder,
   WebhookSimulator,
-} from "@gudipudimani/dev-tools";
+} from "@vaultui/dev-tools";
 import {
   ActivityFeed,
   LiveCursors,
   PresenceList,
   type ActivityEvent,
-} from "@gudipudimani/collab";
-import { Button } from "@gudipudimani/ui";
+} from "@vaultui/collab";
+import { Button } from "@vaultui/ui";
 import type { ComponentGroup } from "./types";
 
 /* ------------------------------- rail demo ------------------------------- */
@@ -62,7 +62,7 @@ export const EXTRA_GROUPS: ComponentGroup[] = [
       {
         id: "tree-map",
         name: "TreeMap",
-        package: "@gudipudimani/data-viz",
+        package: "@vaultui/data-viz",
         tier: "paid",
         description: "Value-proportional nested rectangles with slice-and-dice layout — no chart library.",
         importName: "{ TreeMap }",
@@ -88,7 +88,7 @@ export const EXTRA_GROUPS: ComponentGroup[] = [
       {
         id: "waterfall",
         name: "WaterfallChart",
-        package: "@gudipudimani/data-viz",
+        package: "@vaultui/data-viz",
         tier: "paid",
         description: "Cumulative totals with floating deltas, connectors and zero-anchored total bars.",
         importName: "{ WaterfallChart }",
@@ -112,7 +112,7 @@ export const EXTRA_GROUPS: ComponentGroup[] = [
       {
         id: "radar",
         name: "RadarChart",
-        package: "@gudipudimani/data-viz",
+        package: "@vaultui/data-viz",
         tier: "paid",
         description: "N-axis spider chart with concentric grid rings and token colors.",
         importName: "{ RadarChart }",
@@ -139,7 +139,7 @@ export const EXTRA_GROUPS: ComponentGroup[] = [
       {
         id: "sankey",
         name: "SankeyDiagram",
-        package: "@gudipudimani/data-viz",
+        package: "@vaultui/data-viz",
         tier: "paid",
         description: "Two-layer flow diagram — node heights and ribbon widths are value-proportional.",
         importName: "{ SankeyDiagram }",
@@ -168,7 +168,7 @@ export const EXTRA_GROUPS: ComponentGroup[] = [
       {
         id: "candlestick",
         name: "CandlestickChart",
-        package: "@gudipudimani/data-viz",
+        package: "@vaultui/data-viz",
         tier: "paid",
         description: "OHLC candles with wicks, last-price line and date labels.",
         importName: "{ CandlestickChart }",
@@ -191,7 +191,7 @@ export const EXTRA_GROUPS: ComponentGroup[] = [
       {
         id: "timeline-slider",
         name: "TimelineSlider",
-        package: "@gudipudimani/data-viz",
+        package: "@vaultui/data-viz",
         tier: "paid",
         description: "Scrub through series data with play/pause, click-to-seek and keyboard support.",
         importName: "{ TimelineSlider }",
@@ -219,7 +219,7 @@ export const EXTRA_GROUPS: ComponentGroup[] = [
       {
         id: "geo-map",
         name: "GeoMap",
-        package: "@gudipudimani/data-viz",
+        package: "@vaultui/data-viz",
         tier: "paid",
         description: "Stylized dot map — continent blobs + value-scaled markers, zero geo libraries.",
         importName: "{ GeoMap }",
@@ -249,7 +249,7 @@ export const EXTRA_GROUPS: ComponentGroup[] = [
       {
         id: "checkout-rail",
         name: "CheckoutProgressRail",
-        package: "@gudipudimani/commerce",
+        package: "@vaultui/commerce",
         tier: "paid",
         description: "Stepped checkout progress with connectors, animated fill and clickable completed steps.",
         importName: "{ CheckoutProgressRail }",
@@ -264,7 +264,7 @@ export const EXTRA_GROUPS: ComponentGroup[] = [
       {
         id: "subscription-manager",
         name: "SubscriptionManager",
-        package: "@gudipudimani/commerce",
+        package: "@vaultui/commerce",
         tier: "paid",
         description: "Plan card with lifecycle: change plan, pause/resume, cancel with confirm steps.",
         importName: "{ SubscriptionManager }",
@@ -282,7 +282,7 @@ export const EXTRA_GROUPS: ComponentGroup[] = [
       {
         id: "gift-card",
         name: "GiftCardBuilder",
-        package: "@gudipudimani/commerce",
+        package: "@vaultui/commerce",
         tier: "paid",
         description: "Live-updating gift card editor: amounts, themes, message, recipient.",
         importName: "{ GiftCardBuilder }",
@@ -301,7 +301,7 @@ export const EXTRA_GROUPS: ComponentGroup[] = [
       {
         id: "sql-builder",
         name: "SqlBuilder",
-        package: "@gudipudimani/dev-tools",
+        package: "@vaultui/dev-tools",
         tier: "paid",
         description: "Build SELECT queries visually — columns, WHERE clauses with operators, LIMIT; SQL compiles live.",
         importName: "{ SqlBuilder }",
@@ -321,7 +321,7 @@ export const EXTRA_GROUPS: ComponentGroup[] = [
       {
         id: "cron-builder",
         name: "CronBuilder",
-        package: "@gudipudimani/dev-tools",
+        package: "@vaultui/dev-tools",
         tier: "paid",
         description: "Visual 5-field cron editor with presets and next-run preview computed in-browser.",
         importName: "{ CronBuilder }",
@@ -335,7 +335,7 @@ export const EXTRA_GROUPS: ComponentGroup[] = [
       {
         id: "json-path",
         name: "JsonPathTester",
-        package: "@gudipudimani/dev-tools",
+        package: "@vaultui/dev-tools",
         tier: "paid",
         description: "Evaluate $.a.b[0]-style paths against JSON with type badge, history chips and inline errors.",
         importName: "{ JsonPathTester }",
@@ -349,7 +349,7 @@ export const EXTRA_GROUPS: ComponentGroup[] = [
       {
         id: "webhook-sim",
         name: "WebhookSimulator",
-        package: "@gudipudimani/dev-tools",
+        package: "@vaultui/dev-tools",
         tier: "paid",
         description: "Send preset events with status/latency/request-id logging and retries.",
         importName: "{ WebhookSimulator }",
@@ -368,7 +368,7 @@ export const EXTRA_GROUPS: ComponentGroup[] = [
       {
         id: "presence-list",
         name: "PresenceList",
-        package: "@gudipudimani/collab",
+        package: "@vaultui/collab",
         tier: "paid",
         description: "Who's here — avatar stack with overflow count or full rows with activity and status dots.",
         importName: "{ PresenceList }",
@@ -392,7 +392,7 @@ export const EXTRA_GROUPS: ComponentGroup[] = [
       {
         id: "live-cursors",
         name: "LiveCursors",
-        package: "@gudipudimani/collab",
+        package: "@vaultui/collab",
         tier: "paid",
         description: "Collaborative cursor overlay with name tags — feed 0–100 % positions; autoPilot drifts for demos.",
         importName: "{ LiveCursors }",
@@ -415,7 +415,7 @@ export const EXTRA_GROUPS: ComponentGroup[] = [
       {
         id: "activity-feed",
         name: "ActivityFeed",
-        package: "@gudipudimani/collab",
+        package: "@vaultui/collab",
         tier: "paid",
         description: "Chronological activity feed with type icons, unread counts, filters and mark-all-read.",
         importName: "{ ActivityFeed }",

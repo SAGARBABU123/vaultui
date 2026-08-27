@@ -1,4 +1,4 @@
-import { cn } from "@gudipudimani/utils";
+import { cn } from "@vaultui/utils";
 import { useState } from "react";
 
 export interface PresenceUser {

@@ -1,5 +1,5 @@
 {
-  "name": "@gudipudimani/ui",
+  "name": "@vaultui/ui",
   "version": "0.1.0",
   "description": "Vault UI — free tier foundation components (Button, Badge, Card)",
   "license": "MIT",
@@ -29,15 +29,15 @@
     "lint": "eslint src"
   },
   "dependencies": {
-    "@gudipudimani/tokens": "workspace:*",
-    "@gudipudimani/utils": "workspace:*"
+    "@vaultui/tokens": "workspace:*",
+    "@vaultui/utils": "workspace:*"
   },
   "peerDependencies": {
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
   },
   "devDependencies": {
-    "@gudipudimani/configs": "workspace:*",
+    "@vaultui/configs": "workspace:*",
     "@types/react": "^18.3.0",
     "@types/react-dom": "^18.3.0",
     "react": "^18.3.1",
@@ -59,8 +59,8 @@
       "react",
       "react-dom",
       "react/jsx-runtime",
-      "@gudipudimani/utils",
-      "@gudipudimani/tokens"
+      "@vaultui/utils",
+      "@vaultui/tokens"
     ]
   }
 }

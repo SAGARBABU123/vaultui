@@ -1,5 +1,5 @@
 {
-  "name": "@gudipudimani/tokens",
+  "name": "@vaultui/tokens",
   "version": "0.1.0",
   "description": "Design tokens & theme engine for Vault UI (Tailwind v4 CSS first)",
   "license": "MIT",
@@ -23,7 +23,7 @@
     "lint": "eslint src"
   },
   "devDependencies": {
-    "@gudipudimani/configs": "workspace:*",
+    "@vaultui/configs": "workspace:*",
     "typescript": "^5.7.0"
   },
   "dependencies": {

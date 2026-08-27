@@ -1,4 +1,4 @@
-import { cn } from "@gudipudimani/utils";
+import { cn } from "@vaultui/utils";
 
 export type ConstraintTone = "normal" | "warn" | "danger";
 

@@ -6,14 +6,14 @@ How to ship Vault UI packages to npm.
 
 | Package | License | Tier |
 | --- | --- | --- |
-| `@gudipudimani/tokens` | MIT | Free — theme engine |
-| `@gudipudimani/utils` | MIT | Free — `cn()` helper |
-| `@gudipudimani/ui` | MIT | Free — Button, Badge, Card |
-| `@gudipudimani/ai-chat` | Commercial | Paid kit |
-| `@gudipudimani/data-viz` | Commercial | Paid kit |
-| `@gudipudimani/commerce` | Commercial | Paid kit |
-| `@gudipudimani/dev-tools` | Commercial | Paid kit |
-| `@gudipudimani/project` | Commercial | Paid kit |
+| `@vaultui/tokens` | MIT | Free — theme engine |
+| `@vaultui/utils` | MIT | Free — `cn()` helper |
+| `@vaultui/ui` | MIT | Free — Button, Badge, Card |
+| `@vaultui/ai-chat` | Commercial | Paid kit |
+| `@vaultui/data-viz` | Commercial | Paid kit |
+| `@vaultui/commerce` | Commercial | Paid kit |
+| `@vaultui/dev-tools` | Commercial | Paid kit |
+| `@vaultui/project` | Commercial | Paid kit |
 
 ## How publishing works
 
@@ -33,33 +33,33 @@ pnpm login --scope @vault
 ### Publish the free tier first (order matters)
 
 ```bash
-pnpm --filter @gudipudimani/tokens publish
-pnpm --filter @gudipudimani/utils publish
-pnpm --filter @gudipudimani/ui publish
+pnpm --filter @vaultui/tokens publish
+pnpm --filter @vaultui/utils publish
+pnpm --filter @vaultui/ui publish
 ```
 
 ### Preview a paid kit (dry run)
 
 ```bash
-pnpm --filter @gudipudimani/ai-chat pack --dry-run   # inspect tarball contents
+pnpm --filter @vaultui/ai-chat pack --dry-run   # inspect tarball contents
 ```
 
 ### Publish a paid kit
 
 ```bash
-pnpm --filter @gudipudimani/ai-chat publish --access public
+pnpm --filter @vaultui/ai-chat publish --access public
 # then the rest:
-pnpm --filter @gudipudimani/data-viz publish
-pnpm --filter @gudipudimani/commerce publish
-pnpm --filter @gudipudimani/dev-tools publish
-pnpm --filter @gudipudimani/project publish
+pnpm --filter @vaultui/data-viz publish
+pnpm --filter @vaultui/commerce publish
+pnpm --filter @vaultui/dev-tools publish
+pnpm --filter @vaultui/project publish
 ```
 
 ## Version workflow
 
 ```bash
-pnpm --filter @gudipudimani/ui version 0.2.0    # then commit + tag
-pnpm --filter @gudipudimani/web run build       # sanity check consumers
+pnpm --filter @vaultui/ui version 0.2.0    # then commit + tag
+pnpm --filter @vaultui/web run build       # sanity check consumers
 ```
 
 ## Monetization checklist (before real sales)
@@ -77,7 +77,7 @@ pnpm --filter @gudipudimani/web run build       # sanity check consumers
 
 ```bash
 # in a fresh project:
-npm i @gudipudimani/tokens @gudipudimani/ui
-echo '@import "@gudipudimani/tokens/tokens.css";' > src/index.css
+npm i @vaultui/tokens @vaultui/ui
+echo '@import "@vaultui/tokens/tokens.css";' > src/index.css
 # render <Button> in React — themed by tokens
 ```

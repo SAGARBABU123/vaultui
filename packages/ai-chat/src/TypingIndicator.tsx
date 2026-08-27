@@ -1,4 +1,4 @@
-import { cn } from "@gudipudimani/utils";
+import { cn } from "@vaultui/utils";
 import type { HTMLAttributes } from "react";
 
 export interface TypingIndicatorProps extends HTMLAttributes<HTMLDivElement> {

@@ -1,5 +1,5 @@
-import { Badge, Button } from "@gudipudimani/ui";
-import { cn } from "@gudipudimani/utils";
+import { Badge, Button } from "@vaultui/ui";
+import { cn } from "@vaultui/utils";
 import { useState } from "react";
 
 export interface GiftCardConfig {

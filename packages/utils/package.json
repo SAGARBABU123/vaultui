@@ -1,5 +1,5 @@
 {
-  "name": "@gudipudimani/utils",
+  "name": "@vaultui/utils",
   "version": "0.1.0",
   "description": "Shared utilities for Vault UI components",
   "license": "MIT",
@@ -33,7 +33,7 @@
     "tailwind-merge": "^2.5.0"
   },
   "devDependencies": {
-    "@gudipudimani/configs": "workspace:*",
+    "@vaultui/configs": "workspace:*",
     "typescript": "^5.7.0"
   },
   "tsup": {

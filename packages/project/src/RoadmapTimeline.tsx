@@ -1,5 +1,5 @@
-import { Badge } from "@gudipudimani/ui";
-import { cn } from "@gudipudimani/utils";
+import { Badge } from "@vaultui/ui";
+import { cn } from "@vaultui/utils";
 
 export type PhaseColor = "brand" | "success" | "warning" | "danger" | "info";
 

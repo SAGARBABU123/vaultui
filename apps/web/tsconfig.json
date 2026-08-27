@@ -1,4 +1,4 @@
 {
-  "extends": "@gudipudimani/configs/tsconfig.base.json",
+  "extends": "@vaultui/configs/tsconfig.base.json",
   "include": ["src", "vite.config.ts"]
 }

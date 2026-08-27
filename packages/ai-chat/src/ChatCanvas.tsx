@@ -1,5 +1,5 @@
-import { Badge } from "@gudipudimani/ui";
-import { cn } from "@gudipudimani/utils";
+import { Badge } from "@vaultui/ui";
+import { cn } from "@vaultui/utils";
 import { useEffect, useRef, type ReactNode } from "react";
 import { Markdown } from "./Markdown";
 import { SourceCitation } from "./SourceCitation";

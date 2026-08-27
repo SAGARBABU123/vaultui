@@ -1,4 +1,4 @@
-import { cn } from "@gudipudimani/utils";
+import { cn } from "@vaultui/utils";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 export interface UseStreamingTextOptions {

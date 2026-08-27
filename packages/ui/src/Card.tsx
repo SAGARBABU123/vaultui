@@ -1,4 +1,4 @@
-import { cn } from "@gudipudimani/utils";
+import { cn } from "@vaultui/utils";
 import type { HTMLAttributes } from "react";
 
 export interface CardProps extends HTMLAttributes<HTMLDivElement> {

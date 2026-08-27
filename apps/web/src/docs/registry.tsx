@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Badge, Button, Card } from "@gudipudimani/ui";
+import { Badge, Button, Card } from "@vaultui/ui";
 import {
   AgentOrchestrationCanvas,
   ChatCanvas,
@@ -18,14 +18,14 @@ import {
   type ModelOption,
   type PromptVariant,
   type SourceCitationItem,
-} from "@gudipudimani/ai-chat";
+} from "@vaultui/ai-chat";
 import {
   AnimatedCounter,
   HeatmapCalendar,
   KpiCard,
   ProgressRadial,
   Sparkline,
-} from "@gudipudimani/data-viz";
+} from "@vaultui/data-viz";
 import {
   CartDrawer,
   InstallmentToggle,
@@ -36,7 +36,7 @@ import {
   type PricingFeature,
   type PricingPlan,
   type UpsellItem,
-} from "@gudipudimani/commerce";
+} from "@vaultui/commerce";
 import {
   ApiPlayground,
   DiffViewer,
@@ -44,14 +44,14 @@ import {
   LogStream,
   type FeatureFlag,
   type LogEntry,
-} from "@gudipudimani/dev-tools";
+} from "@vaultui/dev-tools";
 import {
   GanttChart,
   KanbanBoard,
   RoadmapTimeline,
   type KanbanColumn,
   type RoadmapItem,
-} from "@gudipudimani/project";
+} from "@vaultui/project";
 import type { ComponentGroup } from "./types";
 
 /* =============================== demo constants ============================== */
@@ -279,7 +279,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
         tier: "free",
         description: "Vault UI: 30 premium React + Tailwind components in five kits — the ones standard libraries don't ship. Every component is responsive-first, token-driven, and dependency-light. Free tier (Button, Badge, Card) is MIT; kits are commercial.",
         importName: "—",
-        usage: "pnpm add @gudipudimani/tokens @gudipudimani/ui\n# then, in your CSS:\n@import \"@gudipudimani/tokens/tokens.css\";",
+        usage: "pnpm add @vaultui/tokens @vaultui/ui\n# then, in your CSS:\n@import \"@vaultui/tokens/tokens.css\";",
         props: [],
         demo: (
           <div className="grid gap-3 sm:grid-cols-3">
@@ -307,7 +307,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
       {
         id: "button",
         name: "Button",
-        package: "@gudipudimani/ui",
+        package: "@vaultui/ui",
         tier: "free",
         description: "Token-driven button with five sizes (xs → xl), four variants, icons, loading and full-width states.",
         importName: "{ Button }",
@@ -338,7 +338,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
       {
         id: "badge",
         name: "Badge",
-        package: "@gudipudimani/ui",
+        package: "@vaultui/ui",
         tier: "free",
         description: "Compact status chip with six tonal variants and an optional status dot.",
         importName: "{ Badge }",
@@ -363,7 +363,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
       {
         id: "card",
         name: "Card",
-        package: "@gudipudimani/ui",
+        package: "@vaultui/ui",
         tier: "free",
         description: "Responsive surface container: padding scales at the sm breakpoint, elevation and hover lifts are props.",
         importName: "{ Card }",
@@ -398,7 +398,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
       {
         id: "chat-canvas",
         name: "ChatCanvas",
-        package: "@gudipudimani/ai-chat",
+        package: "@vaultui/ai-chat",
         tier: "paid",
         description: "Full conversation UI: streaming markdown, tool-call inspectors, source citations, typing indicator and auto-scroll.",
         importName: "{ ChatCanvas }",
@@ -415,7 +415,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
       {
         id: "chat-input",
         name: "ChatInput",
-        package: "@gudipudimani/ai-chat",
+        package: "@vaultui/ai-chat",
         tier: "paid",
         description: "Auto-resizing prompt input: Enter to send (Shift+Enter newline), IME-safe, token estimate and suggestion chips.",
         importName: "{ ChatInput }",
@@ -431,7 +431,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
       {
         id: "token-streamer",
         name: "TokenStreamer",
-        package: "@gudipudimani/ai-chat",
+        package: "@vaultui/ai-chat",
         tier: "paid",
         description: "Reveals text token-by-token with a blinking caret — the LLM-typing effect. Exposes the useStreamingText hook.",
         importName: "{ TokenStreamer, useStreamingText }",
@@ -451,7 +451,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
       {
         id: "typing-indicator",
         name: "TypingIndicator",
-        package: "@gudipudimani/ai-chat",
+        package: "@vaultui/ai-chat",
         tier: "paid",
         description: "Three bouncing dots with a screen-reader label — used under the hood by ChatCanvas.",
         importName: "{ TypingIndicator }",
@@ -471,7 +471,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
       {
         id: "tool-call-inspector",
         name: "ToolCallInspector",
-        package: "@gudipudimani/ai-chat",
+        package: "@vaultui/ai-chat",
         tier: "paid",
         description: "Collapsible JSON in/out for a single agent tool call, with Running / Success / Error state.",
         importName: "{ ToolCallInspector }",
@@ -492,7 +492,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
       {
         id: "constraint-badge",
         name: "ConstraintBadge",
-        package: "@gudipudimani/ai-chat",
+        package: "@vaultui/ai-chat",
         tier: "paid",
         description: "Live token / rate / cost / latency meters with usage bars and warn/danger tones.",
         importName: "{ ConstraintBadge }",
@@ -515,7 +515,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
       {
         id: "source-citation",
         name: "SourceCitation",
-        package: "@gudipudimani/ai-chat",
+        package: "@vaultui/ai-chat",
         tier: "paid",
         description: "Footnote chip for RAG answers — index stays visible while the title truncates on narrow screens.",
         importName: "{ SourceCitation }",
@@ -538,7 +538,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
       {
         id: "model-picker",
         name: "ModelPicker",
-        package: "@gudipudimani/ai-chat",
+        package: "@vaultui/ai-chat",
         tier: "paid",
         description: "Styled native select — fully accessible and opens the OS picker on mobile.",
         importName: "{ ModelPicker }",
@@ -553,7 +553,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
       {
         id: "memory-timeline",
         name: "MemoryTimeline",
-        package: "@gudipudimani/ai-chat",
+        package: "@vaultui/ai-chat",
         tier: "paid",
         description: "What the agent remembers — vertical timeline with per-type colors, confidence bars and timestamps.",
         importName: "{ MemoryTimeline }",
@@ -568,7 +568,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
       {
         id: "agent-canvas",
         name: "AgentOrchestrationCanvas",
-        package: "@gudipudimani/ai-chat",
+        package: "@vaultui/ai-chat",
         tier: "paid",
         description: "Visual flow of an agent run — input → planner → parallel tool batches → output, with live status and cost.",
         importName: "{ AgentOrchestrationCanvas }",
@@ -581,7 +581,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
       {
         id: "prompt-playground",
         name: "PromptPlayground",
-        package: "@gudipudimani/ai-chat",
+        package: "@vaultui/ai-chat",
         tier: "paid",
         description: "Iterate on prompts: editable system/user panes, temperature + max-tokens sliders, and an A/B compare view.",
         importName: "{ PromptPlayground }",
@@ -600,7 +600,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
       {
         id: "kpi-card",
         name: "KpiCard",
-        package: "@gudipudimani/data-viz",
+        package: "@vaultui/data-viz",
         tier: "paid",
         description: "Label, animated value, delta badge (tone follows sign) and a gradient sparkline — no chart library.",
         importName: "{ KpiCard }",
@@ -622,7 +622,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
       {
         id: "sparkline",
         name: "Sparkline",
-        package: "@gudipudimani/data-viz",
+        package: "@vaultui/data-viz",
         tier: "paid",
         description: "Dependency-free SVG trend line with gradient fill — crisp at any width via fixed aspect ratio.",
         importName: "{ Sparkline }",
@@ -647,7 +647,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
       {
         id: "animated-counter",
         name: "AnimatedCounter",
-        package: "@gudipudimani/data-viz",
+        package: "@vaultui/data-viz",
         tier: "paid",
         description: "Tweens to the target value with cubic ease-out via requestAnimationFrame; honors prefers-reduced-motion.",
         importName: "{ AnimatedCounter }",
@@ -677,7 +677,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
       {
         id: "progress-radial",
         name: "ProgressRadial",
-        package: "@gudipudimani/data-viz",
+        package: "@vaultui/data-viz",
         tier: "paid",
         description: "Round gauge with rounded caps, animated on mount and threshold-aware tones.",
         importName: "{ ProgressRadial }",
@@ -700,7 +700,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
       {
         id: "heatmap-calendar",
         name: "HeatmapCalendar",
-        package: "@gudipudimani/data-viz",
+        package: "@vaultui/data-viz",
         tier: "paid",
         description: "GitHub-style activity heatmap with a token color scale that reflows to any width.",
         importName: "{ HeatmapCalendar }",
@@ -723,7 +723,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
       {
         id: "cart-drawer",
         name: "CartDrawer",
-        package: "@gudipudimani/commerce",
+        package: "@vaultui/commerce",
         tier: "paid",
         description: "Slide-in cart with quantity steppers, cross-sell upsell banner, subtotal, Escape/backdrop close and scroll lock.",
         importName: "{ CartDrawer }",
@@ -740,7 +740,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
       {
         id: "pricing-table",
         name: "PricingTable",
-        package: "@gudipudimani/commerce",
+        package: "@vaultui/commerce",
         tier: "paid",
         description: "Side-by-side feature matrix with hover tooltips, highlighted popular column and mobile horizontal scroll.",
         importName: "{ PricingTable }",
@@ -754,7 +754,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
       {
         id: "refund-wizard",
         name: "RefundWizard",
-        package: "@gudipudimani/commerce",
+        package: "@vaultui/commerce",
         tier: "paid",
         description: "Multi-step refund flow (reason → method → review) with progress rail, radio cards and completion state.",
         importName: "{ RefundWizard }",
@@ -768,7 +768,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
       {
         id: "installment-toggle",
         name: "InstallmentToggle",
-        package: "@gudipudimani/commerce",
+        package: "@vaultui/commerce",
         tier: "paid",
         description: "Pay-once vs interest-free monthly switcher with a breakdown list.",
         importName: "{ InstallmentToggle }",
@@ -787,7 +787,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
       {
         id: "inventory-chip",
         name: "InventoryChip",
-        package: "@gudipudimani/commerce",
+        package: "@vaultui/commerce",
         tier: "paid",
         description: "Stock status that converts: 'In stock', 'Only 3 left', or a restock date.",
         importName: "{ InventoryChip }",
@@ -813,7 +813,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
       {
         id: "diff-viewer",
         name: "DiffViewer",
-        package: "@gudipudimani/dev-tools",
+        package: "@vaultui/dev-tools",
         tier: "paid",
         description: "Side-by-side LCS line diff with added/removed counts — zero dependencies.",
         importName: "{ DiffViewer }",
@@ -828,7 +828,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
       {
         id: "log-stream",
         name: "LogStream",
-        package: "@gudipudimani/dev-tools",
+        package: "@vaultui/dev-tools",
         tier: "paid",
         description: "Filterable log viewer with level chips, follow-tail auto-scroll and colorized JSON payloads.",
         importName: "{ LogStream }",
@@ -842,7 +842,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
       {
         id: "api-playground",
         name: "ApiPlayground",
-        package: "@gudipudimani/dev-tools",
+        package: "@vaultui/dev-tools",
         tier: "paid",
         description: "Mini-Postman: method, URL, headers and JSON body with a simulated response (status, latency, headers, body).",
         importName: "{ ApiPlayground }",
@@ -855,7 +855,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
       {
         id: "feature-flags",
         name: "FeatureFlagBoard",
-        package: "@gudipudimani/dev-tools",
+        package: "@vaultui/dev-tools",
         tier: "paid",
         description: "Rollout management: per-environment switches, rollout slider, and state summary.",
         importName: "{ FeatureFlagBoard }",
@@ -874,7 +874,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
       {
         id: "kanban-board",
         name: "KanbanBoard",
-        package: "@gudipudimani/project",
+        package: "@vaultui/project",
         tier: "paid",
         description: "Columns with WIP limits, explicit move left/right controls (no drag lib), add-card inputs and deletion.",
         importName: "{ KanbanBoard }",
@@ -888,7 +888,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
       {
         id: "roadmap-timeline",
         name: "RoadmapTimeline",
-        package: "@gudipudimani/project",
+        package: "@vaultui/project",
         tier: "paid",
         description: "Year roadmap with a month grid, 'now' marker, status pills and milestone diamonds.",
         importName: "{ RoadmapTimeline }",
@@ -902,7 +902,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
       {
         id: "gantt-chart",
         name: "GanttChart",
-        package: "@gudipudimani/project",
+        package: "@vaultui/project",
         tier: "paid",
         description: "Week-axis Gantt with group colors, progress fills and milestone markers.",
         importName: "{ GanttChart }",

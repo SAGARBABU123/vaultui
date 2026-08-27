@@ -1,5 +1,5 @@
-import { Button } from "@gudipudimani/ui";
-import { cn } from "@gudipudimani/utils";
+import { Button } from "@vaultui/ui";
+import { cn } from "@vaultui/utils";
 import { useState } from "react";
 
 export type RefundReason = "wrong-item" | "not-working" | "changed-mind" | "other";

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Badge, Button } from "@gudipudimani/ui";
-import { cn } from "@gudipudimani/utils";
+import { Badge, Button } from "@vaultui/ui";
+import { cn } from "@vaultui/utils";
 import { COMPONENT_GROUPS } from "./docs/registry";
 import { EXTRA_GROUPS } from "./docs/registry-extra";
 import { Sidebar } from "./docs/Sidebar";

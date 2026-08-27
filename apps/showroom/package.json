@@ -1,5 +1,5 @@
 {
-  "name": "@gudipudimani/showroom",
+  "name": "@vaultui/showroom",
   "version": "0.0.1",
   "private": true,
   "description": "Vault UI showroom — the Storybook storefront",
@@ -9,12 +9,12 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@gudipudimani/tokens": "workspace:*",
-    "@gudipudimani/ui": "workspace:*",
-    "@gudipudimani/utils": "workspace:*"
+    "@vaultui/tokens": "workspace:*",
+    "@vaultui/ui": "workspace:*",
+    "@vaultui/utils": "workspace:*"
   },
   "devDependencies": {
-    "@gudipudimani/configs": "workspace:*",
+    "@vaultui/configs": "workspace:*",
     "@storybook/addon-a11y": "^8.6.0",
     "@storybook/addon-essentials": "^8.6.0",
     "@storybook/react": "^8.6.0",

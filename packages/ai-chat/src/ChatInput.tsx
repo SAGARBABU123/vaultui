@@ -1,4 +1,4 @@
-import { cn } from "@gudipudimani/utils";
+import { cn } from "@vaultui/utils";
 import { useEffect, useRef, useState, type TextareaHTMLAttributes } from "react";
 
 export interface ChatInputProps

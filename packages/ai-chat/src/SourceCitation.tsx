@@ -1,4 +1,4 @@
-import { cn } from "@gudipudimani/utils";
+import { cn } from "@vaultui/utils";
 import type { ButtonHTMLAttributes } from "react";
 import type { SourceCitationItem } from "./types";
 

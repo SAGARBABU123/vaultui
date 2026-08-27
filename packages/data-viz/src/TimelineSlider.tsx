@@ -1,4 +1,4 @@
-import { cn } from "@gudipudimani/utils";
+import { cn } from "@vaultui/utils";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export interface TimelinePoint {

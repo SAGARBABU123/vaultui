@@ -1,5 +1,5 @@
-import { Badge, Card } from "@gudipudimani/ui";
-import { cn } from "@gudipudimani/utils";
+import { Badge, Card } from "@vaultui/ui";
+import { cn } from "@vaultui/utils";
 import { AnimatedCounter } from "./AnimatedCounter";
 import { Sparkline } from "./Sparkline";
 

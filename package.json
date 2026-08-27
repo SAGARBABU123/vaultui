@@ -9,9 +9,9 @@
     "build": "turbo run build",
     "typecheck": "turbo run typecheck",
     "lint": "turbo run lint",
-    "storybook": "pnpm --filter @gudipudimani/showroom storybook",
+    "storybook": "pnpm --filter @vaultui/showroom storybook",
     "clean": "turbo run clean && rm -rf node_modules",
-    "publish:free": "pnpm --filter @gudipudimani/tokens build && pnpm --filter @gudipudimani/utils build && pnpm --filter @gudipudimani/ui build && pnpm --filter @gudipudimani/tokens publish && pnpm --filter @gudipudimani/utils publish && pnpm --filter @gudipudimani/ui publish"
+    "publish:free": "pnpm --filter @vaultui/tokens build && pnpm --filter @vaultui/utils build && pnpm --filter @vaultui/ui build && pnpm --filter @vaultui/tokens publish && pnpm --filter @vaultui/utils publish && pnpm --filter @vaultui/ui publish"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

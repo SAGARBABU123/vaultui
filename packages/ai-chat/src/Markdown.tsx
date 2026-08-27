@@ -1,4 +1,4 @@
-import { cn } from "@gudipudimani/utils";
+import { cn } from "@vaultui/utils";
 import { Check, Copy } from "lucide-react";
 import { Children, isValidElement, useState, type ReactElement, type ReactNode } from "react";
 import ReactMarkdown from "react-markdown";

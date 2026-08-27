@@ -1,4 +1,4 @@
-import { cn } from "@gudipudimani/utils";
+import { cn } from "@vaultui/utils";
 
 export interface HeatmapCalendarProps {
   /** Cell values 0–`max`. Column-major (weeks → days), like GitHub. */
