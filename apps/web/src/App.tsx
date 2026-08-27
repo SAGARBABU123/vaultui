@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Badge, Button, Card } from "@vault/ui";
 import {
   AgentOrchestrationCanvas,
@@ -33,6 +33,22 @@ import {
   type PricingPlan,
   type UpsellItem,
 } from "@vault/commerce";
+import {
+  ApiPlayground,
+  DiffViewer,
+  FeatureFlagBoard,
+  LogStream,
+  type FeatureFlag,
+  type LogEntry,
+  type LogLevel,
+} from "@vault/dev-tools";
+import {
+  GanttChart,
+  KanbanBoard,
+  RoadmapTimeline,
+  type KanbanColumn,
+  type RoadmapItem,
+} from "@vault/project";
 import { cn } from "@vault/utils";
 
 /* ---------------------------------- data ---------------------------------- */
@@ -76,8 +92,9 @@ const kits = [
   { name: "AI Agent Kit", desc: "ChatCanvas, tool-call inspectors, agent canvases, prompt playground", emoji: "🤖", phase: "Phase 1", status: "live" as const, href: "#ai-demo" },
   { name: "Data Viz Pro", desc: "KPI cards, sparklines, gauges, heatmaps — no chart library", emoji: "📈", phase: "Phase 3", status: "live" as const, href: "#data-viz" },
   { name: "Commerce Kit", desc: "Cart drawer, pricing matrix, refund wizard, installments", emoji: "🛒", phase: "Phase 4", status: "live" as const, href: "#commerce" },
-  { name: "Dev Tools Kit", desc: "Diff viewer, API playground, log stream", emoji: "🧰", phase: "Phase 6", status: "soon" as const, href: undefined },
-  { name: "Project Mgmt Kit", desc: "Gantt, kanban swimlanes, roadmap timeline", emoji: "🗂️", phase: "Phase 6", status: "soon" as const, href: undefined },
+  { name: "Dev Tools Kit", desc: "Diff viewer, API playground, log stream, feature flags", emoji: "🧰", phase: "Phase 6", status: "live" as const, href: "#dev-tools" },
+  { name: "Project Mgmt Kit", desc: "Kanban board, roadmap timeline, Gantt chart", emoji: "🗂️", phase: "Phase 6", status: "live" as const, href: "#project" },
+  { name: "Collab Kit", desc: "Live cursors, presence list, activity feeds", emoji: "🤝", phase: "Phase 6", status: "soon" as const, href: undefined },
 ];
 
 const tiers = [
@@ -131,6 +148,8 @@ export default function App() {
         <PlaygroundDemo />
         <DataVizDemo />
         <CommerceDemo />
+        <DevToolsDemo />
+        <ProjectDemo />
         <TokensShowcase />
         <KitsShowcase />
       </main>
@@ -1047,6 +1066,23 @@ const COMPONENT_GROUPS = [
       { name: "InventoryChip", href: "#commerce" },
     ],
   },
+  {
+    name: "Dev Tools Kit",
+    items: [
+      { name: "DiffViewer", href: "#dev-tools" },
+      { name: "LogStream", href: "#dev-tools" },
+      { name: "ApiPlayground", href: "#dev-tools" },
+      { name: "FeatureFlagBoard", href: "#dev-tools" },
+    ],
+  },
+  {
+    name: "Project Mgmt Kit",
+    items: [
+      { name: "KanbanBoard", href: "#project" },
+      { name: "RoadmapTimeline", href: "#project" },
+      { name: "GanttChart", href: "#project" },
+    ],
+  },
 ];
 
 function ComponentsRegistry() {
@@ -1220,6 +1256,172 @@ function CommerceDemo() {
           upsell={upsell}
           onCheckout={() => setOpen(false)}
         />
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------- dev tools demo ------------------------- */
+
+const OLD_CODE = [
+  "export function Badge({ variant = 'neutral', children }) {",
+  "  const classes = {",
+  "    neutral: 'bg-gray-100 text-gray-700',",
+  "    brand: 'bg-indigo-100 text-indigo-700',",
+  "  };",
+  "  return <span className={classes[variant]}>{children}</span>;",
+  "}",
+].join("\n");
+
+const NEW_CODE = [
+  "export function Badge({ variant = 'neutral', children }) {",
+  "  const classes = {",
+  "    neutral: 'bg-surface-100 text-surface-700',",
+  "    brand: 'bg-brand-100 text-brand-700',",
+  "    success: 'bg-success-500/15 text-success-500',",
+  "  };",
+  "  return <span className={classes[variant]}>{children}</span>;",
+  "}",
+].join("\n");
+
+const LOG_POOL: { level: LogLevel; message: string; payload?: unknown }[] = [
+  { level: "info", message: "GET /v1/kits → 200", payload: { ms: 84 } },
+  { level: "debug", message: "token cache hit for kit ai-chat" },
+  { level: "warn", message: "rate limit at 85% on vault-pro", payload: { rpm: 51, limit: 60 } },
+  { level: "error", message: "POST /v1/refunds failed (502)", payload: { order: "VLT-1042" } },
+  { level: "info", message: "replayed stream #8841", payload: { tokens: 2048 } },
+  { level: "debug", message: "gc scavenge completed", payload: { freed: "12.4MB" } },
+];
+
+function makeLogEntry(seed: number): LogEntry {
+  const base = LOG_POOL[seed % LOG_POOL.length]!;
+  return {
+    id: `l-${seed}-${Math.random().toString(36).slice(2, 8)}`,
+    level: base.level,
+    message: base.message,
+    payload: base.payload,
+    timestamp: new Date().toLocaleTimeString("en-GB", { hour12: false }),
+  };
+}
+
+function useLiveLogs() {
+  const [entries, setEntries] = useState<LogEntry[]>(() =>
+    Array.from({ length: 4 }, (_, i) => makeLogEntry(i)),
+  );
+  const seedRef = useRef(4);
+
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      seedRef.current += 1;
+      setEntries((prev) => [...prev.slice(-59), makeLogEntry(seedRef.current)]);
+    }, 1800);
+    return () => window.clearInterval(id);
+  }, []);
+
+  return entries;
+}
+
+const INITIAL_FLAGS: FeatureFlag[] = [
+  { id: "ai.streaming", description: "Token-by-token chat responses", rollout: 100, environments: { dev: true, staging: true, prod: true } },
+  { id: "cart.upsell", description: "Cross-sell banner in the cart", rollout: 40, environments: { dev: true, staging: false, prod: false } },
+  { id: "viz.sparkline", description: "Sparklines on KPI cards", rollout: 15, environments: { dev: true, staging: true, prod: false } },
+  { id: "playground.ab", description: "A/B compare in PromptPlayground", rollout: 0, environments: { dev: true, staging: false, prod: false } },
+];
+
+function DevToolsDemo() {
+  const logs = useLiveLogs();
+
+  return (
+    <section id="dev-tools" className="border-y border-surface-200 bg-surface-0">
+      <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
+        <SectionHeading
+          kicker="Dev Tools Kit · Phase 6 · live"
+          title="Tools your users' users will love"
+          desc="A dependency-free diff viewer, a follow-tail log stream that's generating live right now, a mini-Postman API playground, and a rollout board. Everything token-driven and responsive."
+        />
+
+        <div className="grid gap-6 lg:grid-cols-2">
+          <div>
+            <ApiPlayground />
+          </div>
+          <LogStream entries={logs} heightClass="h-96" />
+        </div>
+
+        <div className="mt-6 grid gap-6 lg:grid-cols-[1.1fr_1fr]">
+          <DiffViewer oldText={OLD_CODE} newText={NEW_CODE} oldLabel="old" newLabel="new" language="tsx" />
+          <FeatureFlagBoard flags={INITIAL_FLAGS} />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------ project demo ---------------------------- */
+
+const INITIAL_BOARD: KanbanColumn[] = [
+  {
+    id: "todo",
+    title: "To do",
+    wipLimit: 5,
+    cards: [
+      { id: "c1", title: "Publish @vault/ai-chat to npm", tag: "release", tagColor: "brand" },
+      { id: "c2", title: "Add light/dark theme toggle", tag: "design", tagColor: "info" },
+    ],
+  },
+  {
+    id: "doing",
+    title: "In progress",
+    wipLimit: 3,
+    cards: [
+      { id: "c3", title: "Components registry anchors", tag: "ui", tagColor: "warning" },
+      { id: "c4", title: "tsup publish pipeline", tag: "ops", tagColor: "info" },
+    ],
+  },
+  {
+    id: "done",
+    title: "Done",
+    wipLimit: 8,
+    cards: [
+      { id: "c5", title: "Responsive Button scale", tag: "ui", tagColor: "success" },
+      { id: "c6", title: "Token engine", tag: "design", tagColor: "success" },
+    ],
+  },
+];
+
+const ROADMAP_ITEMS: RoadmapItem[] = [
+  { id: "r1", name: "Foundation & tokens", start: 0, end: 3, color: "success", status: "shipped", milestone: true },
+  { id: "r2", name: "AI Agent Kit", start: 2, end: 7, color: "brand", status: "shipped" },
+  { id: "r3", name: "Data Viz Pro", start: 5, end: 9, color: "info", status: "in-progress" },
+  { id: "r4", name: "Commerce Kit", start: 7, end: 11, color: "warning", status: "planned" },
+  { id: "r5", name: "Collab Kit", start: 10, end: 12, color: "danger", status: "planned", milestone: false },
+];
+
+const GANTT_TASKS = [
+  { id: "g1", name: "Design tokens", start: 0, end: 3, progress: 100, group: "Done" },
+  { id: "g2", name: "Free tier components", start: 1, end: 4, progress: 100, group: "Done" },
+  { id: "g3", name: "AI chat streaming", start: 3, end: 7, progress: 100, group: "Build" },
+  { id: "g4", name: "Tool-call inspector", start: 4, end: 6, progress: 100, group: "Build" },
+  { id: "g5", name: "Sparkline + gauges", start: 6, end: 9, progress: 80, group: "QA" },
+  { id: "g6", name: "Cart drawer", start: 8, end: 11, progress: 45, group: "Build" },
+  { id: "g7", name: "Launch bundle", start: 12, end: 14, progress: 10, group: "Planned" },
+];
+
+function ProjectDemo() {
+  return (
+    <section id="project" className="border-y border-surface-200 bg-gradient-to-b from-surface-50 to-surface-0">
+      <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
+        <SectionHeading
+          kicker="Project Mgmt Kit · Phase 6 · live"
+          title="Plan it. Build it. Ship it."
+          desc="A Kanban board with WIP limits you can actually move cards on, a year roadmap with a 'now' marker, and a week-axis Gantt with progress fills."
+        />
+
+        <KanbanBoard columns={INITIAL_BOARD} />
+
+        <div className="mt-6 grid gap-6 lg:grid-cols-2">
+          <RoadmapTimeline items={ROADMAP_ITEMS} now={7} />
+          <GanttChart tasks={GANTT_TASKS} weeks={14} />
+        </div>
       </div>
     </section>
   );

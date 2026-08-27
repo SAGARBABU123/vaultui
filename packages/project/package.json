@@ -1,7 +1,7 @@
 {
-  "name": "@vault/ai-chat",
+  "name": "@vault/project",
   "version": "0.1.0",
-  "description": "AI Agent Kit — ChatCanvas, TokenStreamer, ToolCallInspector, ModelPicker, PromptPlayground + more",
+  "description": "Project Mgmt Kit — KanbanBoard, RoadmapTimeline, GanttChart",
   "license": "SEE LICENSE IN ../COMMERCIAL-LICENSE.md",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
@@ -25,9 +25,7 @@
   "dependencies": {
     "@vault/tokens": "workspace:*",
     "@vault/ui": "workspace:*",
-    "@vault/utils": "workspace:*",
-    "react-markdown": "^9.0.1",
-    "remark-gfm": "^4.0.0"
+    "@vault/utils": "workspace:*"
   },
   "peerDependencies": {
     "react": "^18.0.0",
@@ -47,15 +45,6 @@
     "dts": true,
     "clean": true,
     "sourcemap": true,
-    "external": [
-      "react",
-      "react-dom",
-      "react/jsx-runtime",
-      "@vault/tokens",
-      "@vault/ui",
-      "@vault/utils",
-      "react-markdown",
-      "remark-gfm"
-    ]
+    "external": ["react", "react-dom", "react/jsx-runtime", "@vault/tokens", "@vault/ui", "@vault/utils"]
   }
 }

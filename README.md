@@ -13,12 +13,18 @@ vault-ui/
 ├── apps/
 │   └── showroom/     # Storybook — the storefront
 ├── packages/
-│   ├── ai-chat/      # 🤖 AI Agent Kit — ChatCanvas, TokenStreamer, ToolCallInspector…
+│   ├── ai-chat/      # 🤖 AI Agent Kit — 11 components
+│   ├── commerce/     # 🛒 Commerce Kit — 5 components
 │   ├── configs/      # shared tsconfig
+│   ├── data-viz/     # 📈 Data Viz Pro — 5 components
+│   ├── dev-tools/    # 🧰 Dev Tools Kit — 4 components
+│   ├── project/      # 🗂️ Project Mgmt Kit — 3 components
 │   ├── tokens/       # design tokens / theme engine (Tailwind v4 CSS-first)
 │   ├── utils/        # cn() + shared helpers
-│   └── ui/           # free-tier components (teaser) — kits to come
-├── turbo.json
+│   └── ui/           # free-tier components (MIT teaser)
+├── LICENSE           # MIT (free tier)
+├── COMMERCIAL-LICENSE.md
+├── RELEASE.md        # npm publish guide
 └── pnpm-workspace.yaml
 ```
 
