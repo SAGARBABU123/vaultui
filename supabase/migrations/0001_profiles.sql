@@ -19,7 +19,9 @@ create policy "read own profile" on public.profiles
 
 -- No client-side inserts/updates/deletes — grants go through the function.
 revoke all on public.profiles from anon;
-revoke all on public.profiles from authenticated;
+-- Authenticated users still need the base SELECT privilege; RLS then filters
+-- each row via the policy below (privileges gate access, RLS gates rows).
+grant select on public.profiles to authenticated;
 
 -- 2. Auto-create a profile when a user signs up.
 create or replace function public.handle_new_user()
