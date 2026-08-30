@@ -21,3 +21,4 @@ storybook-static/
 .vscode/
 .vercel
 .env*
+supabase/.temp/
