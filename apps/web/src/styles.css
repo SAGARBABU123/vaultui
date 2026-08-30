@@ -1,0 +1,15 @@
+/**
+ * App-level styles (chrome, not tokens).
+ *
+ * .scrollbar-hidden — keep overflow scrolling, hide the scrollbar:
+ *   Firefox/old-Edge: `scrollbar-width: none`  +  `-ms-overflow-style: none`
+ *   Chrome/Safari: hide the ::-webkit-scrollbar pseudo-element.
+ */
+.scrollbar-hidden {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}

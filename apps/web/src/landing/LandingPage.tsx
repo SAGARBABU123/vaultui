@@ -4,8 +4,10 @@ import { Sparkline } from "@vaultui/data-viz";
 import { cn } from "@vaultui/utils";
 import { ArrowRight, Check, Copy, Download, Package, Terminal } from "lucide-react";
 import { INSTALL_COMMAND, downloadKit } from "../docs/downloadKit";
-import { ThemeDropdown } from "../components/ThemeDropdown";
+import { AuthControl } from "../auth/AuthControl";
+import { useTheme } from "../theme/ThemeContext";
 import { ParticleField } from "./ParticleField";
+import { ClickSpark } from "./ClickSpark";
 
 /* ============================== static data ================================ */
 /* Mirrors packages/tokens/src/tokens.css — the source of truth for the lab.   */
@@ -56,6 +58,41 @@ const RADII = [
   { token: "xl", px: "20px" },
   { token: "2xl", px: "24px" },
 ] as const;
+
+/** Elevation CTA copy per theme — the default caption only describes neumorphic. */
+const ELEVATION_CAPTIONS: Record<string, string> = {
+  neumorphic: "neumorphic · dual light & dark shadow",
+  glassmorphism: "glassmorphism · soft drop glows",
+  "dimensional-layering": "dimensional · 4-level elevation stack",
+  "vintage-retro-film": "vintage · warm sepia shadows",
+};
+
+/** Read a live --color-* token from the active theme; "" when unavailable. */
+function readTokenHex(token: string): string {
+  if (typeof window === "undefined") return "";
+  const v = getComputedStyle(document.documentElement).getPropertyValue(token).trim();
+  return v && !v.startsWith("--") ? v : "";
+}
+
+/** Pick a readable label colour for a swatch (hex or rgb/rgba) on any theme. */
+function swatchText(bg: string): string {
+  let r: number, g: number, b: number;
+  const hex = bg.match(/^#([0-9a-f]{6})$/i);
+  if (hex) {
+    const n = parseInt(hex[1]!, 16);
+    r = (n >> 16) & 255;
+    g = (n >> 8) & 255;
+    b = n & 255;
+  } else {
+    const m = bg.match(/(\d+(?:\.\d+)?)/g)?.map(Number) ?? [];
+    if (m.length < 3) return "#3a4254";
+    r = Math.round(m[0]!);
+    g = Math.round(m[1]!);
+    b = Math.round(m[2]!);
+  }
+  const lum = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+  return lum > 0.5 ? "#3a4254" : "#f2f5fa";
+}
 
 const KITS = [
   {
@@ -116,17 +153,25 @@ const TOTAL_KITS = 6;
 
 export function LandingPage({ onBrowse }: { onBrowse: () => void }) {
   return (
-    <div className="min-h-screen text-surface-900">
-      <Nav />
-      <Hero onBrowse={onBrowse} />
-      <Philosophy />
-      <SystemLab />
-      <KitsSection onBrowse={onBrowse} />
-      <Licensing />
-      <InstallSection onBrowse={onBrowse} />
-      <FinalCta onBrowse={onBrowse} />
-      <Footer />
-    </div>
+    <ClickSpark
+      sparkColor="var(--color-brand-400)"
+      sparkCount={10}
+      sparkRadius={18}
+      sparkSize={10}
+      duration={420}
+    >
+      <div className="min-h-screen text-surface-900">
+        <Nav />
+        <Hero onBrowse={onBrowse} />
+        <Philosophy />
+        <SystemLab />
+        <KitsSection onBrowse={onBrowse} />
+        <Licensing />
+        <InstallSection onBrowse={onBrowse} />
+        <FinalCta onBrowse={onBrowse} />
+        <Footer />
+      </div>
+    </ClickSpark>
   );
 }
 
@@ -135,7 +180,7 @@ export function LandingPage({ onBrowse }: { onBrowse: () => void }) {
 function Nav() {
   return (
     <header className="sticky top-0 z-30 border-b border-surface-200/80 bg-surface-50/85 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
+      <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <a href="#top" className="flex items-center gap-2.5 font-semibold tracking-tight">
           <span className="flex size-8 items-center justify-center rounded-xl bg-brand-600 text-sm text-white shadow-soft">
             V
@@ -166,16 +211,8 @@ function Nav() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <a
-            href={REPO_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Vault UI on GitHub"
-            className="hidden size-10 items-center justify-center rounded-xl border-0 bg-surface-0 text-surface-600 shadow-soft transition-all hover:text-surface-900 active:shadow-pressed sm:inline-flex"
-          >
-            <GitHubIcon className="size-[18px]" />
-          </a>
-          <ThemeDropdown />
+          {/* Only auth lives on the public landing — themes & GitHub are app-side (post sign-in) */}
+          <AuthControl />
         </div>
       </div>
     </header>
@@ -428,6 +465,16 @@ function Philosophy() {
 /* The signature section — the token engine, made visible.                     */
 
 function SystemLab() {
+  const { themeId } = useTheme();
+  // Render the ACTIVE theme's tokens live (falls back to the static defaults
+  // above when a token is missing) — the lab follows the switcher.
+  const read = (token: string, fallback: string) => readTokenHex(token) || fallback;
+  const scales = {
+    brand: BRAND_SCALE.map((c) => ({ ...c, hex: read(`--color-brand-${c.name}`, c.hex) })),
+    surface: SURFACE_SCALE.map((c) => ({ ...c, hex: read(`--color-surface-${c.name}`, c.hex) })),
+    semantic: SEMANTIC_COLORS.map((c) => ({ ...c, hex: read(`--color-${c.name}-500`, c.hex) })),
+  };
+
   return (
     <section id="system" className="scroll-mt-20 border-y border-surface-200/70 bg-surface-0/50 py-20 sm:py-28">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
@@ -445,11 +492,11 @@ function SystemLab() {
               <div>
                 <LabLabel>brand · {BRAND_SCALE.length} steps</LabLabel>
                 <ol className="overflow-hidden rounded-xl border border-surface-200/70">
-                  {BRAND_SCALE.map((c, i) => (
+                  {scales.brand.map((c) => (
                     <li
                       key={c.name}
                       className="flex items-center justify-between px-3 py-[7px] text-[11px]"
-                      style={{ backgroundColor: c.hex, color: i < 3 ? "#4a5672" : "#fff" }}
+                      style={{ backgroundColor: c.hex, color: swatchText(c.hex) }}
                     >
                       <span className="font-mono font-semibold">brand-{c.name}</span>
                       <span className="font-mono uppercase opacity-80">{c.hex}</span>
@@ -461,11 +508,11 @@ function SystemLab() {
                 <div>
                   <LabLabel>surface · {SURFACE_SCALE.length} steps</LabLabel>
                   <ol className="overflow-hidden rounded-xl border border-surface-200/70">
-                    {SURFACE_SCALE.map((c, i) => (
+                    {scales.surface.map((c) => (
                       <li
                         key={c.name}
                         className="flex items-center justify-between px-3 py-[5px] font-mono text-[10px]"
-                        style={{ backgroundColor: c.hex, color: i < 4 ? "#4a5672" : "#e0e5f0" }}
+                        style={{ backgroundColor: c.hex, color: swatchText(c.hex) }}
                       >
                         <span className="font-semibold">{c.name}</span>
                         <span className="uppercase opacity-75">{c.hex}</span>
@@ -476,7 +523,7 @@ function SystemLab() {
                 <div>
                   <LabLabel>semantic</LabLabel>
                   <ul className="space-y-2">
-                    {SEMANTIC_COLORS.map((c) => (
+                    {scales.semantic.map((c) => (
                       <li key={c.name} className="flex items-center justify-between rounded-lg bg-surface-50 px-3 py-2 shadow-inset">
                         <span className="flex items-center gap-2 text-xs font-medium text-surface-700">
                           <span className="size-3 rounded-full" style={{ backgroundColor: c.hex }} />
@@ -534,7 +581,11 @@ function SystemLab() {
 
           {/* Elevation */}
           <Card padding="lg">
-            <PanelHeader icon={<ShadowIcon />} title="Elevation" caption="neumorphic · dual light & dark shadow" />
+            <PanelHeader
+              icon={<ShadowIcon />}
+              title="Elevation"
+              caption={ELEVATION_CAPTIONS[themeId] ?? "elevation · token-driven"}
+            />
             <div className="mt-5 space-y-3">
               {[
                 { name: "shadow-soft", cls: "shadow-soft", note: "resting surfaces" },

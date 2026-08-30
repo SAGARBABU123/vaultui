@@ -26,29 +26,62 @@ interface Node {
   phase: number;
 }
 
-const DEFAULT_COLORS = ["#a7b2fb", "#8b96f7", "#6f7bf2", "#5b66e8"]; // brand-300 … brand-600
+const DEFAULT_COLORS = ["#a7b2fb", "#8b96f7", "#6f7bf2", "#5b66e8"]; // brand-300 … brand-600 (fallback)
 
-const WEB_RADIUS = 200; // px — reach of the cursor web
-const WEB_ALPHA = 0.6; // line alpha at the cursor, fading with distance
-const GLOW_ALPHA = 0.09; // soft halo at the cursor
-const FALLBACK_SCALE = 1.8; // centred web radius multiplier (touch / before first move)
+// Dense, short-range web: the cursor only links nodes that sit CLOSE to it,
+// so lines stay short and the field reads as a fine mesh of near neighbours.
+const WEB_RADIUS = 92; // px — reach of the cursor web (short links only)
+const WEB_ALPHA = 0.62; // line alpha at the cursor, fading with distance
+const GLOW_ALPHA = 0.08; // soft halo at the cursor
+const FALLBACK_SCALE = 1.9; // centred web radius multiplier (touch / before first move)
 
-/** Nodes per square pixel — density target of the auto-scale. */
-const AREA_PER_NODE = 7000;
+/** Nodes per square pixel — density target of the auto-scale (high = fine mesh). */
+const AREA_PER_NODE = 1400;
+
+/** Read the active theme's brand tones straight from CSS vars (no SSR). */
+function readThemeBrandPalette(): string[] {
+  const s = getComputedStyle(document.documentElement);
+  const read = (name: string, fallback: string) => {
+    const v = s.getPropertyValue(name).trim();
+    return v && !v.startsWith("--") ? v : fallback;
+  };
+  return [
+    read("--color-brand-300", DEFAULT_COLORS[0]!),
+    read("--color-brand-400", DEFAULT_COLORS[1]!),
+    read("--color-brand-500", DEFAULT_COLORS[2]!),
+    read("--color-brand-600", DEFAULT_COLORS[3]!),
+  ];
+}
+
+/** Same color as an rgba() string — for the translucent cursor glow. */
+function colorToRgba(color: string, alpha: number): string {
+  const hex = color.match(/^#([0-9a-f]{6}|[0-9a-f]{3})$/i);
+  if (hex) {
+    const h =
+      hex[1]!.length === 3
+        ? hex[1]!
+            .split("")
+            .map((c) => c + c)
+            .join("")
+        : hex[1]!;
+    const n = parseInt(h, 16);
+    return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${alpha})`;
+  }
+  const nums = color.match(/(\d+(?:\.\d+)?)/g);
+  return nums && nums.length >= 3
+    ? `rgba(${nums[0]}, ${nums[1]}, ${nums[2]}, ${alpha})`
+    : `rgba(139, 150, 247, ${alpha})`;
+}
 
 export interface ParticleFieldProps {
   className?: string;
-  /** Indigo brand tones by default; pass your own hex set to re-brand. */
+  /** Pass your own hex set to pin a palette; default = the active theme's brand. */
   colors?: string[];
   /** Upper bound on nodes (auto-scaled by canvas area regardless). */
   maxParticles?: number;
 }
 
-export function ParticleField({
-  className,
-  colors = DEFAULT_COLORS,
-  maxParticles = 400,
-}: ParticleFieldProps) {
+export function ParticleField({ className, colors, maxParticles = 900 }: ParticleFieldProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -61,6 +94,9 @@ export function ParticleField({
     const coarse = window.matchMedia("(pointer: coarse)").matches;
     const pointer = { x: 0, y: 0, active: false, inside: false };
 
+    let palette = colors && colors.length ? colors : readThemeBrandPalette();
+    let accent = palette[1] ?? palette[0] ?? DEFAULT_COLORS[1]!; // brand-400 — stroke + glow
+    let glowColor = colorToRgba(accent, GLOW_ALPHA);
     let nodes: Node[] = [];
     let width = 0;
     let height = 0;
@@ -81,8 +117,8 @@ export function ParticleField({
         list.push({
           x: (i % cols) * cellW + cellW * (0.2 + Math.random() * 0.6),
           y: Math.floor((i % (cols * rows)) / cols) * cellH + cellH * (0.2 + Math.random() * 0.6),
-          r: 1.4 + Math.random() * 1.6,
-          color: colors[Math.floor(Math.random() * colors.length)] ?? DEFAULT_COLORS[0]!,
+          r: 1.2 + Math.random() * 1.4,
+          color: palette[Math.floor(Math.random() * palette.length)] ?? DEFAULT_COLORS[0]!,
           baseAlpha: 0.55 + Math.random() * 0.4,
           phase: (s % 628) / 100, // deterministic breathing phase
         });
@@ -91,6 +127,11 @@ export function ParticleField({
     };
 
     const resize = () => {
+      // Re-skin on theme flips: re-read tokens, rebuild the palette + glow.
+      palette = colors && colors.length ? colors : readThemeBrandPalette();
+      accent = palette[1] ?? palette[0] ?? DEFAULT_COLORS[1]!;
+      glowColor = colorToRgba(accent, GLOW_ALPHA);
+
       const rect = canvas.getBoundingClientRect();
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       width = rect.width;
@@ -140,14 +181,14 @@ export function ParticleField({
 
       // 1 · faint halo at the web's focus
       const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
-      glow.addColorStop(0, `rgba(139, 150, 247, ${GLOW_ALPHA})`);
-      glow.addColorStop(1, "rgba(139, 150, 247, 0)");
+      glow.addColorStop(0, glowColor);
+      glow.addColorStop(1, colorToRgba(accent, 0));
       ctx.fillStyle = glow;
       ctx.fillRect(cx - radius, cy - radius, radius * 2, radius * 2);
 
       // 2 · lines — from each surrounding node to the cursor
-      ctx.lineWidth = 1.5;
-      ctx.strokeStyle = "#8b96f7";
+      ctx.lineWidth = 1.25;
+      ctx.strokeStyle = accent;
       const linkAlphas: number[] = [];
       const radius2 = radius * radius;
       for (let i = 0; i < nodes.length; i++) {
@@ -213,6 +254,13 @@ export function ParticleField({
     window.addEventListener("blur", onDeactivate);
     document.addEventListener("visibilitychange", onVisibility);
 
+    // Watch the theme switcher: when data-theme flips, re-skin the web.
+    const themeObserver = new MutationObserver(() => resize());
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+
     const io = new IntersectionObserver(([entry]) => {
       running = entry?.isIntersecting ?? true;
       if (!running) cancelAnimationFrame(raf);
@@ -227,6 +275,7 @@ export function ParticleField({
 
     return () => {
       cancelAnimationFrame(raf);
+      themeObserver.disconnect();
       ro.disconnect();
       io.disconnect();
       window.removeEventListener("pointermove", onMove);

@@ -87,7 +87,7 @@ export function ThemeDropdown() {
             );
           })}
           <p className="border-t border-surface-100 px-2.5 pb-1.5 pt-2 text-[11px] leading-relaxed text-surface-400">
-            More themes coming soon — each re-skins every component, kit and the landing page.
+            More themes coming soon — each re-skins every component, kit, dashboard template and the landing page.
           </p>
         </div>
       )}

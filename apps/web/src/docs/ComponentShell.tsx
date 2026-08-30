@@ -3,20 +3,22 @@ import { cn } from "@vaultui/utils";
 import { Check, Copy, Download, Grab, Package, Terminal } from "lucide-react";
 import { useState } from "react";
 import { INSTALL_COMMAND, downloadKit } from "./downloadKit";
-import type { ComponentEntry } from "./types";
+import type { ComponentEntry, DashboardEntry } from "./types";
 
 export interface ComponentShellProps {
-  entry: ComponentEntry;
-  prev: ComponentEntry | null;
-  next: ComponentEntry | null;
+  entry: ComponentEntry | DashboardEntry;
+  prev: ComponentEntry | DashboardEntry | null;
+  next: ComponentEntry | DashboardEntry | null;
   onNavigate: (id: string) => void;
+  /** Number of component entries (overview excluded) — used for the overview copy. */
+  componentTotal: number;
 }
 
-export function ComponentShell({ entry, prev, next, onNavigate }: ComponentShellProps) {
+export function ComponentShell({ entry, prev, next, onNavigate, componentTotal }: ComponentShellProps) {
   if (entry.id === "overview") {
     return (
       <article key={entry.id} className="animate-rise">
-        <OverviewHero />
+        <OverviewHero componentTotal={componentTotal} />
         <section className="mt-8">
           <SectionLabel>What's inside</SectionLabel>
           <div className="rounded-2xl border-0 bg-surface-50 p-4 shadow-soft sm:p-6">{entry.demo}</div>
@@ -24,6 +26,46 @@ export function ComponentShell({ entry, prev, next, onNavigate }: ComponentShell
       </article>
     );
   }
+
+  // Dashboard templates get a full-page, themeable canvas.
+  if (entry.kind === "dashboard") {
+    return (
+      <article key={entry.id} className="animate-rise">
+        {/* Header */}
+        <header className="border-b border-surface-200 pb-6">
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{entry.name}</h1>
+            <Badge variant="brand" size="sm" dot>
+              Dashboard template
+            </Badge>
+            <Badge variant="neutral" size="sm">Token-driven · all 4 themes</Badge>
+          </div>
+          <p className="mt-2 max-w-2xl leading-relaxed text-surface-500">{entry.description}</p>
+          {entry.packages.length > 0 && (
+            <code className="mt-3 inline-block rounded-lg border border-surface-200 bg-surface-100 px-2.5 py-1 font-mono text-xs text-surface-600">
+              {entry.packages.join(" · ")}
+            </code>
+          )}
+        </header>
+
+        {/* Live preview — full-bleed composition, re-skins with the theme dropdown */}
+        <section className="mt-6">
+          <div className="mb-3 flex items-center gap-2">
+            <SectionLabel>Live preview</SectionLabel>
+            <Badge variant="neutral" size="sm" dot>
+              try the themes in the header
+            </Badge>
+          </div>
+          <div className="overflow-hidden rounded-2xl border border-surface-200 shadow-raised">
+            {entry.demo}
+          </div>
+        </section>
+
+        <PrevNext prev={prev} next={next} onNavigate={onNavigate} />
+      </article>
+    );
+  }
+
   return (
     <article key={entry.id} className="animate-rise">
       {/* Header */}
@@ -110,45 +152,60 @@ export function ComponentShell({ entry, prev, next, onNavigate }: ComponentShell
       </section>
 
       {/* Prev / Next */}
-      <footer className="mt-10 flex items-center justify-between gap-3 border-t border-surface-200 pt-5">
-        {prev ? (
-          <button
-            type="button"
-            onClick={() => onNavigate(prev.id)}
-            className="group flex max-w-full flex-col items-start gap-0.5 rounded-lg px-3 py-2 text-left transition-colors hover:bg-surface-100"
-          >
-            <span className="flex items-center gap-1 text-xs text-surface-400">
-              <ArrowL /> Previous
-            </span>
-            <span className="truncate text-sm font-semibold text-surface-800 group-hover:text-brand-700">
-              {prev.name}
-            </span>
-          </button>
-        ) : (
-          <span />
-        )}
-        {next ? (
-          <button
-            type="button"
-            onClick={() => onNavigate(next.id)}
-            className="group flex max-w-full flex-col items-end gap-0.5 rounded-lg px-3 py-2 text-right transition-colors hover:bg-surface-100"
-          >
-            <span className="flex items-center gap-1 text-xs text-surface-400">
-              Next <ArrowR />
-            </span>
-            <span className="truncate text-sm font-semibold text-surface-800 group-hover:text-brand-700">
-              {next.name}
-            </span>
-          </button>
-        ) : (
-          <span />
-        )}
-      </footer>
+      <PrevNext prev={prev} next={next} onNavigate={onNavigate} />
     </article>
   );
 }
 
-function OverviewHero() {
+/** Linear pagination between entries (components and dashboard templates). */
+function PrevNext({
+  prev,
+  next,
+  onNavigate,
+}: {
+  prev: ComponentEntry | DashboardEntry | null;
+  next: ComponentEntry | DashboardEntry | null;
+  onNavigate: (id: string) => void;
+}) {
+  return (
+    <footer className="mt-10 flex items-center justify-between gap-3 border-t border-surface-200 pt-5">
+      {prev ? (
+        <button
+          type="button"
+          onClick={() => onNavigate(prev.id)}
+          className="group flex max-w-full flex-col items-start gap-0.5 rounded-lg px-3 py-2 text-left transition-colors hover:bg-surface-100"
+        >
+          <span className="flex items-center gap-1 text-xs text-surface-400">
+            <ArrowL /> Previous
+          </span>
+          <span className="truncate text-sm font-semibold text-surface-800 group-hover:text-brand-700">
+            {prev.name}
+          </span>
+        </button>
+      ) : (
+        <span />
+      )}
+      {next ? (
+        <button
+          type="button"
+          onClick={() => onNavigate(next.id)}
+          className="group flex max-w-full flex-col items-end gap-0.5 rounded-lg px-3 py-2 text-right transition-colors hover:bg-surface-100"
+        >
+          <span className="flex items-center gap-1 text-xs text-surface-400">
+            Next <ArrowR />
+          </span>
+          <span className="truncate text-sm font-semibold text-surface-800 group-hover:text-brand-700">
+            {next.name}
+          </span>
+        </button>
+      ) : (
+        <span />
+      )}
+    </footer>
+  );
+}
+
+function OverviewHero({ componentTotal }: { componentTotal: number }) {
   const [copied, setCopied] = useState(false);
   const [downloading, setDownloading] = useState(false);
 
@@ -185,7 +242,7 @@ function OverviewHero() {
       <div className="relative">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="brand" size="sm" dot>
-            Soft UI · 48 components
+            Soft UI · {componentTotal + 1} components
           </Badge>
           <Badge variant="neutral" size="sm">6 kits · 8 packages</Badge>
         </div>
@@ -196,7 +253,7 @@ function OverviewHero() {
           <span className="text-brand-600">One download.</span>
         </h1>
         <p className="mt-4 max-w-xl leading-relaxed text-surface-500">
-          The free core — design tokens, theme and {47} components — installs with one
+          The free core — design tokens, theme and {componentTotal} components — installs with one
           line from npm. Premium kits come with a license. Download the bundle for
           the real theme file, per-component usage snippets, and a runnable starter app.
         </p>

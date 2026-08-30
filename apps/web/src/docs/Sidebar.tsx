@@ -1,15 +1,26 @@
+import { Link } from "react-router-dom";
+import { Lock } from "lucide-react";
 import { cn } from "@vaultui/utils";
-import type { ComponentGroup } from "./types";
+import { useAuth } from "../auth/AuthContext";
+import type { ComponentEntry, ComponentGroup, DashboardEntry, DashboardGroup } from "./types";
+
+/** Canonical URL for a sidebar entry (mirrors App.entryUrl). */
+function entryTo(item: ComponentEntry | DashboardEntry): string {
+  if (item.id === "overview") return "/docs";
+  return item.kind === "dashboard" ? `/docs/dashboards/${item.id}` : `/docs/components/${item.id}`;
+}
 
 export interface SidebarProps {
   groups: ComponentGroup[];
+  dashboards: DashboardGroup[];
   activeId: string;
   onSelect: (id: string) => void;
   search: string;
   onSearchChange: (value: string) => void;
 }
 
-export function Sidebar({ groups, activeId, onSelect, search, onSearchChange }: SidebarProps) {
+export function Sidebar({ groups, dashboards, activeId, onSelect, search, onSearchChange }: SidebarProps) {
+  const { isSignedIn, isPremium } = useAuth();
   const q = search.trim().toLowerCase();
   const filtered = q
     ? groups
@@ -21,6 +32,18 @@ export function Sidebar({ groups, activeId, onSelect, search, onSearchChange }: 
         }))
         .filter((g) => g.items.length > 0)
     : groups;
+
+  // Dashboard templates get the same search behaviour.
+  const filteredDashboards = q
+    ? dashboards
+        .map((g) => ({
+          ...g,
+          items: g.items.filter(
+            (i) => i.name.toLowerCase().includes(q) || i.description.toLowerCase().includes(q),
+          ),
+        }))
+        .filter((g) => g.items.length > 0)
+    : dashboards;
 
   return (
     <nav aria-label="Components">
@@ -39,6 +62,59 @@ export function Sidebar({ groups, activeId, onSelect, search, onSearchChange }: 
         </label>
       </div>
 
+      {/* Dashboard templates section */}
+      {(() => {
+        const dashCount = filteredDashboards.reduce((n, g) => n + g.items.length, 0);
+        return dashCount > 0 || q === "" ? (
+          <div>
+            <div className="mb-1.5 flex items-center justify-between px-2">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-surface-400">
+                Dashboard Templates
+              </span>
+              <span className="font-mono text-[11px] text-surface-400">{dashCount}</span>
+            </div>
+            {dashCount > 0 ? (
+              <ul className="space-y-0.5">
+                {filteredDashboards.map((group) =>
+                  group.items.map((item) => {
+                    const active = item.id === activeId;
+                    return (
+                      <li key={item.id}>
+                        <Link
+                          to={entryTo(item)}
+                          onClick={() => onSelect(item.id)}
+                          aria-current={active ? "page" : undefined}
+                          className={cn(
+                            "flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-left text-sm transition-colors",
+                            active
+                              ? "bg-brand-50 font-medium text-brand-700"
+                              : "text-surface-600 hover:bg-surface-100 hover:text-surface-900",
+                          )}
+                        >
+                          <span className="truncate">{item.name}</span>
+                          <span
+                            className={cn(
+                              "shrink-0 rounded px-1 py-0.5 font-mono text-[10px]",
+                              active ? "bg-brand-100 text-brand-700" : "bg-surface-100 text-surface-400",
+                            )}
+                          >
+                            {isSignedIn ? "tmpl" : <Lock className="size-3" />}
+                          </span>
+                        </Link>
+                      </li>
+                    );
+                  }),
+                )}
+              </ul>
+            ) : (
+              <p className="px-2.5 pb-1 text-xs italic leading-relaxed text-surface-400">
+                Coming soon — each template ships token-driven, so all 4 themes apply.
+              </p>
+            )}
+          </div>
+        ) : null;
+      })()}
+
       {/* Groups */}
       <div className="space-y-5 px-3 pb-6 pt-2">
         {filtered.map((group) => (
@@ -54,8 +130,8 @@ export function Sidebar({ groups, activeId, onSelect, search, onSearchChange }: 
                 const active = item.id === activeId;
                 return (
                   <li key={item.id}>
-                    <button
-                      type="button"
+                    <Link
+                      to={entryTo(item)}
                       onClick={() => onSelect(item.id)}
                       aria-current={active ? "page" : undefined}
                       className={cn(
@@ -78,9 +154,9 @@ export function Sidebar({ groups, activeId, onSelect, search, onSearchChange }: 
                               : "bg-surface-100 text-surface-400",
                         )}
                       >
-                        {item.tier === "free" ? "free" : "$"}
+                        {item.tier === "free" ? "free" : isPremium ? "$" : <Lock className="size-3" />}
                       </span>
-                    </button>
+                    </Link>
                   </li>
                 );
               })}

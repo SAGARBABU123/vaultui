@@ -1,0 +1,274 @@
+import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
+import { getSupabase } from "./supabase";
+import {
+  demoReadSession,
+  demoSignIn,
+  demoSignOut,
+  demoSignUp,
+  demoUpgrade,
+} from "./mockAuth";
+
+/**
+ * Vault UI auth — one surface, two engines.
+ *
+ *  REAL (default when keys exist):  VITE_SUPABASE_URL + VITE_SUPABASE_ANON_KEY
+ *    → Supabase Auth: server-side validation, signup-before-signin enforced,
+ *      email verification, password reset, session refresh. Role comes from
+ *      the RLS-protected `profiles` table (see supabase/migrations).
+ *
+ *  DEMO (no keys): hardened localStorage mock — real validation, account
+ *    registry with salted hashes, sign-in requires an existing account,
+ *    generic errors, 5-attempt cooldown. Badged "demo mode"; never for prod.
+ *
+ * The `useAuth()` surface is identical in both modes, so the UI never changes.
+ */
+
+export type AuthRole = "free" | "premium";
+
+export interface AuthUser {
+  name: string;
+  email: string;
+  role: AuthRole;
+}
+
+export type AuthMode = "supabase" | "mock";
+
+export type AuthResult = { ok: true; needsVerification?: boolean } | { ok: false; error: string; needsVerification?: boolean };
+
+export type AuthStatus = "signed-out" | "signed-in";
+
+interface AuthContextValue {
+  /** Which engine is active. */
+  mode: AuthMode;
+  user: AuthUser | null;
+  isSignedIn: boolean;
+  isPremium: boolean;
+  status: AuthStatus;
+  /** Email awaiting confirmation after sign-up (Supabase). */
+  pendingVerification: string | null;
+  /** Last auth error (form never throws — read this instead). */
+  error: string | null;
+  clearError: () => void;
+  signIn: (email: string, password: string) => Promise<AuthResult>;
+  signUp: (name: string, email: string, password: string) => Promise<AuthResult>;
+  /** Resend the sign-up confirmation email (Supabase; no-op in demo). */
+  resendVerification: () => Promise<AuthResult>;
+  /** Send a password reset link (Supabase; simulated confirmation in demo). */
+  forgotPassword: (email: string) => Promise<AuthResult>;
+  signOut: () => Promise<void>;
+  upgrade: () => Promise<void>;
+}
+
+const AuthContext = createContext<AuthContextValue | null>(null);
+
+function userFromSupabase(session: { user?: { email?: string | null; user_metadata?: { name?: string } } } | null): AuthUser | null {
+  const email = session?.user?.email;
+  if (!email) return null;
+  return {
+    name: session?.user?.user_metadata?.name ?? email.split("@")[0]!,
+    email,
+    role: "free", // refined below from the RLS-protected profiles row
+  };
+}
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const supabase = getSupabase();
+  const [mode] = useState<AuthMode>(supabase ? "supabase" : "mock");
+  const [user, setUser] = useState<AuthUser | null>(() => (supabase ? null : demoReadSession()));
+  const [pendingVerification, setPendingVerification] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  // Derived — a session equals a signed-in user.
+  const status: AuthStatus = user ? "signed-in" : "signed-out";
+
+  const clearError = useCallback(() => setError(null), []);
+
+  /* ------------------------------ role loader ----------------------------- */
+  const syncRole = useCallback(async (base: AuthUser) => {
+    if (mode !== "supabase") return base;
+    try {
+      const { data } = await supabase!.from("profiles").select("role").maybeSingle();
+      if (data?.role === "premium") return { ...base, role: "premium" as const };
+    } catch {
+      /* table may not exist yet — free role until migration runs */
+    }
+    return base;
+  }, [mode, supabase]);
+
+  /* --------------------------- session bootstrap -------------------------- */
+  useEffect(() => {
+    if (mode !== "supabase" || !supabase) return;
+
+    let alive = true;
+    supabase.auth.getSession().then(({ data }) => {
+      if (!alive) return;
+      const u = userFromSupabase(data.session);
+      if (u) {
+        void syncRole(u).then((full) => {
+          if (alive) setUser(full);
+        });
+      }
+    });
+
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!alive) return;
+      const u = userFromSupabase(session);
+      if (u) {
+        void syncRole(u).then((full) => {
+          if (alive) setUser(full);
+        });
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => {
+      alive = false;
+      sub.subscription.unsubscribe();
+    };
+  }, [mode, supabase, syncRole]);
+
+  /* -------------------------------- actions ------------------------------- */
+
+  const signIn = useCallback(
+    async (email: string, password: string): Promise<AuthResult> => {
+      clearError();
+      if (mode === "mock") {
+        const res = await demoSignIn(email, password);
+        if (!res.ok) {
+          setError(res.error);
+          return res;
+        }
+        setUser(demoReadSession());
+        return { ok: true };
+      }
+
+      const { data, error: err } = await supabase!.auth.signInWithPassword({ email, password });
+      if (err) {
+        const message =
+          err.code === "email_not_confirmed"
+            ? "Please confirm your email first — we sent a verification link."
+            : "Invalid email or password.";
+        setError(message);
+        return { ok: false, error: message, needsVerification: err.code === "email_not_confirmed" };
+      }
+      const u = userFromSupabase(data.session);
+      if (!u) return { ok: false, error: "Could not start a session." };
+      const full = await syncRole(u);
+      setUser(full);
+      return { ok: true };
+    },
+    [mode, supabase, syncRole, clearError],
+  );
+
+  const signUp = useCallback(
+    async (name: string, email: string, password: string): Promise<AuthResult> => {
+      clearError();
+      if (mode === "mock") {
+        const res = await demoSignUp(name, email, password);
+        if (!res.ok) {
+          setError(res.error);
+          return res;
+        }
+        // Sign-up is complete; the user signs in explicitly (mirrors real flow).
+        setPendingVerification(email.toLowerCase());
+        return { ok: true, needsVerification: true };
+      }
+
+      const { error: err } = await supabase!.auth.signUp({
+        email,
+        password,
+        options: { data: { name: name.trim() } },
+      });
+      if (err) {
+        const message =
+          err.code === "user_already_exists" ? "An account with this email already exists." : err.message;
+        setError(message);
+        return { ok: false, error: message };
+      }
+      // Supabase sends a confirmation email (default) → verification state.
+      setPendingVerification(email.toLowerCase());
+      return { ok: true, needsVerification: true };
+    },
+    [mode, supabase, clearError],
+  );
+
+  const resendVerification = useCallback(async (): Promise<AuthResult> => {
+    if (mode === "mock" || !pendingVerification) return { ok: true };
+    const { error: err } = await supabase!.auth.resend({
+      type: "signup",
+      email: pendingVerification,
+    });
+    if (err) {
+      setError(err.message);
+      return { ok: false, error: err.message };
+    }
+    return { ok: true };
+  }, [mode, supabase, pendingVerification]);
+
+  const forgotPassword = useCallback(
+    async (email: string): Promise<AuthResult> => {
+      clearError();
+      if (mode === "mock") {
+        // Simulated reset — the registry is demo-only, no real email.
+        return { ok: true };
+      }
+      const { error: err } = await supabase!.auth.resetPasswordForEmail(email);
+      if (err) {
+        setError(err.message);
+        return { ok: false, error: err.message };
+      }
+      return { ok: true };
+    },
+    [mode, supabase, clearError],
+  );
+
+  const signOut = useCallback(async () => {
+    if (mode === "mock") demoSignOut();
+    else await supabase!.auth.signOut();
+    setUser(null);
+    setPendingVerification(null);
+  }, [mode, supabase]);
+
+  const upgrade = useCallback(async () => {
+    if (mode === "mock") {
+      const upgraded = demoUpgrade();
+      if (upgraded) setUser(upgraded);
+      return;
+    }
+    // Real path: security-definer function owns the write (migration 0001).
+    const { error: err } = await supabase!.rpc("grant_premium");
+    if (!err && user) {
+      setUser({ ...user, role: "premium" });
+    }
+  }, [mode, supabase, user]);
+
+  return (
+    <AuthContext.Provider
+      value={{
+        mode,
+        user,
+        isSignedIn: status === "signed-in" && user !== null,
+        isPremium: user?.role === "premium",
+        status,
+        pendingVerification,
+        error,
+        clearError,
+        signIn,
+        signUp,
+        resendVerification,
+        forgotPassword,
+        signOut,
+        upgrade,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export function useAuth(): AuthContextValue {
+  const value = useContext(AuthContext);
+  if (!value) throw new Error("useAuth must be used within <AuthProvider>");
+  return value;
+}
