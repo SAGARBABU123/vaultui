@@ -107,3 +107,33 @@ consuming your 750 free hours. Deploy it the day you add the Stripe webhook.
 - `vite preview` → HTTP 200 at `/`
 - SPA routes (`/docs/*`, `/sign-in`) are covered by `vercel.json` rewrites and the
   Cloudflare `_redirects` fallback.
+---
+
+## 🔄 Automatic updates — Vercel + Supabase on every push
+
+Push to `main` and everything deploys itself:
+
+| Trigger (push to `main`) | What runs |
+| ------------------------ | --------- |
+| any commit               | **CI** — lint · typecheck · build (`ci.yml`) |
+| any commit               | **Vercel** — production deploy (`deploy-vercel.yml`) |
+| `supabase/migrations/**` change | **Supabase** — `supabase db push` applies migrations (`deploy-supabase.yml`) |
+
+### One-time setup — add GitHub secrets
+Repo → **Settings → Secrets and variables → Actions** → New repository secret:
+
+- **Vercel** (get token at vercel.com → Settings → Tokens; org/project ids in `.vercel/project.json` or Vercel dashboard):
+  - `VERCEL_TOKEN`
+  - `VERCEL_ORG_ID` = `team_AUBM80VNTfvdtVS2YJ9z0uAV` (or your team id)
+  - `VERCEL_PROJECT_ID` = `prj_ZypCaj2XzOPfKimFzVPFYG8aw9Md` (or your project id)
+- **Supabase** (dashboard → Account → Access tokens; project ref = the `<ref>` in `https://<ref>.supabase.co`):
+  - `SUPABASE_ACCESS_TOKEN`
+  - `SUPABASE_PROJECT_ID`
+  - `SUPABASE_DB_PASSWORD`
+
+The workflows are guarded with `if:` on those secrets — CI never fails before
+you add them; deploys start automatically the moment they exist.
+
+> **Vercel alternative:** if you've already imported the repo on
+> vercel.com, its own GitHub integration deploys on push without this
+> workflow — either path works; having both is harmless.

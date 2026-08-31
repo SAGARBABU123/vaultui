@@ -1,0 +1,25 @@
+# Supabase CLI configuration (used by CI `supabase db push`).
+# Remote project ref + token come from GitHub secrets (workflow), not here.
+project_id = "vault-ui"
+
+[api]
+enabled = false
+
+[db]
+
+[migrations]
+dir = "supabase/migrations"
+
+[auth]
+
+[edge_functions]
+
+[storage]
+
+[realtime]
+
+[studio]
+enabled = false
+
+[analytics]
+enabled = false
