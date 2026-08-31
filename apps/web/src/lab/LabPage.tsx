@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Badge, Button, Card, Input, Progress, Switch } from "@vaultui/ui";
 import { BarChart, KpiCard } from "@vaultui/data-viz";
-import { Check, Copy, Download } from "lucide-react";
+import { ArrowLeft, Check, Copy, Download } from "lucide-react";
 import { DocsHeader } from "../layout/DocsHeader";
 import { ALL_COMPONENTS, ALL_DASHBOARDS } from "../projects/entries";
 
@@ -142,7 +142,16 @@ export function LabPage() {
       />
 
       <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
-        <div className="flex flex-wrap items-end justify-between gap-3">
+              {/* Back to the vault */}
+      <button
+        type="button"
+        onClick={() => navigate("/docs")}
+        className="mb-4 inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-sm font-medium text-surface-500 transition-colors hover:bg-surface-100 hover:text-surface-900"
+      >
+        <ArrowLeft className="size-4" /> Back to dashboard
+      </button>
+
+<div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-600">Rebrand lab</p>
             <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
