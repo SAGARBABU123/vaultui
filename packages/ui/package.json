@@ -13,7 +13,8 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
     },
-    "./button.css": "./src/button.css"
+    "./button.css": "./src/button.css",
+    "./primitives.css": "./src/primitives.css"
   },
   "files": [
     "dist",

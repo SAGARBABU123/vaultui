@@ -147,8 +147,8 @@ const KITS = [
   },
 ] as const;
 
-const TOTAL_COMPONENTS = 48;
-const FREE_TIER = 3;
+const TOTAL_COMPONENTS = 59;
+const FREE_TIER = 14;
 const TOTAL_KITS = 6;
 
 /* ================================ page ==================================== */
@@ -711,8 +711,8 @@ function KitsSection({ onBrowse }: { onBrowse: () => void }) {
       <div className="mt-6 rounded-2xl border border-dashed border-brand-300 bg-brand-50/60 p-5 text-center sm:p-6">
         <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
           <p className="text-sm leading-relaxed text-surface-600">
-            <span className="font-semibold text-brand-700">Free tier — Button, Badge, Card.</span>{" "}
-            The primitives every product needs, MIT-licensed on npm, with the same tokens as the kits.
+            <span className="font-semibold text-brand-700">Free tier — the whole core kit.</span>{" "}
+            {FREE_TIER} primitives and form controls, MIT-licensed on npm, styled by the same tokens as the kits.
           </p>
           <Button size="sm" onClick={onBrowse}>Try them now</Button>
         </div>
@@ -746,7 +746,7 @@ function Licensing() {
               {[
                 ["@vaultui/tokens", "the DNA — palette, radii, shadows, motion"],
                 ["@vaultui/utils", "cn() + the helper the library is built on"],
-                ["@vaultui/ui", "Button · Badge · Card — token-driven"],
+                ["@vaultui/ui", `${FREE_TIER} primitives: buttons, forms, overlays, feedback`],
               ].map(([pkg, desc]) => (
                 <li key={pkg} className="flex items-start gap-3 text-sm">
                   <Check className="mt-0.5 size-4 shrink-0 text-success-500" />

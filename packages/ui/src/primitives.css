@@ -1,0 +1,796 @@
+/**
+ * Vault UI — Core primitives (scan-independent CSS, token-driven).
+ *
+ * Form controls, overlays, feedback and display primitives shared by every
+ * Vault product. Like button.css, these ship as plain CSS (no Tailwind class
+ * detection required) and read the theme's CSS variables, so all four Vault
+ * themes restyle them and consumers don't need Tailwind to use them.
+ */
+
+/* ================================ Inputs ================================= */
+
+.vault-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vault-field__label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--color-surface-600, #4a5672);
+}
+
+.vault-field__hint {
+  font-size: 12px;
+  color: var(--color-surface-400, #93a0ba);
+}
+
+.vault-field__error {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-danger-500, #e56b7a);
+}
+
+.vault-input,
+.vault-textarea,
+.vault-select {
+  width: 100%;
+  border: 1px solid var(--color-surface-200, #d3dae8);
+  background-color: var(--color-surface-0, #f3f6fb);
+  color: var(--color-surface-800, #27324a);
+  border-radius: var(--radius-sm, 0.5rem);
+  padding: 0 14px;
+  height: 40px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: var(--shadow-inset, inset 0 1px 3px rgb(16 24 42 / 0.08));
+}
+
+.vault-input::placeholder,
+.vault-textarea::placeholder {
+  color: var(--color-surface-400, #93a0ba);
+}
+
+.vault-input:focus,
+.vault-textarea:focus,
+.vault-select:focus {
+  outline: none;
+  border-color: var(--color-brand-400, #8b96f7);
+  box-shadow: 0 0 0 3px rgb(139 150 247 / 0.22);
+}
+
+.vault-input[aria-invalid="true"],
+.vault-textarea[aria-invalid="true"] {
+  border-color: var(--color-danger-400, #e56b7a);
+}
+
+.vault-input[aria-invalid="true"]:focus {
+  box-shadow: 0 0 0 3px rgb(229 107 122 / 0.2);
+}
+
+.vault-input:disabled,
+.vault-textarea:disabled,
+.vault-select:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.vault-input--sm {
+  height: 34px;
+  font-size: 13px;
+  padding: 0 12px;
+}
+
+.vault-input--lg {
+  height: 48px;
+  font-size: 15px;
+  padding: 0 16px;
+}
+
+.vault-textarea {
+  height: auto;
+  min-height: 96px;
+  padding: 12px 14px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.vault-select {
+  appearance: none;
+  cursor: pointer;
+  padding-right: 36px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2393a0ba' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+
+/* =============================== Switch =================================== */
+
+.vault-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 26px;
+  border-radius: 999px;
+  background-color: var(--color-surface-200, #d3dae8);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.18s ease;
+  padding: 0;
+}
+
+.vault-switch--sm {
+  width: 34px;
+  height: 20px;
+}
+
+.vault-switch:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgb(139 150 247 / 0.3);
+}
+
+.vault-switch:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.vault-switch__thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background-color: #fff;
+  box-shadow: var(--shadow-soft, 0 1px 3px rgb(16 24 42 / 0.3));
+  transition: transform 0.18s ease;
+}
+
+.vault-switch--sm .vault-switch__thumb {
+  width: 14px;
+  height: 14px;
+  top: 3px;
+  left: 3px;
+}
+
+.vault-switch[aria-checked="true"] {
+  background-color: var(--color-brand-600, #5b66e8);
+}
+
+.vault-switch[aria-checked="true"] .vault-switch__thumb {
+  transform: translateX(18px);
+}
+
+.vault-switch--sm[aria-checked="true"] .vault-switch__thumb {
+  transform: translateX(14px);
+}
+
+/* =============================== Checkbox ================================ */
+
+.vault-check {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--color-surface-700, #38445f);
+  user-select: none;
+}
+
+.vault-check input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.vault-check__box {
+  position: relative;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  border-radius: 6px;
+  background-color: var(--color-surface-0, #f3f6fb);
+  border: 1px solid var(--color-surface-300, #c2cada);
+  box-shadow: var(--shadow-inset, inset 0 1px 3px rgb(16 24 42 / 0.1));
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.vault-check input:checked + .vault-check__box {
+  background-color: var(--color-brand-600, #5b66e8);
+  border-color: var(--color-brand-600, #5b66e8);
+}
+
+.vault-check__box::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  width: 6px;
+  height: 11px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) scale(0);
+  transition: transform 0.12s ease;
+}
+
+.vault-check input:checked + .vault-check__box::after {
+  transform: rotate(45deg) scale(1);
+}
+
+.vault-check input:focus-visible + .vault-check__box {
+  box-shadow: 0 0 0 3px rgb(139 150 247 / 0.3);
+}
+
+.vault-check input:disabled + .vault-check__box {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ============================== RadioGroup =============================== */
+
+.vault-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.vault-radio {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--color-surface-700, #38445f);
+  user-select: none;
+}
+
+.vault-radio input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.vault-radio__dot {
+  position: relative;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  border-radius: 999px;
+  background-color: var(--color-surface-0, #f3f6fb);
+  border: 1px solid var(--color-surface-300, #c2cada);
+  box-shadow: var(--shadow-inset, inset 0 1px 3px rgb(16 24 42 / 0.1));
+  transition: border-color 0.15s ease;
+}
+
+.vault-radio input:checked + .vault-radio__dot {
+  border-color: var(--color-brand-600, #5b66e8);
+}
+
+.vault-radio__dot::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: 999px;
+  background-color: var(--color-brand-600, #5b66e8);
+  transform: scale(0);
+  transition: transform 0.12s ease;
+}
+
+.vault-radio input:checked + .vault-radio__dot::after {
+  transform: scale(1);
+}
+
+.vault-radio input:focus-visible + .vault-radio__dot {
+  box-shadow: 0 0 0 3px rgb(139 150 247 / 0.3);
+}
+
+/* ================================= Tabs ================================== */
+
+.vault-tabs__list {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: var(--radius-md, 0.75rem);
+  background-color: var(--color-surface-100, #e0e5f0);
+  box-shadow: var(--shadow-inset, inset 0 1px 3px rgb(16 24 42 / 0.08));
+  width: max-content;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.vault-tabs__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border: none;
+  border-radius: calc(var(--radius-md, 0.75rem) - 3px);
+  background: transparent;
+  color: var(--color-surface-500, #64708c);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+  white-space: nowrap;
+}
+
+.vault-tabs__trigger:hover {
+  color: var(--color-surface-800, #27324a);
+}
+
+.vault-tabs__trigger[aria-selected="true"] {
+  background-color: var(--color-surface-0, #f3f6fb);
+  color: var(--color-brand-700, #4a53c9);
+  box-shadow: var(--shadow-soft, 0 1px 3px rgb(16 24 42 / 0.12));
+}
+
+.vault-tabs__trigger:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgb(139 150 247 / 0.3);
+}
+
+.vault-tabs__panel {
+  margin-top: 14px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-surface-700, #38445f);
+}
+
+/* =============================== Accordion =============================== */
+
+.vault-acc {
+  border: 1px solid var(--color-surface-200, #d3dae8);
+  border-radius: var(--radius-md, 0.75rem);
+  background-color: var(--color-surface-0, #f3f6fb);
+  overflow: hidden;
+}
+
+.vault-acc + .vault-acc {
+  margin-top: 8px;
+}
+
+.vault-acc__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 16px;
+  border: none;
+  background: none;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--color-surface-800, #27324a);
+  text-align: left;
+  cursor: pointer;
+}
+
+.vault-acc__trigger:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 3px rgb(139 150 247 / 0.25);
+}
+
+.vault-acc__icon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  color: var(--color-surface-400, #93a0ba);
+  transition: transform 0.18s ease;
+}
+
+.vault-acc[data-open="true"] .vault-acc__icon {
+  transform: rotate(180deg);
+}
+
+.vault-acc__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.2s ease;
+}
+
+.vault-acc[data-open="true"] .vault-acc__panel {
+  grid-template-rows: 1fr;
+}
+
+.vault-acc__panel-inner {
+  overflow: hidden;
+  min-height: 0;
+  padding: 0 16px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--color-surface-600, #4a5672);
+}
+
+.vault-acc[data-open="true"] .vault-acc__panel-inner {
+  padding-bottom: 14px;
+}
+
+/* ================================ Tooltip ================================ */
+
+.vault-tooltip {
+  position: relative;
+  display: inline-flex;
+}
+
+.vault-tooltip__pop {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  transform: translate(-50%, 4px);
+  width: max-content;
+  max-width: 240px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background-color: var(--color-surface-900, #1a2336);
+  color: var(--color-surface-0, #f3f6fb);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  text-align: center;
+  box-shadow: var(--shadow-raised, 0 6px 20px rgb(16 24 42 / 0.25));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 20;
+}
+
+.vault-tooltip:hover .vault-tooltip__pop,
+.vault-tooltip:focus-within .vault-tooltip__pop {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* ================================= Modal ================================== */
+
+.vault-modal__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background-color: rgb(16 24 42 / 0.45);
+  backdrop-filter: blur(2px);
+  animation: vault-fade 0.15s ease both;
+}
+
+.vault-modal__dialog {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 61;
+  width: calc(100vw - 32px);
+  max-width: 480px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  border: 1px solid var(--color-surface-200, #d3dae8);
+  border-radius: var(--radius-lg, 1rem);
+  background-color: var(--color-surface-0, #f3f6fb);
+  box-shadow: var(--shadow-raised, 0 12px 40px rgb(16 24 42 / 0.3));
+  padding: 22px;
+  animation: vault-rise 0.18s ease both;
+}
+
+.vault-modal__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.vault-modal__title {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-surface-900, #1a2336);
+}
+
+.vault-modal__close {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-surface-400, #93a0ba);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.vault-modal__close:hover {
+  background-color: var(--color-surface-100, #e0e5f0);
+  color: var(--color-surface-800, #27324a);
+}
+
+.vault-modal__body {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-surface-600, #4a5672);
+}
+
+.vault-modal__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+@keyframes vault-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes vault-rise {
+  from { opacity: 0; transform: translate(-50%, -46%); }
+  to { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+/* ================================= Avatar ================================ */
+
+.vault-avatar {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 999px;
+  background-color: var(--color-brand-600, #5b66e8);
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  user-select: none;
+  overflow: hidden;
+}
+
+.vault-avatar--sm {
+  width: 28px;
+  height: 28px;
+  font-size: 11px;
+}
+
+.vault-avatar--more {
+  background: linear-gradient(
+    135deg,
+    var(--color-surface-200, #d3dae8),
+    var(--color-surface-300, #c2cada)
+  );
+  color: var(--color-surface-700, #38445f);
+}
+
+.vault-avatar--md {
+  width: 36px;
+  height: 36px;
+  font-size: 13px;
+}
+
+.vault-avatar--lg {
+  width: 44px;
+  height: 44px;
+  font-size: 15px;
+}
+
+.vault-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vault-avatar-group {
+  display: inline-flex;
+  align-items: center;
+}
+
+.vault-avatar-group .vault-avatar {
+  border: 2px solid var(--color-surface-0, #f3f6fb);
+}
+
+.vault-avatar-group .vault-avatar + .vault-avatar,
+.vault-avatar-group > * + * {
+  margin-left: -10px;
+}
+
+/* ================================ Skeleton ================================ */
+
+.vault-skeleton {
+  display: inline-block;
+  border-radius: var(--radius-sm, 0.5rem);
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-100, #e0e5f0) 25%,
+    var(--color-surface-200, #d3dae8) 50%,
+    var(--color-surface-100, #e0e5f0) 75%
+  );
+  background-size: 200% 100%;
+  animation: vault-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes vault-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ================================ Progress ================================ */
+
+.vault-progress {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background-color: var(--color-surface-200, #d3dae8);
+  box-shadow: var(--shadow-inset, inset 0 1px 3px rgb(16 24 42 / 0.12));
+  overflow: hidden;
+}
+
+.vault-progress__bar {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    var(--color-brand-500, #6f7bf2),
+    var(--color-brand-700, #4a53c9)
+  );
+  transition: width 0.3s ease;
+}
+
+/* ============================== Empty state ============================== */
+
+.vault-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 32px 20px;
+  text-align: center;
+  border: 1px dashed var(--color-surface-300, #c2cada);
+  border-radius: var(--radius-lg, 1rem);
+  background-color: var(--color-surface-50, #e9edf5);
+}
+
+.vault-empty__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background-color: var(--color-brand-100, #e2e6ff);
+  color: var(--color-brand-700, #4a53c9);
+}
+
+.vault-empty__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-surface-900, #1a2336);
+}
+
+.vault-empty__body {
+  max-width: 320px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--color-surface-500, #64708c);
+}
+
+.vault-empty__action {
+  margin-top: 6px;
+}
+
+/* ============================== Breadcrumb ================================ */
+
+.vault-crumbs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  font-size: 13px;
+}
+
+.vault-crumbs__item {
+  color: var(--color-surface-500, #64708c);
+  text-decoration: none;
+  border-radius: 6px;
+  padding: 2px 5px;
+  transition: color 0.15s ease, background-color 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+.vault-crumbs__item:hover {
+  color: var(--color-brand-700, #4a53c9);
+  background-color: var(--color-brand-50, #eef0ff);
+}
+
+.vault-crumbs__item[aria-current="page"] {
+  color: var(--color-surface-900, #1a2336);
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.vault-crumbs__sep {
+  color: var(--color-surface-300, #c2cada);
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ================================== Toast ================================= */
+
+.vault-toast-viewport {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(360px, calc(100vw - 32px));
+}
+
+.vault-toast {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--color-surface-200, #d3dae8);
+  border-radius: var(--radius-md, 0.75rem);
+  background-color: var(--color-surface-0, #f3f6fb);
+  box-shadow: var(--shadow-raised, 0 8px 28px rgb(16 24 42 / 0.22));
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--color-surface-700, #38445f);
+  animation: vault-toast-in 0.2s ease both;
+}
+
+@keyframes vault-toast-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.vault-toast__icon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  color: var(--color-brand-600, #5b66e8);
+}
+
+.vault-toast--success .vault-toast__icon { color: var(--color-success-500, #2fbf7f); }
+.vault-toast--error .vault-toast__icon { color: var(--color-danger-500, #e56b7a); }
+.vault-toast--info .vault-toast__icon { color: var(--color-info-500, #5aa7e2); }
+
+.vault-toast__title {
+  font-weight: 600;
+  color: var(--color-surface-900, #1a2336);
+}
+
+.vault-toast__desc {
+  color: var(--color-surface-500, #64708c);
+}
+
+.vault-toast__close {
+  flex-shrink: 0;
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-surface-400, #93a0ba);
+  cursor: pointer;
+}
+
+.vault-toast__close:hover {
+  background-color: var(--color-surface-100, #e0e5f0);
+  color: var(--color-surface-800, #27324a);
+}
