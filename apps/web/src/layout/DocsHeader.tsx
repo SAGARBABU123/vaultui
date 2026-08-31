@@ -48,11 +48,16 @@ export function DocsHeader({
   dashboardTotal,
   onOpenDrawer,
   onLogo,
+  searchValue,
+  onSearchChange,
 }: {
   componentTotal: number;
   dashboardTotal: number;
   onOpenDrawer: () => void;
   onLogo: () => void;
+  /** When provided, the header shows a search bar in place of the count badge. */
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
 }) {
   const { version, downloads } = useNpmMeta();
   const { isSignedIn } = useAuth();
@@ -75,10 +80,24 @@ export function DocsHeader({
           </span>
         </button>
 
-        <Badge variant="neutral" size="sm" className="hidden md:inline-flex">
-          {componentTotal} components · 7 kits
-          {dashboardTotal > 0 ? ` · ${dashboardTotal} dashboard template${dashboardTotal === 1 ? "" : "s"}` : ""}
-        </Badge>
+        {onSearchChange ? (
+          <label className="relative mx-auto block w-44 min-w-0 sm:w-72">
+            <span className="sr-only">Search components</span>
+            <SearchIcon className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-surface-400" />
+            <input
+              type="search"
+              value={searchValue ?? ""}
+              onChange={(e) => onSearchChange(e.target.value)}
+              placeholder="Filter components…"
+              className="h-10 w-full rounded-full border-0 bg-surface-100 pl-9 pr-3 text-sm text-surface-800 shadow-inset outline-none placeholder:text-surface-400 focus:ring-2 focus:ring-brand-500/20"
+            />
+          </label>
+        ) : (
+          <Badge variant="neutral" size="sm" className="hidden md:inline-flex">
+            {componentTotal} components · 7 kits
+            {dashboardTotal > 0 ? ` · ${dashboardTotal} dashboard template${dashboardTotal === 1 ? "" : "s"}` : ""}
+          </Badge>
+        )}
 
         <div className="flex items-center gap-2">
           {/* Mobile sidebar trigger */}
@@ -147,6 +166,18 @@ export function DocsHeader({
 }
 
 /* --------------------------------- icons --------------------------------- */
+
+function SearchIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 20 20" fill="currentColor" className={className} aria-hidden="true">
+      <path
+        fillRule="evenodd"
+        d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
+        clipRule="evenodd"
+      />
+    </svg>
+  );
+}
 
 function MenuIcon() {
   return (

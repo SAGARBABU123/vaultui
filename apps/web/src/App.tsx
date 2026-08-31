@@ -188,6 +188,7 @@ function DocsView() {
             onSelect={navigateEntry}
             search={search}
             onSearchChange={setSearch}
+            summary={`${COMPONENT_TOTAL} components · 7 kits · ${ALL_DASHBOARDS.length} dashboards`}
           />
         </aside>
 
@@ -198,6 +199,8 @@ function DocsView() {
             dashboardTotal={ALL_DASHBOARDS.length}
             onOpenDrawer={() => setDrawerOpen(true)}
             onLogo={() => navigate("/")}
+            searchValue={search}
+            onSearchChange={setSearch}
           />
 
           {/* Mobile drawer */}
@@ -224,6 +227,7 @@ function DocsView() {
                     onSelect={navigateEntry}
                     search={search}
                     onSearchChange={setSearch}
+                    summary={`${COMPONENT_TOTAL} components · 7 kits · ${ALL_DASHBOARDS.length} dashboards`}
                   />
                 </div>
               </div>

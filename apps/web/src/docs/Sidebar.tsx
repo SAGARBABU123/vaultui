@@ -18,9 +18,11 @@ export interface SidebarProps {
   onSelect: (id: string) => void;
   search: string;
   onSearchChange: (value: string) => void;
+  /** Optional summary line shown at the top of the rail (e.g. component count). */
+  summary?: string;
 }
 
-export function Sidebar({ groups, dashboards, activeId, onSelect, search, onSearchChange }: SidebarProps) {
+export function Sidebar({ groups, dashboards, activeId, onSelect, search, onSearchChange, summary }: SidebarProps) {
   const { isSignedIn, isPremium } = useAuth();
   const q = search.trim().toLowerCase();
 
@@ -61,20 +63,14 @@ export function Sidebar({ groups, dashboards, activeId, onSelect, search, onSear
 
   return (
     <nav aria-label="Components">
-      {/* Search */}
-      <div className="p-3 pb-1">
-        <label className="relative block">
-          <span className="sr-only">Search components</span>
-          <SearchIcon className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-surface-400" />
-          <input
-            type="search"
-            value={search}
-            onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Filter components…"
-            className="h-10 w-full rounded-xl border-0 bg-surface-100 shadow-inset pl-9 pr-3 text-sm text-surface-800 outline-none placeholder:text-surface-400 focus:border-brand-400 focus:ring-2 focus:ring-brand-500/20"
-          />
-        </label>
-      </div>
+      {/* Rail summary — was the old header count badge, now anchors the rail */}
+      {summary && (
+        <div className="px-3 pb-2 pt-4">
+          <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-600">
+            {summary}
+          </p>
+        </div>
+      )}
 
       {/* Dashboard templates section */}
       {(() => {
