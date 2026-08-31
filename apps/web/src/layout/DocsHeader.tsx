@@ -39,6 +39,39 @@ export function DocsHeader({
   return (
     <header className="sticky top-0 z-30 border-b border-surface-200 bg-surface-0/80 backdrop-blur">
       <div className="flex h-16 w-full items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+        {/* Left group — menu trigger + active project, beside the search bar */}
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={onOpenDrawer}
+            aria-label="Open components list"
+            className={cn(
+              "inline-flex size-10 items-center justify-center rounded-lg text-surface-600 transition-colors hover:bg-surface-100 lg:hidden",
+            )}
+          >
+            <MenuIcon />
+          </button>
+          {isSignedIn && (
+            <button
+              type="button"
+              id="onboard-project-chip"
+              onClick={() =>
+                activeProject ? navigate(`/projects/${activeProject.id}`) : navigate("/projects")
+              }
+              title={activeProject ? `Open ${activeProject.name}` : "Select or create a project"}
+              className="hidden h-10 max-w-[13rem] items-center gap-1.5 rounded-xl border-0 bg-surface-0 px-3 text-sm font-medium text-surface-700 shadow-soft transition-all hover:text-surface-900 active:shadow-pressed sm:inline-flex"
+            >
+              <Folder className="size-4 shrink-0 text-brand-600" />
+              <span className="truncate">{activeProject ? activeProject.name : "Select a project"}</span>
+              {activeProject && (
+                <span className="shrink-0 rounded-full bg-brand-100 px-1.5 py-0.5 font-mono text-[10px] font-semibold text-brand-700">
+                  {activeProject.items.length}
+                </span>
+              )}
+            </button>
+          )}
+        </div>
+
         {onSearchChange ? (
           <label className="relative mx-auto block w-44 min-w-0 sm:w-72">
             <span className="sr-only">Search components</span>
@@ -69,17 +102,6 @@ export function DocsHeader({
         )}
 
         <div className="flex items-center gap-2">
-          {/* Mobile sidebar trigger */}
-          <button
-            type="button"
-            onClick={onOpenDrawer}
-            aria-label="Open components list"
-            className={cn(
-              "inline-flex size-10 items-center justify-center rounded-lg text-surface-600 transition-colors hover:bg-surface-100 lg:hidden",
-            )}
-          >
-            <MenuIcon />
-          </button>
           {/* App controls — themes & GitHub are post-sign-in */}
           {isSignedIn && (
             <>
@@ -92,24 +114,6 @@ export function DocsHeader({
                 className="hidden size-10 items-center justify-center rounded-xl border-0 bg-surface-0 text-surface-600 shadow-soft transition-all hover:text-surface-900 active:shadow-pressed sm:inline-flex"
               >
                 <CircleHelp className="size-[18px]" />
-              </button>
-              {/* Active project — the cart's target; opens the project */}
-              <button
-                type="button"
-                id="onboard-project-chip"
-                onClick={() =>
-                  activeProject ? navigate(`/projects/${activeProject.id}`) : navigate("/projects")
-                }
-                title={activeProject ? `Open ${activeProject.name}` : "Select or create a project"}
-                className="hidden h-10 max-w-[13rem] items-center gap-1.5 rounded-xl border-0 bg-surface-0 px-3 text-sm font-medium text-surface-700 shadow-soft transition-all hover:text-surface-900 active:shadow-pressed sm:inline-flex"
-              >
-                <Folder className="size-4 shrink-0 text-brand-600" />
-                <span className="truncate">{activeProject ? activeProject.name : "Select a project"}</span>
-                {activeProject && (
-                  <span className="shrink-0 rounded-full bg-brand-100 px-1.5 py-0.5 font-mono text-[10px] font-semibold text-brand-700">
-                    {activeProject.items.length}
-                  </span>
-                )}
               </button>
               <a
                 href={REPO_URL}
