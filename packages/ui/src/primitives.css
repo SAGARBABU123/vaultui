@@ -802,3 +802,458 @@
   background-color: var(--color-surface-100, #e0e5f0);
   color: var(--color-surface-800, #27324a);
 }
+/* ================================== Kbd =================================== */
+
+.vault-kbd {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border-radius: 6px;
+  border: 1px solid var(--color-surface-200, #d3dae8);
+  border-bottom-width: 2px;
+  background-color: var(--color-surface-0, #f3f6fb);
+  color: var(--color-surface-600, #4a5672);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+/* ================================ Slider ================================== */
+
+.vault-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 20px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.vault-slider::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    var(--color-brand-600, #5b66e8) var(--vault-slider-fill, 50%),
+    var(--color-surface-200, #d3dae8) var(--vault-slider-fill, 50%)
+  );
+  box-shadow: var(--shadow-inset, inset 0 1px 3px rgb(16 24 42 / 0.14));
+}
+
+.vault-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  margin-top: -6px;
+  border-radius: 999px;
+  background-color: var(--color-surface-0, #f3f6fb);
+  border: 2px solid var(--color-brand-600, #5b66e8);
+  box-shadow: var(--shadow-soft, 0 1px 4px rgb(16 24 42 / 0.3));
+  transition: transform 0.12s ease;
+}
+
+.vault-slider:hover::-webkit-slider-thumb {
+  transform: scale(1.12);
+}
+
+.vault-slider:focus-visible {
+  outline: none;
+}
+
+.vault-slider:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 4px rgb(139 150 247 / 0.3);
+}
+
+.vault-slider::-moz-range-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-surface-200, #d3dae8);
+}
+
+.vault-slider::-moz-range-progress {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-brand-600, #5b66e8);
+}
+
+.vault-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background-color: var(--color-surface-0, #f3f6fb);
+  border: 2px solid var(--color-brand-600, #5b66e8);
+}
+
+.vault-slider:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ============================ Dropdown menu =============================== */
+
+.vault-menu {
+  position: absolute;
+  min-width: 200px;
+  max-width: 280px;
+  padding: 6px;
+  border: 1px solid var(--color-surface-200, #d3dae8);
+  border-radius: var(--radius-md, 0.75rem);
+  background-color: var(--color-surface-0, #f3f6fb);
+  box-shadow: var(--shadow-popover, 0 14px 32px rgb(16 24 42 / 0.28));
+  z-index: 50;
+  animation: vault-rise 0.14s ease both;
+}
+
+.vault-menu__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-surface-700, #38445f);
+  font-size: 13.5px;
+  font-weight: 500;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+.vault-menu__item:hover,
+.vault-menu__item[data-focused="true"] {
+  background-color: var(--color-surface-100, #e0e5f0);
+  color: var(--color-surface-900, #1a2336);
+}
+
+.vault-menu__item--danger {
+  color: var(--color-danger-500, #e56b7a);
+}
+
+.vault-menu__item--danger:hover,
+.vault-menu__item--danger[data-focused="true"] {
+  background-color: rgb(229 107 122 / 0.1);
+  color: var(--color-danger-500, #e56b7a);
+}
+
+.vault-menu__sep {
+  height: 1px;
+  margin: 5px 6px;
+  background-color: var(--color-surface-100, #e0e5f0);
+}
+
+/* =============================== Combobox ================================ */
+
+.vault-combobox {
+  position: relative;
+}
+
+.vault-combobox__pop {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  max-height: 260px;
+  overflow-y: auto;
+  padding: 6px;
+  border: 1px solid var(--color-surface-200, #d3dae8);
+  border-radius: var(--radius-md, 0.75rem);
+  background-color: var(--color-surface-0, #f3f6fb);
+  box-shadow: var(--shadow-popover, 0 14px 32px rgb(16 24 42 / 0.28));
+  z-index: 50;
+  animation: vault-rise 0.14s ease both;
+}
+
+.vault-combobox__option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-surface-700, #38445f);
+  font-size: 13.5px;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.12s ease;
+}
+
+.vault-combobox__option:hover,
+.vault-combobox__option[data-focused="true"] {
+  background-color: var(--color-surface-100, #e0e5f0);
+}
+
+.vault-combobox__empty {
+  padding: 10px;
+  font-size: 13px;
+  color: var(--color-surface-400, #93a0ba);
+  text-align: center;
+}
+
+/* ================================ Stepper ================================ */
+
+.vault-stepper {
+  display: flex;
+  align-items: flex-start;
+}
+
+.vault-stepper__step {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+}
+
+.vault-stepper__node {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  background-color: var(--color-surface-100, #e0e5f0);
+  color: var(--color-surface-400, #93a0ba);
+  transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+.vault-stepper__step--active .vault-stepper__node {
+  background-color: var(--color-brand-600, #5b66e8);
+  color: #fff;
+  box-shadow: 0 0 0 4px rgb(139 150 247 / 0.22);
+}
+
+.vault-stepper__step--done .vault-stepper__node {
+  background-color: var(--color-success-500, #2fbf7f);
+  color: #fff;
+}
+
+.vault-stepper__label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-surface-500, #64708c);
+  text-align: center;
+}
+
+.vault-stepper__step--active .vault-stepper__label {
+  color: var(--color-surface-900, #1a2336);
+}
+
+.vault-stepper__desc {
+  font-size: 11px;
+  color: var(--color-surface-400, #93a0ba);
+  text-align: center;
+}
+
+/* ================================ Calendar ================================ */
+
+.vault-cal {
+  width: 100%;
+  border: 1px solid var(--color-surface-200, #d3dae8);
+  border-radius: var(--radius-md, 0.75rem);
+  background-color: var(--color-surface-0, #f3f6fb);
+  padding: 12px;
+}
+
+.vault-cal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.vault-cal__title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-surface-900, #1a2336);
+}
+
+.vault-cal__nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-surface-500, #64708c);
+  cursor: pointer;
+  transition: background-color 0.12s ease;
+}
+
+.vault-cal__nav:hover {
+  background-color: var(--color-surface-100, #e0e5f0);
+}
+
+.vault-cal__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.vault-cal__dow {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--color-surface-400, #93a0ba);
+  text-align: center;
+  padding: 4px 0;
+}
+
+.vault-cal__day {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-surface-600, #4a5672);
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background-color 0.1s ease, color 0.1s ease;
+}
+
+.vault-cal__day:hover {
+  background-color: var(--color-surface-100, #e0e5f0);
+}
+
+.vault-cal__day--muted {
+  color: var(--color-surface-300, #c2cada);
+}
+
+.vault-cal__day--today {
+  box-shadow: inset 0 0 0 1.5px var(--color-brand-500, #6f7bf2);
+}
+
+.vault-cal__day--selected {
+  background-color: var(--color-brand-600, #5b66e8);
+  color: #fff;
+}
+
+.vault-cal__day--selected:hover {
+  background-color: var(--color-brand-600, #5b66e8);
+}
+
+/* ================================= Table ================================== */
+
+.vault-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 13.5px;
+  color: var(--color-surface-700, #38445f);
+}
+
+.vault-table__head th {
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-surface-400, #93a0ba);
+  border-bottom: 1px solid var(--color-surface-200, #d3dae8);
+  white-space: nowrap;
+}
+
+.vault-table__sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.vault-table__sort:hover {
+  color: var(--color-surface-800, #27324a);
+}
+
+.vault-table tbody td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--color-surface-100, #e0e5f0);
+}
+
+.vault-table tbody tr {
+  transition: background-color 0.1s ease;
+}
+
+.vault-table tbody tr:hover {
+  background-color: var(--color-surface-50, #e9edf5);
+}
+
+.vault-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* =============================== CodeBlock ================================ */
+
+.vault-code {
+  overflow-x: auto;
+  border: 1px solid var(--color-surface-200, #d3dae8);
+  border-radius: var(--radius-md, 0.75rem);
+  background-color: var(--color-surface-950, #10182a);
+  color: var(--color-surface-100, #e0e5f0);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 12.5px;
+  line-height: 1.65;
+}
+
+.vault-code__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgb(255 255 255 / 0.08);
+  color: var(--color-surface-400, #93a0ba);
+  font-size: 11px;
+}
+
+.vault-code pre {
+  margin: 0;
+  padding: 14px;
+  overflow-x: auto;
+}
+
+.vault-code .tok-kw { color: #c792ea; }
+.vault-code .tok-str { color: #c3e88d; }
+.vault-code .tok-num { color: #f78c6c; }
+.vault-code .tok-com { color: #7a8299; font-style: italic; }
+.vault-code .tok-fn { color: #82aaff; }
+.vault-code .tok-tag { color: #ffcb6b; }
+.vault-code .tok-attr { color: #89ddff; }
+.vault-code .tok-punc { color: #9aa5c0; }
+
+/* ============================== AlertDialog =============================== */
+
+.vault-alert__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  margin-bottom: 12px;
+  background-color: rgb(229 107 122 / 0.12);
+  color: var(--color-danger-500, #e56b7a);
+}

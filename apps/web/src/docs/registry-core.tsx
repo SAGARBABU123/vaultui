@@ -1,18 +1,28 @@
 import { useState } from "react";
 import {
   Accordion,
+  AlertDialog,
   Avatar,
   AvatarGroup,
   Breadcrumb,
+  Calendar,
   Checkbox,
+  CodeBlock,
+  Combobox,
+  CopyButton,
+  DataTable,
+  DropdownMenu,
   EmptyState,
   Field,
   Input,
+  Kbd,
   Modal,
   Progress,
   RadioGroup,
   Select,
   Skeleton,
+  Slider,
+  Stepper,
   Switch,
   Tabs,
   Textarea,
@@ -244,6 +254,173 @@ function BoxIcon({ className }: { className?: string }) {
 
 /* ================================ registry ================================ */
 
+
+function DropdownMenuDemo() {
+  return (
+    <DropdownMenu
+      trigger={
+        <button type="button" className="vault-btn vault-btn-secondary vault-btn-sm">
+          Actions ▾
+        </button>
+      }
+      items={[
+        { label: "Add to project", icon: <PlusIcon /> },
+        { label: "Duplicate" },
+        { separator: true },
+        { label: "Delete", danger: true, onSelect: () => undefined },
+      ]}
+    />
+  );
+}
+
+function SliderDemo() {
+  const [v, setV] = useState(64);
+  return (
+    <div className="mx-auto max-w-sm space-y-4">
+      <Slider label="Temperature" min={0} max={100} value={v} onChange={setV} />
+      <Slider label="Volume" min={0} max={100} value={30} onChange={() => undefined} className="opacity-60" />
+    </div>
+  );
+}
+
+function ComboboxDemo() {
+  const frameworks = [
+    { label: "React", value: "react", keywords: ["jsx", "frontend"] },
+    { label: "Vue", value: "vue", keywords: ["frontend"] },
+    { label: "Svelte", value: "svelte", keywords: ["compiler"] },
+    { label: "Solid", value: "solid", keywords: ["signals"] },
+    { label: "Qwik", value: "qwik", keywords: ["resumable"] },
+  ];
+  const [v, setV] = useState<string | undefined>(undefined);
+  return (
+    <div className="mx-auto max-w-sm">
+      <Combobox options={frameworks} value={v} onValueChange={setV} placeholder="Pick a framework…" />
+    </div>
+  );
+}
+
+function StepperDemo() {
+  const [cur, setCur] = useState(1);
+  return (
+    <div className="space-y-5">
+      <Stepper
+        current={cur}
+        steps={[
+          { label: "Create", description: "Name your project" },
+          { label: "Add", description: "Pick components" },
+          { label: "Download", description: "Export the kit" },
+        ]}
+      />
+      <div className="flex justify-center gap-2">
+        <button type="button" className="vault-btn vault-btn-secondary vault-btn-sm" onClick={() => setCur((c) => Math.max(0, c - 1))}>
+          Back
+        </button>
+        <button type="button" className="vault-btn vault-btn-primary vault-btn-sm" onClick={() => setCur((c) => Math.min(2, c + 1))}>
+          Next
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function AlertDialogDemo() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <button type="button" className="vault-btn vault-btn-danger vault-btn-sm" onClick={() => setOpen(true)}>
+        Delete project
+      </button>
+      <AlertDialog
+        open={open}
+        onClose={() => setOpen(false)}
+        onConfirm={() => setOpen(false)}
+        title="Delete this project?"
+        description="This removes the project and every component you added to it. This can't be undone."
+        confirmLabel="Delete"
+        danger
+      />
+    </>
+  );
+}
+
+const TABLE_ROWS = [
+  { component: "ChatCanvas", kit: "AI Agent", downloads: 4820, price: "$49" },
+  { component: "SankeyDiagram", kit: "Data Viz", downloads: 2109, price: "$49" },
+  { component: "PricingTable", kit: "Commerce", downloads: 3304, price: "$49" },
+  { component: "Switch", kit: "Core", downloads: 12400, price: "Free" },
+  { component: "KanbanBoard", kit: "Project", downloads: 1512, price: "$49" },
+  { component: "LiveCursors", kit: "Collab", downloads: 648, price: "$129" },
+  { component: "HeroSection", kit: "Marketing", downloads: 987, price: "$49" },
+  { component: "Toast", kit: "Core", downloads: 9021, price: "Free" },
+  { component: "BarChart", kit: "Data Viz", downloads: 7760, price: "$49" },
+];
+
+function DataTableDemo() {
+  return (
+    <DataTable
+      pageSize={6}
+      columns={[
+        { key: "component", label: "Component", sortable: true },
+        { key: "kit", label: "Kit", sortable: true },
+        { key: "downloads", label: "Downloads", sortable: true, align: "right" },
+        { key: "price", label: "Price", sortable: true },
+      ]}
+      rows={TABLE_ROWS}
+    />
+  );
+}
+
+function CodeBlockDemo() {
+  const code = `import { Button } from "@vaultui/ui";
+
+export function Hero() {
+  return (
+    <Button size="lg" variant="primary" leadingIcon={<Arrow />}>
+      Get started
+    </Button>
+  );
+}`;
+  return <CodeBlock code={code} language="tsx" title="Hero.tsx" />;
+}
+
+function CalendarDemo() {
+  const [date, setDate] = useState(new Date());
+  return (
+    <div className="mx-auto max-w-xs">
+      <Calendar value={date} onSelect={setDate} />
+    </div>
+  );
+}
+
+function KbdDemo() {
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      <Kbd>⌘K</Kbd>
+      <Kbd>Ctrl</Kbd>
+      <Kbd>Shift</Kbd>
+      <Kbd>J</Kbd>
+      <Kbd>↵</Kbd>
+    </div>
+  );
+}
+
+function CopyButtonDemo() {
+  return (
+    <div className="flex flex-wrap items-center gap-3">
+      <CopyButton value="pnpm add @vaultui/ui" label="Copy install command" />
+      <CopyButton value="const answer = 42;" size="md" />
+    </div>
+  );
+}
+
+function PlusIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="size-4" aria-hidden="true">
+      <path d="M12 5v14M5 12h14" />
+    </svg>
+  );
+}
+
 const demos: Record<string, React.ReactNode> = {
   switch: <SwitchDemo />,
   input: <InputDemo />,
@@ -256,6 +433,16 @@ const demos: Record<string, React.ReactNode> = {
   "empty-state": <EmptyDemo />,
   breadcrumb: <CrumbDemo />,
   toast: <ToastDemo />,
+  "dropdown-menu": <DropdownMenuDemo />,
+  slider: <SliderDemo />,
+  combobox: <ComboboxDemo />,
+  stepper: <StepperDemo />,
+  "alert-dialog": <AlertDialogDemo />,
+  "data-table": <DataTableDemo />,
+  "code-block": <CodeBlockDemo />,
+  calendar: <CalendarDemo />,
+  kbd: <KbdDemo />,
+  "copy-button": <CopyButtonDemo />,
 };
 
 const entries = [
@@ -385,6 +572,110 @@ const entries = [
       { name: "variant", type: "\"default\" | \"success\" | \"error\" | \"info\"", default: "\"default\"", description: "Icon + accent." },
       { name: "duration", type: "number", default: "4000", description: "Auto-dismiss ms." },
     ],
+  },
+
+  {
+    id: "dropdown-menu",
+    name: "DropdownMenu",
+    description: "Trigger + menu — click-outside, ESC, arrow-key navigation, separators and danger items.",
+    importName: "{ DropdownMenu }",
+    usage: "<DropdownMenu trigger={<Button>Actions</Button>} items={[{ label: \"Rename\" }]} />",
+    props: [
+      { name: "items", type: "(MenuItem | separator)[]", description: "label / icon / onSelect / danger." },
+      { name: "align", type: "\"start\" | \"end\"", default: "\"end\"", description: "Panel alignment." },
+    ],
+  },
+  {
+    id: "slider",
+    name: "Slider",
+    description: "Token-gradient range slider with fill track, keyboard-accessible and disabled state.",
+    importName: "{ Slider }",
+    usage: "<Slider min={0} max={100} value={v} onChange={setV} label=\"Volume\" />",
+    props: [
+      { name: "value / onChange", type: "number / (n) => void", description: "Controlled value." },
+      { name: "min / max / step", type: "number", description: "Range." },
+    ],
+  },
+  {
+    id: "combobox",
+    name: "Combobox",
+    description: "Searchable select — type to filter, arrows + Enter to pick, ESC to close.",
+    importName: "{ Combobox }",
+    usage: "<Combobox options={[{ label, value }]} value={v} onValueChange={setV} />",
+    props: [
+      { name: "options", type: "{ label, value, keywords? }[]", description: "Choices." },
+      { name: "value / onValueChange", type: "string | undefined", description: "Controlled selection." },
+    ],
+  },
+  {
+    id: "stepper",
+    name: "Stepper",
+    description: "Multi-step progress — numbered nodes, done checks, active highlight.",
+    importName: "{ Stepper }",
+    usage: "<Stepper current={1} steps={[{ label: \"Create\" }, { label: \"Add\" }]} />",
+    props: [{ name: "current", type: "number (0-based)", description: "Active step." }],
+  },
+  {
+    id: "alert-dialog",
+    name: "AlertDialog",
+    description: "Destructive-confirm dialog on top of Modal — danger icon, confirm/cancel actions.",
+    importName: "{ AlertDialog }",
+    usage: "<AlertDialog open onClose onConfirm title=\"Delete?\" danger />",
+    props: [
+      { name: "open / onClose / onConfirm", type: "boolean / fns", description: "Controls." },
+      { name: "danger", type: "boolean", default: "true", description: "Danger confirm button." },
+    ],
+  },
+  {
+    id: "data-table",
+    name: "DataTable",
+    description: "Sortable, paginated table — header sorting, custom cells, empty state, totals footer.",
+    importName: "{ DataTable }",
+    usage: "<DataTable columns={[{ key, label, sortable }]} rows={rows} pageSize={8} />",
+    props: [
+      { name: "columns", type: "{ key, label, sortable?, render? }[]", description: "Schema." },
+      { name: "pageSize", type: "number", default: "8", description: "Rows per page (0 = none)." },
+      { name: "sortable", type: "boolean", default: "true", description: "Enable header sorting." },
+    ],
+  },
+  {
+    id: "code-block",
+    name: "CodeBlock",
+    description: "Dependency-free syntax-highlighted code window with copy — keywords, strings, comments, numbers.",
+    importName: "{ CodeBlock }",
+    usage: "<CodeBlock code={snippet} language=\"tsx\" title=\"Hero.tsx\" />",
+    props: [
+      { name: "code", type: "string", description: "Source to highlight + copy." },
+      { name: "title / language", type: "string", description: "Header label." },
+      { name: "copyable", type: "boolean", default: "true", description: "Copy action." },
+    ],
+  },
+  {
+    id: "calendar",
+    name: "Calendar",
+    description: "Month grid with prev/next nav, today ring, selection highlight and any week start.",
+    importName: "{ Calendar }",
+    usage: "<Calendar value={date} onSelect={setDate} />",
+    props: [
+      { name: "value / onSelect", type: "Date / (d) => void", description: "Selected day." },
+      { name: "weekStart", type: "number", default: "0", description: "First weekday (0=Sun)." },
+    ],
+  },
+  {
+    id: "kbd",
+    name: "Kbd",
+    description: "Keyboard-key chip for shortcut hints.",
+    importName: "{ Kbd }",
+    usage: "<Kbd>⌘K</Kbd>",
+    props: [],
+  },
+  {
+    id: "copy-button",
+    name: "CopyButton",
+    description: "Clipboard button with a copied state — install it anywhere you show snippets.",
+    importName: "{ CopyButton }",
+    usage: "<CopyButton value=\"pnpm add @vaultui/ui\" />",
+    props: [{ name: "value", type: "string", description: "Text to copy." }],
   },
 ].map((e) => ({ ...e, package: "@vaultui/ui", tier: "free" as const, demo: demos[e.id] }));
 

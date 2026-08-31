@@ -32,6 +32,16 @@ const CORE_FILES = {
   "empty-state": ["packages/ui/src/Feedback.tsx", "packages/ui/src/primitives.css"],
   breadcrumb: ["packages/ui/src/Breadcrumb.tsx", "packages/ui/src/primitives.css"],
   toast: ["packages/ui/src/Toast.tsx", "packages/ui/src/primitives.css"],
+  "dropdown-menu": ["packages/ui/src/Controls.tsx", "packages/ui/src/primitives.css"],
+  slider: ["packages/ui/src/Controls.tsx", "packages/ui/src/primitives.css"],
+  combobox: ["packages/ui/src/Controls.tsx", "packages/ui/src/primitives.css"],
+  stepper: ["packages/ui/src/Controls.tsx", "packages/ui/src/primitives.css"],
+  kbd: ["packages/ui/src/Controls.tsx", "packages/ui/src/primitives.css"],
+  "copy-button": ["packages/ui/src/Controls.tsx", "packages/ui/src/primitives.css"],
+  "data-table": ["packages/ui/src/DataTable.tsx", "packages/ui/src/primitives.css"],
+  calendar: ["packages/ui/src/Calendar.tsx", "packages/ui/src/primitives.css"],
+  "code-block": ["packages/ui/src/CodeBlock.tsx", "packages/ui/src/primitives.css", "packages/ui/src/Controls.tsx"],
+  "alert-dialog": ["packages/ui/src/AlertDialog.tsx", "packages/ui/src/primitives.css", "packages/ui/src/Modal.tsx"],
 };
 
 const CORE_META = {
@@ -46,6 +56,16 @@ const CORE_META = {
   "empty-state": { name: "EmptyState", usage: "<EmptyState title=\"Nothing here\" action={…} />", importName: "{ EmptyState }", description: "Guided empty state." },
   breadcrumb: { name: "Breadcrumb", usage: "<Breadcrumb items={[{ label, href }]} />", importName: "{ Breadcrumb }", description: "Chevron-separated trail." },
   toast: { name: "Toast", usage: "const { toast } = useToast(); toast({ title: \"Saved\" });", importName: "{ ToastProvider, useToast }", description: "Notification system with four variants." },
+  "dropdown-menu": { name: "DropdownMenu", usage: "<DropdownMenu trigger={<Button>Actions</Button>} items={[{ label: \"Rename\" }]} />", importName: "{ DropdownMenu }", description: "Trigger + menu with keyboard nav." },
+  slider: { name: "Slider", usage: "<Slider value={v} onChange={setV} label=\"Volume\" />", importName: "{ Slider }", description: "Token-gradient range slider." },
+  combobox: { name: "Combobox", usage: "<Combobox options={[{ label, value }]} value={v} onValueChange={setV} />", importName: "{ Combobox }", description: "Searchable select." },
+  stepper: { name: "Stepper", usage: "<Stepper current={1} steps={[{ label: \"Create\" }]} />", importName: "{ Stepper }", description: "Multi-step progress." },
+  "alert-dialog": { name: "AlertDialog", usage: "<AlertDialog open onClose onConfirm title=\"Delete?\" />", importName: "{ AlertDialog }", description: "Destructive-confirm dialog." },
+  "data-table": { name: "DataTable", usage: "<DataTable columns={[{ key, label }]} rows={rows} />", importName: "{ DataTable }", description: "Sortable, paginated table." },
+  "code-block": { name: "CodeBlock", usage: "<CodeBlock code={snippet} language=\"tsx\" />", importName: "{ CodeBlock }", description: "Syntax-highlighted code window." },
+  calendar: { name: "Calendar", usage: "<Calendar value={date} onSelect={setDate} />", importName: "{ Calendar }", description: "Month grid calendar." },
+  kbd: { name: "Kbd", usage: "<Kbd>⌘K</Kbd>", importName: "{ Kbd }", description: "Keyboard-key chip." },
+  "copy-button": { name: "CopyButton", usage: "<CopyButton value=\"pnpm add @vaultui/ui\" />", importName: "{ CopyButton }", description: "Clipboard button." },
 };
 
 const LEGACY_CORE = {

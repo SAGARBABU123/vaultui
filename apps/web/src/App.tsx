@@ -9,6 +9,7 @@ import { AccessGate } from "./auth/AccessGate";
 import { useAuth } from "./auth/AuthContext";
 import { Sidebar } from "./docs/Sidebar";
 import { ComponentShell } from "./docs/ComponentShell";
+import { CommandPalette } from "./docs/CommandPalette";
 import type { ComponentEntry, DashboardEntry } from "./docs/types";
 import {
   ALL_GROUPS,
@@ -140,6 +141,7 @@ function DocsView() {
   const { projects } = useProjects();
   const [search, setSearch] = useState("");
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [paletteToken, setPaletteToken] = useState(0);
 
   const active = resolveActive(pathname);
   // Kit URLs and unknown ids land on their canonical route.
@@ -173,6 +175,23 @@ function DocsView() {
     window.scrollTo({ top: 0 });
   };
 
+  // j / k — previous / next entry while browsing docs (skip form fields).
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement | null;
+      if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
+      if (e.key === "j") {
+        e.preventDefault();
+        if (prev) navigateEntry(prev.id);
+      } else if (e.key === "k") {
+        e.preventDefault();
+        if (next) navigateEntry(next.id);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  });
+
   return (
     <div className="min-h-screen text-surface-900">
       <div className="flex">
@@ -199,7 +218,10 @@ function DocsView() {
             onOpenDrawer={() => setDrawerOpen(true)}
             searchValue={search}
             onSearchChange={setSearch}
+            onOpenPalette={() => setPaletteToken((n) => n + 1)}
           />
+
+          <CommandPalette onNavigate={navigateEntry} openToken={paletteToken} />
 
           {/* Mobile drawer */}
           {drawerOpen && (

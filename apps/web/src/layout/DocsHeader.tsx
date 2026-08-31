@@ -21,6 +21,7 @@ export function DocsHeader({
   onOpenDrawer,
   searchValue,
   onSearchChange,
+  onOpenPalette,
 }: {
   componentTotal: number;
   dashboardTotal: number;
@@ -28,6 +29,8 @@ export function DocsHeader({
   /** When provided, the header shows a search bar in place of the count badge. */
   searchValue?: string;
   onSearchChange?: (value: string) => void;
+  /** When provided, shows a ⌘K chip that opens the command palette. */
+  onOpenPalette?: () => void;
 }) {
   const { isSignedIn } = useAuth();
   const { activeProject } = useProjects();
@@ -45,8 +48,18 @@ export function DocsHeader({
               value={searchValue ?? ""}
               onChange={(e) => onSearchChange(e.target.value)}
               placeholder="Filter components…"
-              className="h-10 w-full rounded-full border-0 bg-surface-100 pl-9 pr-3 text-sm text-surface-800 shadow-inset outline-none placeholder:text-surface-400 focus:ring-2 focus:ring-brand-500/20"
+              className="h-10 w-full rounded-full border-0 bg-surface-100 pl-9 pr-12 text-sm text-surface-800 shadow-inset outline-none placeholder:text-surface-400 focus:ring-2 focus:ring-brand-500/20"
             />
+            {onOpenPalette && (
+              <button
+                type="button"
+                onClick={onOpenPalette}
+                aria-label="Command palette"
+                className="absolute inset-y-0 right-2 my-auto flex h-6 items-center rounded-md border border-surface-200 bg-surface-0 px-1.5 font-mono text-[10px] text-surface-400 shadow-soft transition-colors hover:text-surface-700"
+              >
+                ⌘K
+              </button>
+            )}
           </label>
         ) : (
           <Badge variant="neutral" size="sm" className="hidden md:inline-flex">

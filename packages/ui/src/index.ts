@@ -27,3 +27,24 @@ export { Breadcrumb } from "./Breadcrumb";
 export type { BreadcrumbProps, Crumb } from "./Breadcrumb";
 export { ToastProvider, useToast } from "./Toast";
 export type { ToastOptions } from "./Toast";
+export { Kbd, Slider, CopyButton, Combobox, DropdownMenu, Stepper } from "./Controls";
+export type {
+  KbdProps,
+  SliderProps,
+  CopyButtonProps,
+  ComboboxProps,
+  ComboOption,
+  DropdownMenuProps,
+  MenuItem,
+  MenuSeparator,
+  StepperProps,
+  StepperStep,
+} from "./Controls";
+export { DataTable } from "./DataTable";
+export type { DataTableProps, TableColumn } from "./DataTable";
+export { Calendar } from "./Calendar";
+export type { CalendarProps } from "./Calendar";
+export { CodeBlock } from "./CodeBlock";
+export type { CodeBlockProps } from "./CodeBlock";
+export { AlertDialog } from "./AlertDialog";
+export type { AlertDialogProps } from "./AlertDialog";
