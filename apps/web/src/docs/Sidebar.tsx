@@ -61,8 +61,12 @@ export function Sidebar({ groups, dashboards, activeId, onSelect, search, onSear
 
   return (
     <nav aria-label="Components">
-      {/* Rail brand — the product mark + version pill at the top of the rail */}
-      <div className="flex items-center gap-2.5 border-b border-surface-200/70 px-3 pb-3 pt-4">
+      {/* Rail brand — click to return to the landing page */}
+      <Link
+        to="/"
+        title="Back to the landing page"
+        className="flex items-center gap-2.5 border-b border-surface-200/70 px-3 pb-3 pt-4 transition-colors hover:bg-surface-100/60"
+      >
         <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-sm font-bold text-white shadow-soft">
           V
         </span>
@@ -72,7 +76,7 @@ export function Sidebar({ groups, dashboards, activeId, onSelect, search, onSear
           </span>
           <NpmMetaPill />
         </span>
-      </div>
+      </Link>
 
       {/* Dashboard templates section */}
       {(() => {
