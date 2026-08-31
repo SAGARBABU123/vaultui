@@ -258,7 +258,11 @@ function DocsView() {
           )}
 
           <main className="px-4 py-8 sm:px-6 lg:px-10">
-          <div className={cn("mx-auto", isDashboard(active) ? "max-w-6xl" : "max-w-3xl")}>
+          <div
+            className={cn(
+              isDashboard(active) ? "mx-auto max-w-6xl" : active.id === "overview" ? "w-full" : "mx-auto max-w-3xl",
+            )}
+          >
             {locked && gate ? (
               <AccessGate kind={gate} />
             ) : (

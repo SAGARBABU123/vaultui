@@ -640,7 +640,7 @@ function OverviewStats({ total }: { total: number }) {
 function KitGrid({ onNavigate }: { onNavigate: (id: string) => void }) {
   const groups = ALL_GROUPS.filter((g) => g.group !== "Start");
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
       {groups.map((g) => {
         const items = g.items.filter((i) => i.id !== "overview");
         const first = items[0];
