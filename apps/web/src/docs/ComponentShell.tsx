@@ -8,6 +8,7 @@ import { Playground, PLAYGROUNDS, type PlaygroundBuilder } from "./Playground";
 import { ThemeCompare } from "./ThemeCompare";
 import { ThemeWall } from "./ThemeWall";
 import { ComponentInsights } from "./ComponentInsights";
+import { VaultLogo } from "../brand/VaultLogo";
 import { useProjects } from "../projects/ProjectContext";
 import { ALL_DASHBOARDS, ALL_GROUPS } from "../projects/entries";
 import type { ComponentEntry, DashboardEntry } from "./types";
@@ -276,6 +277,8 @@ function OverviewHero({ componentTotal }: { componentTotal: number }) {
       />
 
       <div className="relative">
+        <div className="grid items-center gap-10 lg:grid-cols-[1fr_auto]">
+          <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="brand" size="sm" dot>
             Soft UI · {componentTotal + 1} components
@@ -331,6 +334,16 @@ function OverviewHero({ componentTotal }: { componentTotal: number }) {
           Prefer the CLI? <code className="text-brand-700">npx vault-ui add &lt;component&gt;</code> —
           adds the exact component source to your project.
         </p>
+          </div>
+
+          {/* Right — the mark + slogan */}
+          <div className="hidden flex-col items-center gap-5 lg:flex">
+            <VaultLogo size={190} />
+            <p className="max-w-[240px] text-center text-sm italic leading-relaxed text-surface-500">
+              “The details are not the details. They make the design.”
+            </p>
+          </div>
+        </div>
 
         {/* Getting started — the three-step kit flow */}
         <div className="mt-7 border-t border-surface-200/70 pt-6">
