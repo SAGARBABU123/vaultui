@@ -207,14 +207,16 @@ export const PLAYGROUNDS: Record<string, PlaygroundBuilder> = {
   progress: {
     controls: [
       { key: "value", label: "Value", type: "number", min: 0, max: 100, default: 62 },
+      { key: "size", label: "Size", type: "select", options: ["sm", "md", "lg"], default: "md" },
       { key: "width", label: "Width", type: "select", options: ["w-full", "w-1/2", "w-64"], default: "w-full" },
     ],
     demo: (v) => (
       <div className={cn("flex min-h-28 items-center", v.width as string)}>
-        <Progress value={Number(v.value)} className="w-full" />
+        <Progress value={Number(v.value)} size={v.size as never} className="w-full" />
       </div>
     ),
-    code: (v) => `<Progress value={${v.value}} className="${v.width}" />`,
+    code: (v) =>
+      `<Progress value={${v.value}}${v.size === "md" ? "" : ` size="${v.size}"`} className="${v.width}" />`,
   },
 
   avatar: {

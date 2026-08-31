@@ -17,14 +17,21 @@ export function Skeleton({ className }: SkeletonProps) {
 export interface ProgressProps {
   /** 0–100. */
   value: number;
+  /** Bar thickness. Default "md" (8px). */
+  size?: "sm" | "md" | "lg";
   className?: string;
 }
 
-export function Progress({ value, className }: ProgressProps) {
+export function Progress({ value, size = "md", className }: ProgressProps) {
   const clamped = Math.max(0, Math.min(100, value));
   return (
     <div
-      className={cn("vault-progress", className)}
+      className={cn(
+        "vault-progress",
+        size === "sm" && "vault-progress--sm",
+        size === "lg" && "vault-progress--lg",
+        className,
+      )}
       role="progressbar"
       aria-valuenow={clamped}
       aria-valuemin={0}

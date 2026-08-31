@@ -633,6 +633,14 @@
   overflow: hidden;
 }
 
+.vault-progress--sm {
+  height: 4px;
+}
+
+.vault-progress--lg {
+  height: 12px;
+}
+
 .vault-progress__bar {
   height: 100%;
   border-radius: 999px;

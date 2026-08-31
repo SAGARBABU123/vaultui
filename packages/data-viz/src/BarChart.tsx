@@ -23,6 +23,12 @@ export interface BarChartProps {
  */
 export function BarChart({ data, height = 170, showValues = true, className }: BarChartProps) {
   const max = Math.max(1, ...data.map((d) => Math.abs(d.value)));
+  // Labels/bars scale with the chart height so small charts stay readable.
+  const f = Math.min(2, Math.max(0.6, height / 140));
+  const valueFont = Math.round(10 * f);
+  const labelFont = Math.round(9 * f);
+  const barMax = Math.round(34 * f);
+
   return (
     <div className={cn("flex items-end gap-3", className)} style={{ height }} role="img" aria-label="Bar chart">
       {data.map((d, i) => {
@@ -30,7 +36,7 @@ export function BarChart({ data, height = 170, showValues = true, className }: B
         return (
           <div key={`${d.label}-${i}`} className="group flex min-w-0 flex-1 flex-col items-center gap-1.5">
             {showValues && (
-              <span className="vault-chart-value" style={{ fontSize: 10 }}>
+              <span className="vault-chart-value" style={{ fontSize: valueFont }}>
                 {d.value}
               </span>
             )}
@@ -39,13 +45,15 @@ export function BarChart({ data, height = 170, showValues = true, className }: B
               style={{
                 height: h,
                 width: "100%",
-                maxWidth: 34,
-                minWidth: 14,
+                maxWidth: barMax,
+                minWidth: Math.max(10, Math.round(14 * f)),
                 background: d.color ?? "var(--color-brand-600)",
               }}
               title={`${d.label}: ${d.value}`}
             />
-            <span className="vault-chart-label">{d.label}</span>
+            <span className="vault-chart-label" style={{ fontSize: labelFont }}>
+              {d.label}
+            </span>
           </div>
         );
       })}

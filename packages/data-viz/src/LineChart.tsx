@@ -35,6 +35,10 @@ export function LineChart({ series, labels, height = 180, area = true, className
   const max = Math.max(1, ...all);
   const H = height;
   const plotH = H - PAD_TOP - PAD_BOTTOM;
+  // Text scales with the chart height so tiny/large charts stay proportional.
+  const f = Math.min(2, Math.max(0.6, height / 180));
+  const xLabelFont = Math.round(9 * f);
+  const dotR = Math.round(3 * f);
 
   const x = (i: number, len: number) => PAD_X + (i / Math.max(1, len - 1)) * (W - PAD_X * 2);
   const y = (v: number) => PAD_TOP + (1 - (v - min) / (max - min)) * plotH;
@@ -97,7 +101,7 @@ export function LineChart({ series, labels, height = 180, area = true, className
                   key={j}
                   cx={x(j, s.points.length)}
                   cy={y(v)}
-                  r="3"
+                  r={dotR}
                   fill={col}
                   stroke="var(--color-surface-0)"
                   strokeWidth="1.5"
@@ -114,7 +118,7 @@ export function LineChart({ series, labels, height = 180, area = true, className
       {labels && (
         <div className="vault-chart-xaxis" style={{ width: "100%", minWidth: 280 }}>
           {labels.map((l, i) => (
-            <span key={i} style={{ left: `${(i / Math.max(1, len - 1)) * 100}%` }}>
+            <span key={i} style={{ left: `${(i / Math.max(1, len - 1)) * 100}%`, fontSize: xLabelFont }}>
               {l}
             </span>
           ))}

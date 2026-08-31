@@ -49,6 +49,9 @@ export function DonutChart({
   const r = (size - thickness) / 2;
   const c = 2 * Math.PI * r;
   let offset = 0;
+  // Center metric and labels scale with the ring size.
+  const f = Math.min(2, Math.max(0.6, size / 168));
+  const centerFont = Math.round(20 * f);
 
   return (
     <div className={cn("flex flex-col items-center gap-4", className)}>
@@ -90,7 +93,7 @@ export function DonutChart({
         {(centerValue || centerLabel) && (
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
             {centerValue && (
-              <span className="vault-chart-center" style={{ fontSize: 20 }}>
+              <span className="vault-chart-center" style={{ fontSize: centerFont }}>
                 {centerValue}
               </span>
             )}

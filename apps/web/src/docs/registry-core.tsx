@@ -348,6 +348,7 @@ const entries = [
     usage: "<Skeleton className=\"h-4 w-40\" />\n<Progress value={70} />",
     props: [
       { name: "value", type: "number (0–100)", description: "Progress fill, clamped." },
+      { name: "size", type: "\"sm\" | \"md\" | \"lg\"", default: "\"md\"", description: "Bar thickness 4/8/12px." },
       { name: "className", type: "string", description: "Skeleton width/height." },
     ],
   },
