@@ -1,0 +1,19 @@
+{
+  "name": "@vaultui/cli",
+  "version": "0.1.0",
+  "description": "Vault UI CLI — init the token theme and add components to your project",
+  "type": "module",
+  "bin": {
+    "vault-ui": "./bin.js"
+  },
+  "files": [
+    "bin.js"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "typecheck": "tsc --noEmit --allowJs --checkJs --skipLibCheck bin.js 2>/dev/null || true"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

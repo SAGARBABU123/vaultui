@@ -105,7 +105,7 @@ export function ComponentShell({ entry, prev, next, onNavigate, componentTotal }
           <section className="mt-8">
             <SectionLabel>Usage</SectionLabel>
             <div className="grid gap-4 lg:grid-cols-2">
-              <CodeBlock title="Install" code={`pnpm add ${entry.package}`} />
+              <CodeBlock title="Install" code={installSnippet(entry)} />
               <CodeBlock
                 title="Import & use"
                 code={`import ${entry.importName} from "${entry.package}";\n\n${entry.usage}`}
@@ -292,6 +292,12 @@ function OverviewHero({ componentTotal }: { componentTotal: number }) {
             {INSTALL_COMMAND}
           </code>
         </div>
+
+        <p className="mt-3 flex items-center gap-2 font-mono text-[11px] text-surface-400">
+          <Terminal className="size-3.5" />
+          Prefer the CLI? <code className="text-brand-700">npx vault-ui add &lt;component&gt;</code> —
+          adds the exact component source to your project.
+        </p>
       </div>
     </div>
   );
@@ -299,6 +305,11 @@ function OverviewHero({ componentTotal }: { componentTotal: number }) {
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-surface-400">{children}</h2>;
+}
+
+/** Install snippet — CLI first (adds the exact component), npm as fallback. */
+function installSnippet(entry: ComponentEntry): string {
+  return `# quick start — add the component with the CLI\nnpx vault-ui add ${entry.id}\n\n# or install from npm\npnpm add ${entry.package}`;
 }
 
 /**

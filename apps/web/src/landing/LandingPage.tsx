@@ -852,6 +852,9 @@ function InstallSection({ onBrowse }: { onBrowse: () => void }) {
           <span aria-hidden="true" className="mt-1 font-mono text-sm text-success-500">$</span>
           <code className="font-mono text-[13px] leading-relaxed text-surface-100">{INSTALL_COMMAND}</code>
         </div>
+        <p className="mt-3 font-mono text-[11px] text-surface-400">
+          …or a single component: <code className="text-brand-400">npx vault-ui add switch modal</code>
+        </p>
       </div>
 
       <div className="mx-auto mt-6 flex max-w-2xl flex-col items-center justify-center gap-3 sm:flex-row">
