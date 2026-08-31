@@ -175,16 +175,12 @@ function DocsView() {
 
   return (
     <div className="min-h-screen text-surface-900">
-      <DocsHeader
-        componentTotal={COMPONENT_TOTAL}
-        dashboardTotal={ALL_DASHBOARDS.length}
-        onOpenDrawer={() => setDrawerOpen(true)}
-        onLogo={() => navigate("/")}
-      />
-
       <div className="flex">
-        {/* Desktop sidebar — flush to the left edge, hidden scrollbar */}
-        <aside id="onboard-sidebar" className="sticky top-16 hidden h-[calc(100vh-4rem)] w-72 shrink-0 scrollbar-hidden overflow-y-auto border-r border-surface-200 bg-surface-0/60 lg:block">
+        {/* Desktop sidebar — full-height rail, flush left */}
+        <aside
+          id="onboard-sidebar"
+          className="sticky top-0 hidden h-screen w-72 shrink-0 scrollbar-hidden overflow-y-auto border-r border-surface-200 bg-surface-0/60 lg:block"
+        >
           <Sidebar
             groups={ALL_GROUPS}
             dashboards={DASHBOARDS}
@@ -195,38 +191,46 @@ function DocsView() {
           />
         </aside>
 
-        {/* Mobile drawer */}
-        {drawerOpen && (
-          <div className="fixed inset-0 z-40 lg:hidden">
-            <button
-              type="button"
-              aria-label="Close navigation"
-              onClick={() => setDrawerOpen(false)}
-              className="absolute inset-0 w-full bg-surface-950/40 backdrop-blur-[2px]"
-            />
-            <div className="absolute inset-y-0 left-0 flex w-[85%] max-w-xs flex-col bg-surface-50 shadow-popover animate-rise">
-              <div className="flex items-center justify-between border-b border-surface-200 px-4 py-3">
-                <span className="text-sm font-semibold">Browse docs</span>
-                <Button variant="ghost" size="sm" onClick={() => setDrawerOpen(false)}>
-                  Close
-                </Button>
-              </div>
-              <div className="min-h-0 flex-1 scrollbar-hidden overflow-y-auto">
-                <Sidebar
-                  groups={ALL_GROUPS}
-                  dashboards={DASHBOARDS}
-                  activeId={active.id}
-                  onSelect={navigateEntry}
-                  search={search}
-                  onSearchChange={setSearch}
-                />
+        {/* Right shell — header + content live inside the column, under the rail */}
+        <div className="min-w-0 flex-1">
+          <DocsHeader
+            componentTotal={COMPONENT_TOTAL}
+            dashboardTotal={ALL_DASHBOARDS.length}
+            onOpenDrawer={() => setDrawerOpen(true)}
+            onLogo={() => navigate("/")}
+          />
+
+          {/* Mobile drawer */}
+          {drawerOpen && (
+            <div className="fixed inset-0 z-40 lg:hidden">
+              <button
+                type="button"
+                aria-label="Close navigation"
+                onClick={() => setDrawerOpen(false)}
+                className="absolute inset-0 w-full bg-surface-950/40 backdrop-blur-[2px]"
+              />
+              <div className="absolute inset-y-0 left-0 flex w-[85%] max-w-xs flex-col bg-surface-50 shadow-popover animate-rise">
+                <div className="flex items-center justify-between border-b border-surface-200 px-4 py-3">
+                  <span className="text-sm font-semibold">Browse docs</span>
+                  <Button variant="ghost" size="sm" onClick={() => setDrawerOpen(false)}>
+                    Close
+                  </Button>
+                </div>
+                <div className="min-h-0 flex-1 scrollbar-hidden overflow-y-auto">
+                  <Sidebar
+                    groups={ALL_GROUPS}
+                    dashboards={DASHBOARDS}
+                    activeId={active.id}
+                    onSelect={navigateEntry}
+                    search={search}
+                    onSearchChange={setSearch}
+                  />
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Right shell */}
-        <main className="min-w-0 flex-1 px-4 py-8 sm:px-6 lg:px-10">
+          <main className="px-4 py-8 sm:px-6 lg:px-10">
           {/* Onboarding nudge — no projects yet? Getting-started with the flow. */}
           {active.id === "overview" && projects.length === 0 && (
             <div className="mx-auto mb-6 max-w-3xl">
@@ -276,6 +280,7 @@ function DocsView() {
             )}
           </div>
         </main>
+        </div>
       </div>
     </div>
   );
