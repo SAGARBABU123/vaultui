@@ -10,6 +10,7 @@ import { useAuth } from "./auth/AuthContext";
 import { Sidebar } from "./docs/Sidebar";
 import { ComponentShell } from "./docs/ComponentShell";
 import { CommandPalette } from "./docs/CommandPalette";
+import { AskTheKit } from "./docs/AskTheKit";
 import type { ComponentEntry, DashboardEntry } from "./docs/types";
 import {
   ALL_GROUPS,
@@ -26,6 +27,7 @@ import { ProjectsPage } from "./projects/ProjectsPage";
 import { ProjectOverviewPage } from "./projects/ProjectOverviewPage";
 import { ShareKitPage } from "./projects/ShareKitPage";
 import { LabPage } from "./lab/LabPage";
+import { ComposerPage } from "./composer/ComposerPage";
 import { OnboardingProvider } from "./onboarding/OnboardingContext";
 import { DocsHeader } from "./layout/DocsHeader";
 
@@ -88,6 +90,7 @@ export default function App() {
             />
             <Route path="/kit/:id" element={<ShareKitPage />} />
             <Route path="/lab" element={<LabPage />} />
+            <Route path="/composer" element={<ComposerPage />} />
             <Route path="/sign-in" element={<AuthPage mode="sign-in" />} />
             <Route path="/sign-up" element={<AuthPage mode="sign-up" />} />
             <Route path="*" element={<Navigate to="/" replace />} />
@@ -222,6 +225,7 @@ function DocsView() {
           />
 
           <CommandPalette onNavigate={navigateEntry} openToken={paletteToken} />
+          <AskTheKit />
 
           {/* Mobile drawer */}
           {drawerOpen && (

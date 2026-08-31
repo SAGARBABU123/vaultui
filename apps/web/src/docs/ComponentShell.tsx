@@ -6,10 +6,12 @@ import { useNavigate } from "react-router-dom";
 import { INSTALL_COMMAND, downloadKit } from "./downloadKit";
 import { Playground, PLAYGROUNDS, type PlaygroundBuilder } from "./Playground";
 import { ThemeCompare } from "./ThemeCompare";
+import { ThemeWall } from "./ThemeWall";
+import { ComponentInsights } from "./ComponentInsights";
 import { useProjects } from "../projects/ProjectContext";
 import type { ComponentEntry, DashboardEntry } from "./types";
 
-type DemoView = "demo" | "playground" | "ab";
+type DemoView = "demo" | "playground" | "ab" | "wall";
 
 export interface ComponentShellProps {
   entry: ComponentEntry | DashboardEntry;
@@ -67,6 +69,8 @@ export function ComponentShell({ entry, prev, next, onNavigate, componentTotal }
           </div>
           {view === "ab" ? (
             <ThemeCompare demo={entry.demo} />
+          ) : view === "wall" ? (
+            <ThemeWall demo={entry.demo} />
           ) : (
             <div className="overflow-hidden rounded-2xl border border-surface-200 shadow-raised">{entry.demo}</div>
           )}
@@ -91,11 +95,7 @@ export function ComponentShell({ entry, prev, next, onNavigate, componentTotal }
           {entry.id !== "overview" && <AddToProjectControl entryId={entry.id} className="ml-auto" />}
         </div>
         <p className="mt-2 max-w-2xl leading-relaxed text-surface-500">{entry.description}</p>
-        {entry.id !== "overview" && (
-          <code className="mt-3 inline-block rounded-lg border border-surface-200 bg-surface-100 px-2.5 py-1 font-mono text-xs text-surface-600">
-            {entry.package}
-          </code>
-        )}
+        {entry.id !== "overview" && <ComponentInsights entry={entry} />}
       </header>
 
       {entry.id !== "overview" && (
@@ -160,6 +160,8 @@ export function ComponentShell({ entry, prev, next, onNavigate, componentTotal }
         </div>
         {view === "ab" ? (
           <ThemeCompare demo={entry.demo} />
+        ) : view === "wall" ? (
+          <ThemeWall demo={entry.demo} />
         ) : view === "playground" && playground ? (
           <Playground def={playground} />
         ) : (
@@ -333,6 +335,7 @@ function DemoViewChips({
     { id: "demo", label: "Demo" },
     ...(showPlayground ? [{ id: "playground" as const, label: "⚙ Playground" }] : []),
     { id: "ab", label: "⧉ Theme A/B" },
+    { id: "wall", label: "▦ Theme wall" },
   ];
   return (
     <div className="flex items-center gap-1 rounded-lg border border-surface-200 bg-surface-0 p-1 shadow-inset">

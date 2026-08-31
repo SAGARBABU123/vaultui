@@ -224,6 +224,12 @@ function Nav() {
           >
             Rebrand lab
           </Link>
+          <Link
+            to="/composer"
+            className="rounded-lg px-3 py-2 text-sm text-surface-600 transition-colors hover:bg-surface-100 hover:text-surface-900"
+          >
+            Composer
+          </Link>
         </nav>
 
         <div className="flex items-center gap-2">

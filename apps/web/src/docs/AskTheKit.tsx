@@ -1,0 +1,196 @@
+import { useMemo, useRef, useState } from "react";
+import { cn } from "@vaultui/utils";
+import { ALL_GROUPS } from "../projects/entries";
+import { CopyButton } from "@vaultui/ui";
+
+/**
+ * "Ask the Kit" — an in-docs assistant over the live registry.
+ * No external AI: it answers from component metadata, usage snippets and an
+ * FAQ, and every code answer is copyable. Novel: docs that answer themselves.
+ */
+
+interface Answer {
+  title: string;
+  body: string;
+  code?: string;
+}
+
+interface ChatMsg {
+  role: "user" | "kit";
+  text: string;
+  code?: string;
+}
+
+const FAQ: Array<{ q: string; a: string; code?: string }> = [
+  {
+    q: "how do i install",
+    a: "Add a component with the CLI, or install the package:",
+    code: "npx vault-ui add switch modal toast\n\n# or via npm\npnpm add @vaultui/ui @vaultui/tokens",
+  },
+  {
+    q: "free tier",
+    a: "The free core is MIT on the public registry: Button, Badge, Card, Switch, forms, Tabs, Modal, Toast, DataTable, Calendar and the rest — 24 components, no account needed to use them.",
+  },
+  {
+    q: "license",
+    a: "Core is MIT; premium kits (AI, Data Viz, Commerce, Dev Tools, Project, Collab, Marketing) ship under a commercial license with the source included.",
+  },
+  {
+    q: "theme",
+    a: "Everything reads CSS variables. Four themes ship: Neumorphic (default), Glassmorphism, Dimensional Layering and Vintage Retro Film. Try them live with the Theme A/B or Theme wall views.",
+    code: "html[data-theme=\"glassmorphism\"] {\n  --color-brand-600: #0068d6;\n}",
+  },
+  {
+    q: "cli",
+    a: "The vault-ui CLI inits the theme and adds components straight into your project:",
+    code: "npx vault-ui init\nnpx vault-ui add data-table combobox",
+  },
+  {
+    q: "pricing",
+    a: "Free core forever. Premium kits: Pro $49 (all kits, one license) or Teams $129 (includes Collab + seats). Demo upgrade in the app flips instantly.",
+  },
+  {
+    q: "tokens",
+    a: "Token-first: one theme file drives color, radius, shadow and motion. Override CSS variables to re-brand — try the Rebrand Lab at /lab.",
+  },
+];
+
+function textLower(s: string) {
+  return s.toLowerCase();
+}
+
+export function AskTheKit() {
+  const [open, setOpen] = useState(false);
+  const [q, setQ] = useState("");
+  const [chat, setChat] = useState<ChatMsg[]>([]);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const entries = useMemo(() => ALL_GROUPS.flatMap((g) => g.items).filter((e) => e.id !== "overview"), []);
+
+  const ask = (raw: string) => {
+    const query = textLower(raw.trim());
+    if (!query) return;
+    const faq = FAQ.find((f) => query.includes(f.q.split(" ")[0]!) || f.a.toLowerCase().slice(0, 20) === query);
+    const matched = faq
+      ? null
+      : entries
+          .filter((e) => e.name.toLowerCase().includes(query) || e.id.includes(query) || e.description.toLowerCase().includes(query))
+          .slice(0, 2);
+    if (matched && matched.length > 0) {
+      const e = matched[0]!;
+      const answer: Answer = {
+        title: `${e.name} — ready to use`,
+        body: e.description,
+        code: `import ${e.importName} from "${e.package}";\n\n${e.usage}`,
+      };
+      setChat((prev) => [...prev, { role: "user", text: raw }, { role: "kit", text: answer.body, code: answer.code }]);
+    } else if (faq) {
+      setChat((prev) => [...prev, { role: "user", text: raw }, { role: "kit", text: faq.a, code: faq.code }]);
+    } else {
+      const similar = entries.filter((e) => e.id.includes(query) || e.name.toLowerCase().includes(query)).slice(0, 3);
+      const names = similar.length > 0 ? similar.map((e) => e.name).join(", ") : "…";
+      setChat((prev) => [
+        ...prev,
+        { role: "user", text: raw },
+        {
+          role: "kit",
+          text: `I couldn't answer that yet — I'm good at components, install, licensing, themes and pricing.${similar.length ? ` Did you mean: ${names}?` : ""}`,
+        },
+      ]);
+    }
+    setQ("");
+  };
+
+  const suggestions = ["install a component", "free tier", "how do themes work", "license?", "pricing"];
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => {
+          setOpen((o) => !o);
+          setTimeout(() => inputRef.current?.focus(), 20);
+        }}
+        aria-label="Ask the kit"
+        className="fixed bottom-5 left-5 z-[75] inline-flex h-11 items-center gap-2 rounded-full border border-surface-200 bg-surface-0 px-4 text-sm font-semibold text-surface-700 shadow-raised transition-all hover:text-surface-900 active:shadow-pressed"
+      >
+        <SparkIcon />
+        Ask the kit
+      </button>
+
+      {open && (
+        <div className="fixed bottom-20 left-5 z-[80] flex w-[min(380px,calc(100vw-40px))] flex-col overflow-hidden rounded-2xl border border-surface-200 bg-surface-0 shadow-raised animate-rise">
+          <div className="flex items-center justify-between gap-2 border-b border-surface-100 px-4 py-3">
+            <span className="text-sm font-semibold text-surface-900">Ask the kit</span>
+            <button type="button" aria-label="Close" onClick={() => setOpen(false)} className="rounded-md p-1 text-surface-400 hover:text-surface-700">
+              ✕
+            </button>
+          </div>
+
+          <div className="max-h-72 space-y-3 overflow-y-auto p-4">
+            {chat.length === 0 && (
+              <p className="text-[13px] leading-relaxed text-surface-400">
+                Ask me about any component, install, licensing, theming or pricing — I answer from the live registry and copy the code for you.
+              </p>
+            )}
+            {chat.map((m, i) => (
+              <div key={i} className={cn("text-[13px] leading-relaxed", m.role === "user" ? "text-right text-surface-400" : "text-surface-700")}>
+                <p>{m.text}</p>
+                {m.code && (
+                  <div className="mt-2 overflow-hidden rounded-lg border border-surface-800 bg-surface-950 text-left">
+                    <div className="flex items-center justify-between border-b border-surface-800 px-2.5 py-1.5">
+                      <span className="font-mono text-[10px] text-surface-400">snippet</span>
+                      <CopyButton value={m.code} label="Copy snippet" />
+                    </div>
+                    <pre className="overflow-x-auto p-2.5 font-mono text-[11px] leading-relaxed text-surface-200">{m.code}</pre>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div className="flex flex-wrap gap-1.5 px-4 pb-2">
+            {suggestions.map((s) => (
+              <button
+                key={s}
+                type="button"
+                onClick={() => ask(s)}
+                className="rounded-full border border-surface-200 bg-surface-50 px-2.5 py-1 text-[11px] text-surface-500 transition-colors hover:bg-surface-100 hover:text-surface-800"
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+
+          <div className="border-t border-surface-100 p-3">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                ask(q);
+              }}
+              className="flex gap-2"
+            >
+              <input
+                ref={inputRef}
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                placeholder="e.g. show me the data table…"
+                className="vault-input"
+              />
+              <button type="submit" className="vault-btn vault-btn-primary vault-btn-sm">Ask</button>
+            </form>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+function SparkIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-4 text-brand-600" aria-hidden="true">
+      <path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1" />
+      <path d="M12 8l1.2 2.8L16 12l-2.8 1.2L12 16l-1.2-2.8L8 12l2.8-1.2L12 8z" fill="currentColor" />
+    </svg>
+  );
+}
