@@ -4,3 +4,5 @@ export { RoadmapTimeline } from "./RoadmapTimeline";
 export type { PhaseColor, RoadmapItem, RoadmapTimelineProps } from "./RoadmapTimeline";
 export { GanttChart } from "./GanttChart";
 export type { GanttChartProps, GanttTask } from "./GanttChart";
+export { BurndownChart, DependencyGraph, OkrTree } from "./ProjectExtras";
+export type { BurndownChartProps, GraphNode, GraphEdge, DependencyGraphProps, OkrTreeProps } from "./ProjectExtras";

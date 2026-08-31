@@ -2,6 +2,7 @@ import { COMPONENT_GROUPS } from "../docs/registry";
 import { EXTRA_GROUPS } from "../docs/registry-extra";
 import { CORE_GROUPS } from "../docs/registry-core";
 import { MARKETING_GROUPS } from "../docs/registry-marketing";
+import { OPTION_A_GROUPS } from "../docs/registry-optionA";
 import { DASHBOARDS as DASHBOARDS_REGISTRY } from "../docs/registry-dashboards";
 import type { ComponentEntry, DashboardEntry } from "../docs/types";
 
@@ -23,8 +24,11 @@ function mergeGroups(base: typeof COMPONENT_GROUPS, extra: typeof EXTRA_GROUPS) 
 }
 
 export const ALL_GROUPS = mergeGroups(
-  mergeGroups(mergeGroups(COMPONENT_GROUPS, EXTRA_GROUPS), CORE_GROUPS),
-  MARKETING_GROUPS,
+  mergeGroups(
+    mergeGroups(mergeGroups(COMPONENT_GROUPS, EXTRA_GROUPS), CORE_GROUPS),
+    MARKETING_GROUPS,
+  ),
+  OPTION_A_GROUPS,
 );
 export const ALL_COMPONENTS = ALL_GROUPS.flatMap((g) => g.items);
 export const DASHBOARDS = DASHBOARDS_REGISTRY;

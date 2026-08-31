@@ -155,7 +155,7 @@ const KITS = [
   },
 ] as const;
 
-const TOTAL_COMPONENTS = 79;
+const TOTAL_COMPONENTS = 104;
 const FREE_TIER = 24;
 const TOTAL_KITS = 7;
 

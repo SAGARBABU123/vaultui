@@ -21,3 +21,13 @@ export type {
   FaqItem,
   NewsletterSignupProps,
 } from "./sections";
+export { PricingSection, CtaBand, IntegrationsGrid, ComparisonSection } from "./MarketingExtras";
+export type {
+  PricingSectionProps,
+  PricingPlan,
+  CtaBandProps,
+  IntegrationsGridProps,
+  Integration,
+  ComparisonSectionProps,
+  ComparisonColumn,
+} from "./MarketingExtras";

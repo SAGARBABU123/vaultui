@@ -14,3 +14,14 @@ export { SubscriptionManager } from "./SubscriptionManager";
 export type { SubscriptionInfo, SubscriptionManagerProps } from "./SubscriptionManager";
 export { GiftCardBuilder } from "./GiftCardBuilder";
 export type { GiftCardBuilderProps, GiftCardConfig } from "./GiftCardBuilder";
+export { OrderTracking, Invoice, ReviewRating, WishlistButton, CouponPicker } from "./CommerceExtras";
+export type {
+  OrderTrackingProps,
+  TrackStep,
+  InvoiceProps,
+  InvoiceLine,
+  ReviewRatingProps,
+  WishlistButtonProps,
+  CouponPickerProps,
+  Coupon,
+} from "./CommerceExtras";

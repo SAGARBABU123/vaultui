@@ -14,3 +14,5 @@ export { JsonPathTester } from "./JsonPathTester";
 export type { JsonPathTesterProps } from "./JsonPathTester";
 export { WebhookSimulator } from "./WebhookSimulator";
 export type { WebhookPreset, WebhookSimulatorProps } from "./WebhookSimulator";
+export { PerformanceMonitor, EnvVarsTable, JwtInspector } from "./DevExtras";
+export type { PerformanceMonitorProps, EnvVarsTableProps, EnvVar, JwtInspectorProps, JwtParts } from "./DevExtras";

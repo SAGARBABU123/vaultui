@@ -28,3 +28,13 @@ export { LineChart } from "./LineChart";
 export type { LineChartProps, LineSeries } from "./LineChart";
 export { DonutChart } from "./DonutChart";
 export type { DonutChartProps, DonutSlice } from "./DonutChart";
+
+export { ScatterChart, FunnelChart, GaugeChart, BulletChart } from "./Charts2";
+export type {
+  ScatterChartProps,
+  ScatterPoint,
+  FunnelChartProps,
+  FunnelStage,
+  GaugeChartProps,
+  BulletChartProps,
+} from "./Charts2";

@@ -35,3 +35,10 @@ export type {
   SourceCitationItem,
   ToolCall,
 } from "./types";
+export { TokenCostMeter, RagSearch, PromptDiff } from "./AiExtras";
+export type {
+  TokenCostMeterProps,
+  RagSearchProps,
+  RagResult,
+  PromptDiffProps,
+} from "./AiExtras";
