@@ -1,6 +1,6 @@
 import { Badge, Button } from "@vaultui/ui";
 import { cn } from "@vaultui/utils";
-import { Check, Copy, Download, FolderPlus, Grab, Package, Plus, Terminal, X } from "lucide-react";
+import { ArrowRight, Check, Copy, Download, FolderPlus, Grab, Package, Plus, Terminal, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { INSTALL_COMMAND, downloadKit } from "./downloadKit";
@@ -9,6 +9,7 @@ import { ThemeCompare } from "./ThemeCompare";
 import { ThemeWall } from "./ThemeWall";
 import { ComponentInsights } from "./ComponentInsights";
 import { useProjects } from "../projects/ProjectContext";
+import { ALL_DASHBOARDS, ALL_GROUPS } from "../projects/entries";
 import type { ComponentEntry, DashboardEntry } from "./types";
 
 type DemoView = "demo" | "playground" | "ab" | "wall";
@@ -26,14 +27,31 @@ export function ComponentShell({ entry, prev, next, onNavigate, componentTotal }
   const [view, setView] = useState<DemoView>("demo");
   useEffect(() => setView("demo"), [entry.id]);
 
+  const { projects } = useProjects();
+  const navigate = useNavigate();
   const playground: PlaygroundBuilder | null = entry.kind === "dashboard" ? null : (PLAYGROUNDS[entry.id] ?? null);
   if (entry.id === "overview") {
     return (
       <article key={entry.id} className="animate-rise">
         <OverviewHero componentTotal={componentTotal} />
         <section className="mt-8">
+          <SectionLabel>At a glance</SectionLabel>
+          <OverviewStats total={componentTotal + 1} />
+        </section>
+        <section className="mt-8">
           <SectionLabel>What's inside</SectionLabel>
-          <div className="rounded-2xl border-0 bg-surface-50 p-4 shadow-soft sm:p-6">{entry.demo}</div>
+          <KitGrid onNavigate={onNavigate} />
+        </section>
+        <section className="mt-8">
+          <SectionLabel>Dashboard templates</SectionLabel>
+          <DashStrip onNavigate={onNavigate} />
+        </section>
+        <section className="mt-8">
+          <SectionLabel>Power tools</SectionLabel>
+          <FeatureLinks navigate={navigate} />
+        </section>
+        <section className="mt-8">
+          <StartCard hasProjects={projects.length > 0} navigate={navigate} />
         </section>
       </article>
     );
@@ -554,5 +572,149 @@ function ArrowR() {
     <svg viewBox="0 0 20 20" fill="currentColor" className="size-4" aria-hidden="true">
       <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
     </svg>
+  );
+}
+/* ======================= overview enhancement sections ======================= */
+
+const KIT_ACCENTS: Record<string, string> = {
+  "Free tier": "bg-success-500/15 text-success-500",
+  "AI Agent Kit": "bg-brand-100 text-brand-700",
+  "Data Viz Pro": "bg-info-500/15 text-info-500",
+  "Commerce Kit": "bg-warning-500/15 text-warning-500",
+  "Dev Tools Kit": "bg-surface-200 text-surface-700",
+  "Project Kit": "bg-success-500/15 text-success-500",
+  "Collab Kit": "bg-danger-500/15 text-danger-500",
+  "Marketing Kit": "bg-brand-100 text-brand-700",
+};
+
+function OverviewStats({ total }: { total: number }) {
+  const kits = ALL_GROUPS.filter((g) => g.group !== "Start" && g.group !== "Free tier").length;
+  const items = [
+    { k: total, v: "components" },
+    { k: 24, v: "free · MIT" },
+    { k: kits, v: "premium kits" },
+    { k: ALL_DASHBOARDS.length, v: "dashboard templates" },
+    { k: 10, v: "packages" },
+    { k: 4, v: "live themes" },
+  ];
+  return (
+    <div className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl bg-surface-200/70 shadow-soft sm:grid-cols-3 lg:grid-cols-6">
+      {items.map((s) => (
+        <div key={s.v} className="group bg-surface-0 px-3 py-4 text-center transition-colors hover:bg-brand-50/40">
+          <dd className="text-2xl font-bold tracking-tight text-gradient-brand">{s.k}</dd>
+          <dt className="mt-0.5 text-xs text-surface-500">{s.v}</dt>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function KitGrid({ onNavigate }: { onNavigate: (id: string) => void }) {
+  const groups = ALL_GROUPS.filter((g) => g.group !== "Start");
+  return (
+    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {groups.map((g) => {
+        const items = g.items.filter((i) => i.id !== "overview");
+        const first = items[0];
+        const free = g.group === "Free tier";
+        return (
+          <button
+            key={g.group}
+            type="button"
+            onClick={() => first && onNavigate(first.id)}
+            className="group relative overflow-hidden rounded-2xl border border-surface-200 bg-surface-0 p-4 text-left shadow-soft transition-all hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-raised"
+          >
+            <div className="flex items-center justify-between gap-2">
+              <span className={cn("rounded-md px-2 py-0.5 text-xs font-semibold", KIT_ACCENTS[g.group] ?? "bg-surface-100 text-surface-600")}>
+                {g.group}
+              </span>
+              <Badge variant={free ? "success" : "brand"} size="sm">
+                {items.length} {free ? "free" : ""}
+              </Badge>
+            </div>
+            <p className="mt-2 truncate text-[13px] text-surface-500">
+              {items.slice(0, 3).map((i) => i.name).join(" · ")}
+            </p>
+            <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-brand-600">
+              Browse <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function DashStrip({ onNavigate }: { onNavigate: (id: string) => void }) {
+  const first = ALL_DASHBOARDS[0];
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-surface-200 bg-surface-0 p-4 shadow-soft">
+      <div className="flex flex-wrap gap-2">
+        {ALL_DASHBOARDS.map((d) => (
+          <button
+            key={d.id}
+            type="button"
+            onClick={() => onNavigate(d.id)}
+            className="rounded-full border border-surface-200 bg-surface-50 px-3 py-1.5 font-mono text-xs text-surface-600 transition-colors hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700"
+          >
+            {d.name}
+          </button>
+        ))}
+      </div>
+      <p className="max-w-xs text-xs leading-relaxed text-surface-400">
+        Full-page products composed from Vault components — re-skinned by all 4 themes, previewed with Theme A/B.
+      </p>
+    </div>
+  );
+}
+
+function FeatureLinks({ navigate }: { navigate: (to: string) => void }) {
+  const tools = [
+    { emoji: "🎨", title: "Rebrand lab", body: "Drag the hue, radius and elevation — export your token override.", to: "/lab" },
+    { emoji: "🖌️", title: "Design composer", body: "Pick primitives, preview a screen, copy a runnable App.tsx.", to: "/composer" },
+    { emoji: "🔍", title: "⌘K palette", body: "Jump to any component from anywhere in the docs.", to: "", action: "press ⌘K" },
+    { emoji: "🧩", title: "vault-ui CLI", body: "npx vault-ui add <component> — source straight into your project.", to: "", action: "copy command" },
+  ];
+  return (
+    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      {tools.map((t) => (
+        <button
+          key={t.title}
+          type="button"
+          onClick={() => t.to && navigate(t.to)}
+          className="group flex flex-col items-start gap-2 rounded-2xl border border-surface-200 bg-surface-0 p-4 text-left shadow-soft transition-all hover:-translate-y-0.5 hover:border-brand-300"
+        >
+          <span className="text-xl">{t.emoji}</span>
+          <span className="text-sm font-semibold text-surface-800">{t.title}</span>
+          <span className="text-xs leading-relaxed text-surface-500">{t.body}</span>
+          <span className="mt-1 font-mono text-[10px] font-medium text-brand-600">{t.action ?? "open →"}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function StartCard({ hasProjects, navigate }: { hasProjects: boolean; navigate: (to: string) => void }) {
+  return (
+    <div className="relative overflow-hidden rounded-3xl border border-brand-200 bg-gradient-to-br from-brand-50/70 to-surface-0 p-6 sm:p-8">
+      <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-24 size-64 rounded-full bg-brand-200/40 blur-3xl" />
+      <div className="relative flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-600">Start building</p>
+          <h2 className="mt-2 text-xl font-bold tracking-tight sm:text-2xl">Your kit is three taps away</h2>
+          <p className="mt-1 max-w-xl text-sm leading-relaxed text-surface-500">
+            Create a project, add components from the vault, then download your curated kit — or share it as a public link.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Button size="lg" onClick={() => navigate("/projects")} leadingIcon={<Plus className="size-5" />}>
+            {hasProjects ? "Open my projects" : "Create a project"}
+          </Button>
+          <Button size="lg" variant="ghost" onClick={() => navigate("/docs/components/button")} trailingIcon={<ArrowRight className="size-5" />}>
+            Browse components
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 }
