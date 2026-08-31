@@ -117,7 +117,7 @@ Push to `main` and everything deploys itself:
 | ------------------------ | --------- |
 | any commit               | **CI** — lint · typecheck · build (`ci.yml`) |
 | any commit               | **Vercel** — production deploy (`deploy-vercel.yml`) |
-| `supabase/migrations/**` change | **Supabase** — `supabase db push` applies migrations (`deploy-supabase.yml`) |
+| `supabase/migrations/**` change | **Supabase** — migrations applied via Management API (`deploy-supabase.yml`, idempotent) |
 
 ### One-time setup — add GitHub secrets
 Repo → **Settings → Secrets and variables → Actions** → New repository secret:
@@ -129,7 +129,7 @@ Repo → **Settings → Secrets and variables → Actions** → New repository s
 - **Supabase** (dashboard → Account → Access tokens; project ref = the `<ref>` in `https://<ref>.supabase.co`):
   - `SUPABASE_ACCESS_TOKEN`
   - `SUPABASE_PROJECT_ID`
-  - `SUPABASE_DB_PASSWORD`
+  - > Migrations are applied through the Management API — no DB password needed.
 
 The workflows are guarded with `if:` on those secrets — CI never fails before
 you add them; deploys start automatically the moment they exist.
