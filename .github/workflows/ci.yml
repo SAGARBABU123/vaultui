@@ -29,3 +29,34 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+  # Auto-deploy to Vercel (production) on main pushes. Sealed into this
+  # workflow so deploys share the same verified pipeline + workspace setup.
+  deploy-vercel:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    needs: verify
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Deploy to Vercel (production)
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "::warning::VERCEL_TOKEN not set — skipping Vercel deploy"
+            exit 0
+          fi
+          npx vercel deploy --prod --yes --token="$VERCEL_TOKEN"
