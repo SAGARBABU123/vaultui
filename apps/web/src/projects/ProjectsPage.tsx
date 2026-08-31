@@ -1,7 +1,7 @@
 import { useState, type FormEvent, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { Badge, Button, Card } from "@vaultui/ui";
-import { CopyPlus, FolderPlus, Pencil, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, CopyPlus, FolderPlus, Pencil, Plus, Trash2 } from "lucide-react";
 import { DocsHeader } from "../layout/DocsHeader";
 import { useAuth } from "../auth/AuthContext";
 import { useProjects } from "./ProjectContext";
@@ -103,6 +103,15 @@ export function ProjectsPage() {
       />
 
       <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+        {/* Back to the vault */}
+        <button
+          type="button"
+          onClick={() => navigate("/docs")}
+          className="mb-4 inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-sm font-medium text-surface-500 transition-colors hover:bg-surface-100 hover:text-surface-900"
+        >
+          <ArrowLeft className="size-4" /> Back to dashboard
+        </button>
+
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-600">Workspace</p>
