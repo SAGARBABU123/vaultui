@@ -1,9 +1,6 @@
 name: Deploy — Vercel
 
-# Auto-deploy the web app to Vercel on every push to main.
-# (Also works with the Vercel dashboard GitHub integration; this workflow
-# makes the deploy explicit from code. Add secrets below in
-# GitHub → Settings → Secrets and variables → Actions, then this runs.)
+# Auto-deploy the web app to Vercel (production) on every push to main.
 
 on:
   push:
@@ -13,9 +10,12 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # Skip if the deploy secrets aren't configured yet (so CI never breaks
-    # before they're added), otherwise deploy production.
-    if: ${{ secrets.VERCEL_TOKEN != '' && secrets.VERCEL_ORG_ID != '' && secrets.VERCEL_PROJECT_ID != '' }}
+    # Quoted: GitHub Actions treats & as YAML flow indicator when unquoted.
+    if: "${{ secrets.VERCEL_TOKEN != '' && secrets.VERCEL_ORG_ID != '' && secrets.VERCEL_PROJECT_ID != '' }}"
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
     steps:
       - uses: actions/checkout@v4
 
@@ -30,10 +30,4 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Deploy to Vercel (production)
-        uses: amondnet/vercel-action@v20
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: "--prod"
-          working-directory: .
+        run: npx vercel deploy --prod --yes --token="$VERCEL_TOKEN"
