@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ChevronDown, Lock } from "lucide-react";
 import { cn } from "@vaultui/utils";
 import { useAuth } from "../auth/AuthContext";
+import { VaultLogo } from "../brand/VaultLogo";
 import type { ComponentEntry, ComponentGroup, DashboardEntry, DashboardGroup } from "./types";
 
 /** Canonical URL for a sidebar entry (mirrors App.entryUrl). */
@@ -67,9 +68,7 @@ export function Sidebar({ groups, dashboards, activeId, onSelect, search, onSear
         title="Back to the landing page"
         className="flex items-center gap-2.5 border-b border-surface-200/70 px-3 pb-3 pt-4 transition-colors hover:bg-surface-100/60"
       >
-        <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-sm font-bold text-white shadow-soft">
-          V
-        </span>
+        <VaultLogo size={32} />
         <span className="min-w-0">
           <span className="block text-[15px] font-semibold leading-tight tracking-tight text-surface-900">
             Vault&nbsp;UI

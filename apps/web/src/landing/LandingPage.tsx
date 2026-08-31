@@ -6,6 +6,7 @@ import { cn } from "@vaultui/utils";
 import { ArrowRight, Check, Copy, Download, Lock, Package, Terminal, UserPlus } from "lucide-react";
 import { INSTALL_COMMAND, downloadKit } from "../docs/downloadKit";
 import { AuthControl } from "../auth/AuthControl";
+import { VaultLogo } from "../brand/VaultLogo";
 import { useAuth } from "../auth/AuthContext";
 import { useTheme } from "../theme/ThemeContext";
 import { ParticleField } from "./ParticleField";
@@ -193,9 +194,7 @@ function Nav() {
     <header className="sticky top-0 z-30 border-b border-surface-200/80 bg-surface-50/85 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <a href="#top" className="flex items-center gap-2.5 font-semibold tracking-tight">
-          <span className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-sm text-white shadow-soft">
-            V
-          </span>
+          <VaultLogo size={32} />
           <span className="text-[15px]">
             Vault&nbsp;UI
             <span className="ml-2 hidden rounded-full bg-brand-100 px-2 py-0.5 text-[11px] font-medium text-brand-700 sm:inline-block">
@@ -976,7 +975,7 @@ function Footer() {
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
         <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
           <div className="flex items-center gap-2.5">
-            <span className="flex size-7 items-center justify-center rounded-lg bg-brand-600 text-xs text-white">V</span>
+            <VaultLogo size={28} />
             <span className="text-sm font-semibold tracking-tight">Vault UI</span>
             <span className="text-xs text-surface-400">— premium React + Tailwind components</span>
           </div>
