@@ -38,7 +38,7 @@ jobs:
 
           for f in supabase/migrations/*.sql; do
             name="$(basename "$f")"
-            if q "select 1 from vault_migrations_applied where name = '${name}';" | grep -q '"1"'; then
+            if q "select name from vault_migrations_applied where name = '${name}';" | grep -q '"name"'; then
               echo "skip  ${name} (already applied)"
               continue
             fi
