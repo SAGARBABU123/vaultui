@@ -35,6 +35,12 @@ importers:
 
   apps/showroom:
     dependencies:
+      '@vaultui/data-viz':
+        specifier: workspace:*
+        version: link:../../packages/data-viz
+      '@vaultui/marketing':
+        specifier: workspace:*
+        version: link:../../packages/marketing
       '@vaultui/tokens':
         specifier: workspace:*
         version: link:../../packages/tokens

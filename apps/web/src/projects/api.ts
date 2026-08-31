@@ -1,6 +1,6 @@
 import { getSupabase } from "../auth/supabase";
 import type { AuthMode } from "../auth/AuthContext";
-import type { ProjectItemMeta, UserProject } from "./types";
+import type { UserProject } from "./types";
 
 /**
  * Project persistence — same two-engine pattern as auth:

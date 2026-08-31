@@ -1,8 +1,7 @@
 import { useEffect, useState, type ReactElement } from "react";
 import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import { Badge, Button } from "@vaultui/ui";
+import { Button } from "@vaultui/ui";
 import { cn } from "@vaultui/utils";
-import { Folder } from "lucide-react";
 import { LandingPage } from "./landing/LandingPage";
 import { AuthPage } from "./auth/AuthPage";
 import { AccessGate } from "./auth/AccessGate";
@@ -141,10 +140,29 @@ function DocsView() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { isSignedIn, isPremium } = useAuth();
-  const { projects } = useProjects();
   const [search, setSearch] = useState("");
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [paletteToken, setPaletteToken] = useState(0);
+  const [paletteOpen, setPaletteOpen] = useState(false);
+
+  // j / k — previous / next entry while browsing docs (skip form fields).
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement | null;
+      if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
+      if (e.key !== "j" && e.key !== "k") return;
+      const cur = resolveActive(location.pathname);
+      if (!cur) return;
+      const idx = NAV_ITEMS.findIndex((x) => x.id === cur.id);
+      const target = e.key === "j" ? NAV_ITEMS[idx - 1] : NAV_ITEMS[idx + 1];
+      if (!target) return;
+      e.preventDefault();
+      navigate(entryUrl(target));
+      setDrawerOpen(false);
+      window.scrollTo({ top: 0 });
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [navigate]);
 
   const active = resolveActive(pathname);
   // Kit URLs and unknown ids land on their canonical route.
@@ -179,21 +197,7 @@ function DocsView() {
   };
 
   // j / k — previous / next entry while browsing docs (skip form fields).
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      const t = e.target as HTMLElement | null;
-      if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
-      if (e.key === "j") {
-        e.preventDefault();
-        if (prev) navigateEntry(prev.id);
-      } else if (e.key === "k") {
-        e.preventDefault();
-        if (next) navigateEntry(next.id);
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  });
+
 
   return (
     <div className="min-h-screen text-surface-900">
@@ -209,7 +213,6 @@ function DocsView() {
             activeId={active.id}
             onSelect={navigateEntry}
             search={search}
-            onSearchChange={setSearch}
           />
         </aside>
 
@@ -221,10 +224,10 @@ function DocsView() {
             onOpenDrawer={() => setDrawerOpen(true)}
             searchValue={search}
             onSearchChange={setSearch}
-            onOpenPalette={() => setPaletteToken((n) => n + 1)}
+            onOpenPalette={() => setPaletteOpen(true)}
           />
 
-          <CommandPalette onNavigate={navigateEntry} openToken={paletteToken} />
+          <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} onNavigate={navigateEntry} />
           <AskTheKit />
 
           {/* Mobile drawer */}
@@ -250,7 +253,6 @@ function DocsView() {
                     activeId={active.id}
                     onSelect={navigateEntry}
                     search={search}
-                    onSearchChange={setSearch}
                   />
                 </div>
               </div>

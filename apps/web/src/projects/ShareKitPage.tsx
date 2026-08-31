@@ -26,10 +26,7 @@ export function ShareKitPage() {
 
   useEffect(() => {
     let alive = true;
-    if (!id) {
-      setProject(null);
-      return;
-    }
+    if (!id) return;
     getProjectAPI(mode)
       .loadPublic(id)
       .then((p) => {
@@ -59,7 +56,7 @@ export function ShareKitPage() {
 
   if (project === "loading") {
     return (
-      <Shell onLogo={() => navigate("/")}>
+      <Shell>
         <p className="text-sm text-surface-400">Loading kit…</p>
       </Shell>
     );
@@ -67,7 +64,7 @@ export function ShareKitPage() {
 
   if (!project) {
     return (
-      <Shell onLogo={() => navigate("/")}>
+      <Shell>
         <Card padding="lg" className="mx-auto max-w-md text-center">
           <span className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-surface-100 text-surface-400">
             <Folder className="size-6" />
@@ -113,7 +110,7 @@ export function ShareKitPage() {
   };
 
   return (
-    <Shell onLogo={() => navigate("/")}>
+    <Shell>
       {/* Kit header */}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="min-w-0">
@@ -206,7 +203,7 @@ export function ShareKitPage() {
   );
 }
 
-function Shell({ children, onLogo }: { children: React.ReactNode; onLogo: () => void }) {
+function Shell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-surface-50 text-surface-900">
       <DocsHeader

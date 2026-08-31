@@ -27,7 +27,6 @@ import {
   Tabs,
   Textarea,
   ToastProvider,
-  Tooltip,
   useToast,
 } from "@vaultui/ui";
 import type { ComponentGroup } from "./types";

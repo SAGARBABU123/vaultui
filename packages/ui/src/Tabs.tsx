@@ -1,5 +1,4 @@
 import { useState, type ReactNode } from "react";
-import { cn } from "@vaultui/utils";
 
 export interface TabItem {
   id: string;

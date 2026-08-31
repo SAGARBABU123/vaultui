@@ -48,10 +48,24 @@ export function DonutChart({
   const total = Math.max(1, data.reduce((n, d) => n + Math.max(0, d.value), 0));
   const r = (size - thickness) / 2;
   const c = 2 * Math.PI * r;
-  let offset = 0;
   // Center metric and labels scale with the ring size.
   const f = Math.min(2, Math.max(0.6, size / 168));
   const centerFont = Math.round(20 * f);
+  // Slices computed purely (offsets accumulate via reduce — no render mutation).
+  const slices = data.reduce<
+    Array<{ label: string; value: number; color: string; dash: number; offset: number }>
+  >((out, d, i) => {
+    const frac = Math.max(0, d.value) / total;
+    const dash = frac * c;
+    out.push({
+      label: d.label,
+      value: d.value,
+      color: d.color ?? PALETTE[i % PALETTE.length]!,
+      dash,
+      offset: out.reduce((n, s) => n + s.dash, 0),
+    });
+    return out;
+  }, []);
 
   return (
     <div className={cn("flex flex-col items-center gap-4", className)}>
@@ -65,30 +79,24 @@ export function DonutChart({
             stroke="var(--color-surface-100)"
             strokeWidth={thickness}
           />
-          {data.map((d, i) => {
-            const frac = Math.max(0, d.value) / total;
-            const dash = frac * c;
-            const color = d.color ?? PALETTE[i % PALETTE.length]!;
-            const el = (
-              <circle
-                key={`${d.label}-${i}`}
-                cx={size / 2}
-                cy={size / 2}
-                r={r}
-                fill="none"
-                stroke={color}
-                strokeWidth={thickness}
-                strokeDasharray={`${dash - 3} ${c - dash + 3}`}
-                strokeDashoffset={-offset}
-                transform={`rotate(-90 ${size / 2} ${size / 2})`}
-                className="vault-chart-slice"
-              >
-                <title>{`${d.label}: ${d.value} (${Math.round(frac * 100)}%)`}</title>
-              </circle>
-            );
-            offset += dash;
-            return el;
-          })}
+          {slices.map((sl, i) => (
+            <circle
+              key={`${sl.label}-${i}`}
+              cx={size / 2}
+              cy={size / 2}
+              r={r}
+              fill="none"
+              stroke={sl.color}
+              strokeWidth={thickness}
+              strokeDasharray={`${sl.dash - 3} ${c - sl.dash + 3}`}
+              strokeDashoffset={-sl.offset}
+              transform={`rotate(-90 ${size / 2} ${size / 2})`}
+              className="vault-chart-slice"
+              style={{ "--vault-slice-w": `${thickness}px` } as React.CSSProperties}
+            >
+              <title>{`${sl.label}: ${sl.value} (${Math.round((sl.value / total) * 100)}%)`}</title>
+            </circle>
+          ))}
         </svg>
         {(centerValue || centerLabel) && (
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center">

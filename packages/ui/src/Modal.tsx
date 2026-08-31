@@ -39,14 +39,12 @@ export function Modal({ open, onClose, title, children, footer, className }: Mod
         aria-label={typeof title === "string" ? title : undefined}
         className={cn("vault-modal__dialog", className)}
       >
-        {(title || true) && (
-          <div className="vault-modal__head">
+        <div className="vault-modal__head">
             <div className="vault-modal__title">{title}</div>
             <button type="button" className="vault-modal__close" aria-label="Close dialog" onClick={onClose}>
               <XIcon />
             </button>
           </div>
-        )}
         <div className="vault-modal__body">{children}</div>
         {footer && <div className="vault-modal__footer">{footer}</div>}
       </div>

@@ -26,7 +26,10 @@ export interface ComponentShellProps {
 
 export function ComponentShell({ entry, prev, next, onNavigate, componentTotal }: ComponentShellProps) {
   const [view, setView] = useState<DemoView>("demo");
-  useEffect(() => setView("demo"), [entry.id]);
+  useEffect(() => {
+    const t = window.setTimeout(() => setView("demo"), 0);
+    return () => window.clearTimeout(t);
+  }, [entry.id]);
 
   const { projects } = useProjects();
   const navigate = useNavigate();
@@ -687,7 +690,6 @@ function KitGrid({ onNavigate }: { onNavigate: (id: string) => void }) {
 }
 
 function DashStrip({ onNavigate }: { onNavigate: (id: string) => void }) {
-  const first = ALL_DASHBOARDS[0];
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-surface-200 bg-surface-0 p-4 shadow-soft">
       <div className="flex flex-wrap gap-2">

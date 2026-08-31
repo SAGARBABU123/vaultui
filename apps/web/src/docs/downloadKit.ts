@@ -9,9 +9,6 @@ import tokensCss from "@vaultui/tokens/tokens.css?raw";
 
 const KIT_PACKAGES = ["@vaultui/tokens", "@vaultui/utils", "@vaultui/ui"];
 
-const PREMIUM_NOTICE =
-  "Premium kits (@vaultui/ai-chat, @vaultui/data-viz, @vaultui/commerce, @vaultui/dev-tools, @vaultui/project, @vaultui/collab) are distributed via purchase license — they are intentionally not on the public registry.";
-
 const TIERS: Record<string, string> = {
   free: "Free · MIT",
   paid: "Paid kit · commercial license",
@@ -130,7 +127,6 @@ function buildReadme(entries: ComponentEntry[], projectName?: string, dashboards
 }
 
 function buildStarterApp(entries: ComponentEntry[]): string {
-  const free = entries.filter((e) => e.package === "@vaultui/ui" && e.id !== "overview");
   const ai = entries.find((e) => e.id === "chat-canvas");
   const kpi = entries.find((e) => e.id === "kpi-card");
   const code = [

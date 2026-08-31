@@ -38,7 +38,7 @@ export function ProjectOverviewPage() {
 
   if (loading) {
     return (
-      <PageShell onLogo={() => navigate("/")}>
+      <PageShell>
         <p className="text-sm text-surface-400">Loading project…</p>
       </PageShell>
     );
@@ -75,7 +75,7 @@ export function ProjectOverviewPage() {
   };
 
   return (
-    <PageShell onLogo={() => navigate("/")}>
+    <PageShell>
       {/* Back to the vault */}
       <button
         type="button"
@@ -266,7 +266,7 @@ export function ProjectOverviewPage() {
 
 /* ------------------------------- helpers -------------------------------- */
 
-function PageShell({ children, onLogo }: { children: ReactNode; onLogo: () => void }) {
+function PageShell({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-surface-50 text-surface-900">
       <DocsHeader

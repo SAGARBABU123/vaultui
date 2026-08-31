@@ -18,10 +18,9 @@ export interface SidebarProps {
   activeId: string;
   onSelect: (id: string) => void;
   search: string;
-  onSearchChange: (value: string) => void;
 }
 
-export function Sidebar({ groups, dashboards, activeId, onSelect, search, onSearchChange }: SidebarProps) {
+export function Sidebar({ groups, dashboards, activeId, onSelect, search }: SidebarProps) {
   const { isSignedIn, isPremium } = useAuth();
   const q = search.trim().toLowerCase();
 

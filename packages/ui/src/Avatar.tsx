@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import { cn } from "@vaultui/utils";
 
 export interface AvatarProps {

@@ -1,7 +1,7 @@
 import type { Preview } from "@storybook/react";
 
 // Design tokens + Tailwind entry (imports @vaultui/tokens/tokens.css)
-import "./tailwind.css";
+import "../src/tailwind.css";
 // Scan-independent component styles
 import "@vaultui/ui/button.css";
 import "@vaultui/ui/primitives.css";

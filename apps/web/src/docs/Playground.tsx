@@ -164,8 +164,8 @@ export const PLAYGROUNDS: Record<string, PlaygroundBuilder> = {
         "<Button",
         `  variant="${v.variant}"`,
         `  size="${v.size}"`,
-        Boolean(v.disabled) ? '  disabled\n' : "",
-        Boolean(v.loading) ? "  loading\n" : "",
+        v.disabled ? '  disabled\n' : "",
+        v.loading ? "  loading\n" : "",
         `  >${v.label}</Button>`,
       ]
         .filter(Boolean)
@@ -227,7 +227,7 @@ export const PLAYGROUNDS: Record<string, PlaygroundBuilder> = {
     ],
     demo: (v) => (
       <div className="flex min-h-28 items-center justify-center gap-6">
-        {Boolean(v.group) ? (
+        {v.group ? (
           <AvatarGroup
             size={v.size as never}
             max={4}

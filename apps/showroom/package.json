@@ -2,16 +2,18 @@
   "name": "@vaultui/showroom",
   "version": "0.0.1",
   "private": true,
-  "description": "Vault UI showroom — the Storybook storefront",
+  "description": "Vault UI showroom \u2014 the Storybook storefront",
   "scripts": {
-    "storybook": "storybook dev -p 6006",
-    "build": "storybook build -o dist",
+    "storybook": "STORYBOOK_DISABLE_TELEMETRY=1 storybook dev -p 6006",
+    "build": "STORYBOOK_DISABLE_TELEMETRY=1 storybook build -o dist",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@vaultui/tokens": "workspace:*",
     "@vaultui/ui": "workspace:*",
-    "@vaultui/utils": "workspace:*"
+    "@vaultui/utils": "workspace:*",
+    "@vaultui/data-viz": "workspace:*",
+    "@vaultui/marketing": "workspace:*"
   },
   "devDependencies": {
     "@vaultui/configs": "workspace:*",

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { cn } from "@vaultui/utils";
 import { Kbd } from "@vaultui/ui";
 import { NAV_ITEMS } from "../projects/entries";
@@ -8,41 +8,34 @@ import { NAV_ITEMS } from "../projects/entries";
  * the docs. Global Cmd/Ctrl+K listener; arrows + Enter to select; ESC closes.
  */
 export function CommandPalette({
+  open,
+  onOpenChange,
   onNavigate,
-  openToken = 0,
 }: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
   onNavigate: (id: string) => void;
-  openToken?: number;
 }) {
-  const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const [idx, setIdx] = useState(0);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (openToken > 0) setOpen(true);
-  }, [openToken]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
-        setOpen((o) => !o);
+        const next = !open;
+        onOpenChange(next);
+        if (next) {
+          setQ("");
+          setIdx(0);
+        }
       } else if (e.key === "Escape") {
-        setOpen(false);
+        onOpenChange(false);
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, []);
-
-  useEffect(() => {
-    if (open) {
-      setQ("");
-      setIdx(0);
-      inputRef.current?.focus();
-    }
-  }, [open]);
+  }, [open, onOpenChange]);
 
   const results = useMemo(() => {
     const query = q.trim().toLowerCase();
@@ -53,7 +46,7 @@ export function CommandPalette({
 
   const pick = (id: string) => {
     onNavigate(id);
-    setOpen(false);
+    onOpenChange(false);
   };
 
   if (!open) return null;
@@ -63,14 +56,14 @@ export function CommandPalette({
       <button
         type="button"
         aria-label="Close command palette"
-        onClick={() => setOpen(false)}
+        onClick={() => onOpenChange(false)}
         className="absolute inset-0 bg-surface-950/40 backdrop-blur-[2px]"
       />
       <div className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-surface-200 bg-surface-0 shadow-raised animate-rise">
         <div className="flex items-center gap-2 border-b border-surface-100 px-4 py-3">
           <SearchIcon className="size-4 shrink-0 text-surface-400" />
           <input
-            ref={inputRef}
+            autoFocus
             value={q}
             onChange={(e) => {
               setQ(e.target.value);

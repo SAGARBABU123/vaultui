@@ -144,8 +144,6 @@ export function Combobox({ options, value, onValueChange, placeholder = "Searchâ
     };
   }, [open]);
 
-  useEffect(() => setFocused(0), [query, open]);
-
   const pick = (o: ComboOption | undefined) => {
     onValueChange(o?.value);
     setOpen(false);
@@ -159,10 +157,14 @@ export function Combobox({ options, value, onValueChange, placeholder = "Searchâ
         value={open ? query : (selected?.label ?? query)}
         disabled={disabled}
         placeholder={placeholder}
-        onFocus={() => setOpen(true)}
+        onFocus={() => {
+          setOpen(true);
+          setFocused(0);
+        }}
         onChange={(e) => {
           setQuery(e.target.value);
           setOpen(true);
+          setFocused(0);
         }}
         onKeyDown={(e) => {
           if (e.key === "ArrowDown") {

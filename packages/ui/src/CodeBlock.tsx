@@ -31,11 +31,10 @@ function highlight(code: string): React.ReactNode[] {
     const comment = COMMENTS.exec(rest);
     const str = STRINGS.exec(rest);
 
-    let pick: RegExpExecArray | null = null;
-    let kind: "com" | "str" | null = null;
-    if (comment && str) pick = comment.index <= str.index ? comment : str;
-    else pick = comment ?? str;
-    if (pick) kind = pick === comment ? "com" : "str";
+    const pick =
+      comment && str ? (comment.index <= str.index ? comment : str) : (comment ?? str);
+    const kind: "com" | "str" | null =
+      pick && pick === comment ? "com" : pick && pick === str ? "str" : null;
 
     if (pick) {
       if (pick.index > 0) nodes.push(rest.slice(0, pick.index));
