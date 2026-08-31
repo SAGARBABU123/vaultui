@@ -331,6 +331,34 @@ function OverviewHero({ componentTotal }: { componentTotal: number }) {
           Prefer the CLI? <code className="text-brand-700">npx vault-ui add &lt;component&gt;</code> —
           adds the exact component source to your project.
         </p>
+
+        {/* Getting started — the three-step kit flow */}
+        <div className="mt-7 border-t border-surface-200/70 pt-6">
+          <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-600">
+            Getting started
+          </p>
+          <h3 className="mt-1 text-base font-semibold tracking-tight text-surface-800">
+            Your kit, in three steps
+          </h3>
+          <ol className="mt-4 grid gap-2 sm:grid-cols-3">
+            {[
+              { n: "1", t: "Create a project", d: "Name it — that's the kit you're building.", icon: <FolderPlus className="size-4" /> },
+              { n: "2", t: "Add components", d: "Hit “Add to project” on anything you like in the vault.", icon: <Plus className="size-4" /> },
+              { n: "3", t: "Download your kit", d: "Your project page turns it into a themed zip + install command.", icon: <Download className="size-4" /> },
+            ].map(({ n, t, d, icon }) => (
+              <li key={n} className="rounded-2xl border border-surface-200/70 bg-surface-0 p-4 shadow-soft">
+                <span className="flex size-7 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 text-xs font-bold text-white">
+                  {n}
+                </span>
+                <p className="mt-2 flex items-center gap-1.5 text-[13px] font-semibold text-surface-800">
+                  {icon}
+                  {t}
+                </p>
+                <p className="mt-1 text-xs leading-relaxed text-surface-500">{d}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
       </div>
     </div>
   );

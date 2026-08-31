@@ -258,41 +258,6 @@ function DocsView() {
           )}
 
           <main className="px-4 py-8 sm:px-6 lg:px-10">
-          {/* Onboarding nudge — no projects yet? Getting-started with the flow. */}
-          {active.id === "overview" && projects.length === 0 && (
-            <div className="mx-auto mb-6 max-w-3xl">
-              <div className="rounded-2xl border border-dashed border-brand-300 bg-brand-50/60 p-5 sm:p-6">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div>
-                    <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-600">
-                      Getting started
-                    </p>
-                    <h2 className="mt-1 text-base font-semibold tracking-tight text-surface-800">
-                      Your kit, in three steps
-                    </h2>
-                  </div>
-                  <Button size="sm" onClick={() => navigate("/projects")} leadingIcon={<Folder className="size-4" />}>
-                    Create a project
-                  </Button>
-                </div>
-                <ol className="mt-4 grid gap-2 sm:grid-cols-3">
-                  {[
-                    ["1", "Create a project", "Name it — that's the kit you're building."],
-                    ["2", "Add components", "Hit “Add to project” on anything you like in the vault."],
-                    ["3", "Download your kit", "Your project page turns it into a themed zip + install command."],
-                  ].map(([n, t, d]) => (
-                    <li key={n} className="rounded-xl border border-surface-200/70 bg-surface-0 p-3">
-                      <span className="flex size-6 items-center justify-center rounded-lg bg-brand-600 text-xs font-bold text-white">
-                        {n}
-                      </span>
-                      <p className="mt-2 text-[13px] font-semibold text-surface-800">{t}</p>
-                      <p className="mt-0.5 text-xs leading-relaxed text-surface-500">{d}</p>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-            </div>
-          )}
           <div className={cn("mx-auto", isDashboard(active) ? "max-w-6xl" : "max-w-3xl")}>
             {locked && gate ? (
               <AccessGate kind={gate} />
