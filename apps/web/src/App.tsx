@@ -188,7 +188,6 @@ function DocsView() {
             onSelect={navigateEntry}
             search={search}
             onSearchChange={setSearch}
-            summary={`${COMPONENT_TOTAL} components · 7 kits · ${ALL_DASHBOARDS.length} dashboards`}
           />
         </aside>
 
@@ -227,7 +226,6 @@ function DocsView() {
                     onSelect={navigateEntry}
                     search={search}
                     onSearchChange={setSearch}
-                    summary={`${COMPONENT_TOTAL} components · 7 kits · ${ALL_DASHBOARDS.length} dashboards`}
                   />
                 </div>
               </div>

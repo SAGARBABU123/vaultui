@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronDown, Lock } from "lucide-react";
 import { cn } from "@vaultui/utils";
@@ -18,11 +18,9 @@ export interface SidebarProps {
   onSelect: (id: string) => void;
   search: string;
   onSearchChange: (value: string) => void;
-  /** Optional summary line shown at the top of the rail (e.g. component count). */
-  summary?: string;
 }
 
-export function Sidebar({ groups, dashboards, activeId, onSelect, search, onSearchChange, summary }: SidebarProps) {
+export function Sidebar({ groups, dashboards, activeId, onSelect, search, onSearchChange }: SidebarProps) {
   const { isSignedIn, isPremium } = useAuth();
   const q = search.trim().toLowerCase();
 
@@ -63,14 +61,18 @@ export function Sidebar({ groups, dashboards, activeId, onSelect, search, onSear
 
   return (
     <nav aria-label="Components">
-      {/* Rail summary — was the old header count badge, now anchors the rail */}
-      {summary && (
-        <div className="px-3 pb-2 pt-4">
-          <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-600">
-            {summary}
-          </p>
-        </div>
-      )}
+      {/* Rail brand — the product mark + version pill at the top of the rail */}
+      <div className="flex items-center gap-2.5 border-b border-surface-200/70 px-3 pb-3 pt-4">
+        <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-sm font-bold text-white shadow-soft">
+          V
+        </span>
+        <span className="min-w-0">
+          <span className="block text-[15px] font-semibold leading-tight tracking-tight text-surface-900">
+            Vault&nbsp;UI
+          </span>
+          <NpmMetaPill />
+        </span>
+      </div>
 
       {/* Dashboard templates section */}
       {(() => {
@@ -202,6 +204,38 @@ export function Sidebar({ groups, dashboards, activeId, onSelect, search, onSear
         )}
       </div>
     </nav>
+  );
+}
+
+function NpmMetaPill() {
+  const [meta, setMeta] = useState<{ version?: string; downloads?: string }>({});
+
+  useEffect(() => {
+    let alive = true;
+    Promise.all([
+      fetch("https://registry.npmjs.org/@vaultui/ui/latest").then((r) => (r.ok ? r.json() : null)),
+      fetch("https://api.npmjs.org/downloads/point/last-month/@vaultui/ui").then((r) => (r.ok ? r.json() : null)),
+    ])
+      .then(([pkg, dl]) => {
+        if (!alive) return;
+        setMeta({
+          version: pkg?.version,
+          downloads: dl?.downloads !== undefined ? `${(dl.downloads / 1000).toFixed(1)}k` : undefined,
+        });
+      })
+      .catch(() => {
+        /* offline — keep local fallback */
+      });
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  return (
+    <span className="mt-0.5 inline-block rounded-full bg-brand-100 px-1.5 py-0.5 font-mono text-[10px] font-medium text-brand-700">
+      v{meta.version ?? "0.1.1"}
+      {meta.downloads ? ` · ${meta.downloads} dls/mo` : ""}
+    </span>
   );
 }
 
