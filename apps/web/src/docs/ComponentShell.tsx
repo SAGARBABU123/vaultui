@@ -262,7 +262,7 @@ function OverviewHero({ componentTotal }: { componentTotal: number }) {
           <Badge variant="brand" size="sm" dot>
             Soft UI · {componentTotal + 1} components
           </Badge>
-          <Badge variant="neutral" size="sm">7 kits · 9 packages</Badge>
+          <Badge variant="neutral" size="sm">7 kits · 10 packages</Badge>
         </div>
 
         <h1 className="mt-5 max-w-xl text-3xl font-bold tracking-tight sm:text-5xl">
@@ -271,9 +271,10 @@ function OverviewHero({ componentTotal }: { componentTotal: number }) {
           <span className="text-gradient-brand">One download.</span>
         </h1>
         <p className="mt-4 max-w-xl leading-relaxed text-surface-500">
-          The free core — design tokens, theme and {componentTotal} components — installs with one
-          line from npm. Premium kits come with a license. Download the bundle for
-          the real theme file, per-component usage snippets, and a runnable starter app.
+          104 components across 7 kits + 5 dashboard templates live in this vault. 24 make up the
+          free core (MIT) — install them with one line from npm, add any component with the CLI
+          (npx vault-ui add &lt;component&gt;), or download the bundle: the real theme file,
+          per-component usage snippets, and a runnable starter app.
         </p>
 
         <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">

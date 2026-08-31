@@ -101,56 +101,56 @@ const KITS = [
     emoji: "🤖",
     name: "AI Agent Kit",
     pkg: "@vaultui/ai-chat",
-    count: 11,
-    blurb: "ChatCanvas, streaming tokens, tool-call inspectors, agent orchestration — the interface for intelligence, finished.",
+    count: 14,
+    blurb: "ChatCanvas, streaming tokens, tool-call inspectors, RAG search, token cost meters — the interface for intelligence, finished.",
     accent: "bg-brand-100 text-brand-700",
   },
   {
     emoji: "📈",
     name: "Data Viz Pro",
     pkg: "@vaultui/data-viz",
-    count: 12,
-    blurb: "KPI cards, sparklines, Sankey, candlesticks, heatmaps — real charting with zero chart libraries.",
+    count: 19,
+    blurb: "KPI cards, bar/line/donut, scatter, funnel, gauge, Sankey, candlesticks, heatmaps — real charting with zero chart libraries.",
     accent: "bg-success-500/15 text-success-500",
   },
   {
     emoji: "🛒",
     name: "Commerce Kit",
     pkg: "@vaultui/commerce",
-    count: 8,
-    blurb: "Pricing tables, carts, checkout rails, refunds, subscriptions — the money moments, de-risked.",
+    count: 13,
+    blurb: "Pricing tables, carts, checkout rails, invoices, order tracking, coupons — the money moments, de-risked.",
     accent: "bg-warning-500/15 text-warning-500",
   },
   {
     emoji: "🧰",
     name: "Dev Tools Kit",
     pkg: "@vaultui/dev-tools",
-    count: 8,
-    blurb: "Log streams, diffs, API playgrounds, SQL & cron builders, feature flags — developer surfaces, dignified.",
+    count: 11,
+    blurb: "Log streams, diffs, API playgrounds, JWT inspectors, performance monitors — developer surfaces, dignified.",
     accent: "bg-surface-200 text-surface-700",
   },
   {
     emoji: "🗂️",
     name: "Project Mgmt Kit",
     pkg: "@vaultui/project",
-    count: 3,
-    blurb: "Kanban, roadmaps, Gantt — planning made legible instead of abstract.",
+    count: 6,
+    blurb: "Kanban, roadmaps, Gantt, burndowns, dependency graphs, OKRs — planning made legible instead of abstract.",
     accent: "bg-info-500/15 text-info-500",
   },
   {
     emoji: "👥",
     name: "Collab Kit",
     pkg: "@vaultui/collab",
-    count: 3,
-    blurb: "Presence, live cursors, activity feeds — the room, rendered to the pixel.",
+    count: 6,
+    blurb: "Presence, live cursors, comments, reactions, mentions — the room, rendered to the pixel.",
     accent: "bg-danger-500/15 text-danger-500",
   },
   {
     emoji: "📣",
     name: "Marketing Kit",
     pkg: "@vaultui/marketing",
-    count: 7,
-    blurb: "Hero sections, feature grids, stats, testimonials, logos, FAQ and newsletter capture — landing pages that read as designed, in minutes.",
+    count: 11,
+    blurb: "Heroes, pricing, comparisons, integrations, CTA bands, stats, testimonials — landing pages that read as designed, in minutes.",
     accent: "bg-brand-100 text-brand-700",
   },
 ] as const;
@@ -158,6 +158,7 @@ const KITS = [
 const TOTAL_COMPONENTS = 104;
 const FREE_TIER = 24;
 const TOTAL_KITS = 7;
+const DASHBOARD_COUNT = 5;
 
 /* ================================ page ==================================== */
 
@@ -284,7 +285,7 @@ function Hero({ onBrowse }: { onBrowse: () => void }) {
         <div className="mx-auto max-w-3xl text-center">
           <div className="flex flex-wrap items-center justify-center gap-2">
             <Badge variant="brand" size="sm" dot>
-              {TOTAL_COMPONENTS} components · {TOTAL_KITS} kits
+              {TOTAL_COMPONENTS} components · {TOTAL_KITS} kits · {DASHBOARD_COUNT} dashboards
             </Badge>
             <Badge variant="neutral" size="sm">one token engine</Badge>
           </div>
@@ -705,7 +706,7 @@ function KitsSection({ onBrowse }: { onBrowse: () => void }) {
   return (
     <section id="kits" className="scroll-mt-20 mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
       <SectionHeading
-        kicker="Six kits, one language"
+        kicker="Seven kits, one language"
         title="Built for the product,<br />not the <em>demo</em>."
         body="Each kit solves a real product surface end-to-end. They share props, tokens and spacing rules, so mixing kits mid-feature never feels like mixing libraries."
       />
@@ -732,10 +733,33 @@ function KitsSection({ onBrowse }: { onBrowse: () => void }) {
         <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
           <p className="text-sm leading-relaxed text-surface-600">
             <span className="font-semibold text-brand-700">Free tier — the whole core kit.</span>{" "}
-            {FREE_TIER} primitives and form controls, MIT-licensed on npm, styled by the same tokens as the kits.
+            {FREE_TIER} primitives and form controls (MIT, on npm) + {DASHBOARD_COUNT} full dashboard templates to preview.
           </p>
           <Button size="sm" onClick={onBrowse}>Try them now</Button>
         </div>
+      </div>
+
+      {/* Dashboard templates */}
+      <div className="mt-10">
+        <div className="mb-3 flex items-center justify-between">
+          <h3 className="text-base font-semibold tracking-tight">Dashboard templates</h3>
+          <Badge variant="brand" size="sm">{DASHBOARD_COUNT} templates</Badge>
+        </div>
+        <Card padding="lg" className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex flex-wrap gap-2">
+            {["Executive", "Realtime Monitoring", "Drill-Down Analytics", "Predictive", "Financial"].map((d) => (
+              <span key={d} className="rounded-full border border-surface-200 bg-surface-0 px-3 py-1.5 font-mono text-xs text-surface-600">
+                {d}
+              </span>
+            ))}
+          </div>
+          <p className="max-w-sm text-sm leading-relaxed text-surface-500">
+            Full-page products composed from Vault components — token-driven, so every template re-skins across all four themes.
+          </p>
+          <Button size="sm" variant="secondary" onClick={onBrowse}>
+            Preview in the vault
+          </Button>
+        </Card>
       </div>
     </section>
   );

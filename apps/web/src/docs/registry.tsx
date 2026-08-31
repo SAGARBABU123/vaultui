@@ -277,18 +277,21 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
         name: "Overview",
         package: "—",
         tier: "free",
-        description: "Vault UI: premium React + Tailwind components across six kits, plus a free core (buttons, forms, overlays, feedback) — the pieces standard libraries don't ship. Every component is responsive-first, token-driven, and dependency-light. Free tier is MIT; kits are commercial.",
+        description: "Vault UI: 104 premium React + Tailwind components across seven kits + 5 dashboard templates, plus a 24-component free core (buttons, forms, overlays, tables, feedback). Every component is responsive-first, token-driven and dependency-light — install via the vault-ui CLI or npm. Free tier is MIT; kits are commercial.",
         importName: "—",
         usage: "pnpm add @vaultui/tokens @vaultui/ui\n# then, in your CSS:\n@import \"@vaultui/tokens/tokens.css\";",
         props: [],
         demo: (
           <div className="grid gap-3 sm:grid-cols-3">
             {[
-              { emoji: "🤖", name: "AI Agent Kit", desc: "11 components", color: "bg-brand-100" },
-              { emoji: "📈", name: "Data Viz Pro", desc: "5 components", color: "bg-info-100" },
-              { emoji: "🛒", name: "Commerce Kit", desc: "5 components", color: "bg-warning-100" },
-              { emoji: "🧰", name: "Dev Tools Kit", desc: "4 components", color: "bg-surface-200" },
-              { emoji: "🗂️", name: "Project Kit", desc: "3 components", color: "bg-success-100" },
+              { emoji: "🤖", name: "AI Agent Kit", desc: "14 components", color: "bg-brand-100" },
+              { emoji: "📈", name: "Data Viz Pro", desc: "19 components", color: "bg-info-100" },
+              { emoji: "🛒", name: "Commerce Kit", desc: "13 components", color: "bg-warning-100" },
+              { emoji: "🧰", name: "Dev Tools Kit", desc: "11 components", color: "bg-surface-200" },
+              { emoji: "🗂️", name: "Project Kit", desc: "6 components", color: "bg-success-100" },
+              { emoji: "👥", name: "Collab Kit", desc: "6 components", color: "bg-danger-100" },
+              { emoji: "📣", name: "Marketing Kit", desc: "11 components", color: "bg-brand-100" },
+              { emoji: "🔓", name: "Free core", desc: "24 primitives", color: "bg-success-100" },
             ].map((k) => (
               <div key={k.name} className={`rounded-xl ${k.color} p-4`}>
                 <div className="text-2xl">{k.emoji}</div>
@@ -296,6 +299,11 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
                 <p className="text-xs text-surface-500">{k.desc}</p>
               </div>
             ))}
+            <div className="col-span-full flex flex-wrap items-center gap-3 rounded-xl bg-surface-50 p-3 text-xs text-surface-500">
+              <span className="font-mono text-[11px]">+ 5 dashboard templates</span>
+              <span className="font-mono text-[11px]">+ vault-ui CLI (npx vault-ui add &lt;component&gt;)</span>
+              <span className="font-mono text-[11px]">+ 4 live themes</span>
+            </div>
           </div>
         ),
       },
