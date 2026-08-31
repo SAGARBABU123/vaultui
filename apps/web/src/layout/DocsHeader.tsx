@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@vaultui/ui";
 import { cn } from "@vaultui/utils";
@@ -16,50 +15,20 @@ import { useOnboarding } from "../onboarding/OnboardingContext";
 
 const REPO_URL = "https://github.com/SAGARBABU123/vaultui";
 
-function useNpmMeta() {
-  const [meta, setMeta] = useState<{ version?: string; downloads?: string }>({});
-
-  useEffect(() => {
-    let alive = true;
-    Promise.all([
-      fetch("https://registry.npmjs.org/@vaultui/ui/latest").then((r) => (r.ok ? r.json() : null)),
-      fetch("https://api.npmjs.org/downloads/point/last-month/@vaultui/ui").then((r) => (r.ok ? r.json() : null)),
-    ])
-      .then(([pkg, dl]) => {
-        if (!alive) return;
-        setMeta({
-          version: pkg?.version,
-          downloads: dl?.downloads !== undefined ? `${(dl.downloads / 1000).toFixed(1)}k` : undefined,
-        });
-      })
-      .catch(() => {
-        /* offline — keep local fallback */
-      });
-    return () => {
-      alive = false;
-    };
-  }, []);
-
-  return meta;
-}
-
 export function DocsHeader({
   componentTotal,
   dashboardTotal,
   onOpenDrawer,
-  onLogo,
   searchValue,
   onSearchChange,
 }: {
   componentTotal: number;
   dashboardTotal: number;
   onOpenDrawer: () => void;
-  onLogo: () => void;
   /** When provided, the header shows a search bar in place of the count badge. */
   searchValue?: string;
   onSearchChange?: (value: string) => void;
 }) {
-  const { version, downloads } = useNpmMeta();
   const { isSignedIn } = useAuth();
   const { activeProject } = useProjects();
   const { startTour } = useOnboarding();
@@ -67,19 +36,6 @@ export function DocsHeader({
   return (
     <header className="sticky top-0 z-30 border-b border-surface-200 bg-surface-0/80 backdrop-blur">
       <div className="flex h-16 w-full items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
-        <button type="button" onClick={onLogo} className="flex items-center gap-2 text-left font-semibold" title="Back to the landing page">
-          <span className="flex size-7 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 text-sm text-white">
-            V
-          </span>
-          <span>
-            Vault&nbsp;UI
-            <span className="ml-2 hidden rounded-full bg-brand-100 px-2 py-0.5 text-xs font-medium text-brand-700 sm:inline-block">
-              v{version ?? "0.1.1"}
-              {downloads ? ` · ${downloads} dl${downloads === "1.0k" ? "" : "s"}/mo` : ""}
-            </span>
-          </span>
-        </button>
-
         {onSearchChange ? (
           <label className="relative mx-auto block w-44 min-w-0 sm:w-72">
             <span className="sr-only">Search components</span>

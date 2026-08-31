@@ -197,7 +197,6 @@ function DocsView() {
             componentTotal={COMPONENT_TOTAL}
             dashboardTotal={ALL_DASHBOARDS.length}
             onOpenDrawer={() => setDrawerOpen(true)}
-            onLogo={() => navigate("/")}
             searchValue={search}
             onSearchChange={setSearch}
           />

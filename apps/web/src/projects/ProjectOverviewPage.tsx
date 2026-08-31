@@ -264,7 +264,6 @@ function PageShell({ children, onLogo }: { children: ReactNode; onLogo: () => vo
         componentTotal={ALL_COMPONENTS.length - 1}
         dashboardTotal={ALL_DASHBOARDS.length}
         onOpenDrawer={() => undefined}
-        onLogo={onLogo}
       />
       <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6">{children}</main>
     </div>

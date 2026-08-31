@@ -139,7 +139,6 @@ export function LabPage() {
         componentTotal={ALL_COMPONENTS.length - 1}
         dashboardTotal={ALL_DASHBOARDS.length}
         onOpenDrawer={() => undefined}
-        onLogo={() => navigate("/")}
       />
 
       <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
