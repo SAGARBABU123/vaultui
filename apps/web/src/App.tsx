@@ -23,6 +23,8 @@ import {
 import { ProjectProvider, useProjects } from "./projects/ProjectContext";
 import { ProjectsPage } from "./projects/ProjectsPage";
 import { ProjectOverviewPage } from "./projects/ProjectOverviewPage";
+import { ShareKitPage } from "./projects/ShareKitPage";
+import { LabPage } from "./lab/LabPage";
 import { OnboardingProvider } from "./onboarding/OnboardingContext";
 import { DocsHeader } from "./layout/DocsHeader";
 
@@ -83,6 +85,8 @@ export default function App() {
                 </RequireAuth>
               }
             />
+            <Route path="/kit/:id" element={<ShareKitPage />} />
+            <Route path="/lab" element={<LabPage />} />
             <Route path="/sign-in" element={<AuthPage mode="sign-in" />} />
             <Route path="/sign-up" element={<AuthPage mode="sign-up" />} />
             <Route path="*" element={<Navigate to="/" replace />} />

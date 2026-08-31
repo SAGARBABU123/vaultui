@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Badge, Button, Card } from "@vaultui/ui";
 import { Sparkline } from "@vaultui/data-viz";
 import { cn } from "@vaultui/utils";
@@ -218,6 +218,12 @@ function Nav() {
               {l.label}
             </a>
           ))}
+          <Link
+            to="/lab"
+            className="rounded-lg px-3 py-2 text-sm text-surface-600 transition-colors hover:bg-surface-100 hover:text-surface-900"
+          >
+            Rebrand lab
+          </Link>
         </nav>
 
         <div className="flex items-center gap-2">

@@ -38,6 +38,8 @@ interface ProjectContextValue {
   /** True when the entry is already in the active project. */
   isInActiveProject: (entryId: string) => boolean;
   countInProject: (projectId: string) => number;
+  /** Enable/disable the public share link. */
+  setProjectShared: (projectId: string, shared: boolean) => Promise<void>;
   toast: ProjectToast | null;
   dismissToast: () => void;
 }
@@ -156,6 +158,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
         themeId: "neumorphic",
         createdAt: Date.now(),
         updatedAt: Date.now(),
+        isShared: false,
         items: [],
       };
       const next = [project, ...projects];
@@ -273,6 +276,20 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     [projects],
   );
 
+  const setProjectShared = useCallback(
+    async (projectId: string, shared: boolean) => {
+      if (!user) return;
+      const next = projects.map((p) => (p.id === projectId ? { ...p, isShared: shared } : p));
+      setProjects(next);
+      try {
+        await api.setShared(user.id, projectId, shared);
+      } catch {
+        /* keep in-memory state */
+      }
+    },
+    [projects, user, api],
+  );
+
   const value: ProjectContextValue = {
     projects,
     activeProject,
@@ -287,6 +304,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     removeItem,
     isInActiveProject,
     countInProject,
+    setProjectShared,
     toast,
     dismissToast,
   };

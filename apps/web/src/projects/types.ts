@@ -23,5 +23,7 @@ export interface UserProject {
   themeId: string;
   createdAt: number;
   updatedAt: number;
+  /** Public share link enabled? (kit/:id is readable without login). */
+  isShared: boolean;
   items: ProjectItemMeta[];
 }

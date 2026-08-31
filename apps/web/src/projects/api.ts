@@ -63,6 +63,10 @@ export interface ProjectAPI {
   load(userId: string): Promise<UserProject[]>;
   /** Replace the user's whole shelf (create / rename / delete / add / remove). */
   persist(userId: string, projects: UserProject[]): Promise<void>;
+  /** Flip the public-share flag on one project. */
+  setShared(userId: string, projectId: string, shared: boolean): Promise<void>;
+  /** Public read for kit/:id — shared projects only. */
+  loadPublic(projectId: string): Promise<UserProject | null>;
 }
 
 class MockProjectAPI implements ProjectAPI {
@@ -78,6 +82,26 @@ class MockProjectAPI implements ProjectAPI {
       /* quota — keep state in memory */
     }
   }
+  async setShared(userId: string, projectId: string, shared: boolean) {
+    const map = readMockProjects();
+    const list = (map[userId] ?? []).map((p) =>
+      p.id === projectId ? { ...p, isShared: shared } : p,
+    );
+    map[userId] = list;
+    try {
+      localStorage.setItem(PROJECTS_KEY, JSON.stringify(map));
+    } catch {
+      /* ignore */
+    }
+  }
+  async loadPublic(projectId: string): Promise<UserProject | null> {
+    const map = readMockProjects();
+    for (const list of Object.values(map)) {
+      const p = list.find((x) => x.id === projectId && x.isShared);
+      if (p) return p;
+    }
+    return null;
+  }
 }
 
 interface DbProject {
@@ -86,6 +110,7 @@ interface DbProject {
   theme_id: string;
   created_at: string;
   updated_at: string;
+  is_shared: boolean;
   project_items: DbItem[];
 }
 
@@ -107,6 +132,7 @@ function toUserProject(row: DbProject): UserProject {
     themeId: row.theme_id,
     createdAt: new Date(row.created_at).getTime(),
     updatedAt: new Date(row.updated_at).getTime(),
+    isShared: Boolean(row.is_shared),
     items: (row.project_items ?? []).map((i) => ({
       id: i.component_id,
       kind: i.kind,
@@ -151,6 +177,7 @@ class SupabaseProjectAPI implements ProjectAPI {
         owner_id: userId,
         name: p.name,
         theme_id: p.themeId,
+        is_shared: p.isShared ?? false,
         created_at: new Date(p.createdAt).toISOString(),
         updated_at: new Date(p.updatedAt).toISOString(),
       })),
@@ -178,6 +205,26 @@ class SupabaseProjectAPI implements ProjectAPI {
     // Insert in one batch (project_items has no generated key — row id = component id).
     const { error: itemErr } = await supabase.from("project_items").insert(items);
     if (itemErr) throw itemErr;
+  }
+
+  async setShared(userId: string, projectId: string, shared: boolean) {
+    const { error } = await this.db
+      .from("projects")
+      .update({ is_shared: shared })
+      .eq("id", projectId)
+      .eq("owner_id", userId);
+    if (error) throw error;
+  }
+
+  async loadPublic(projectId: string): Promise<UserProject | null> {
+    const { data, error } = await this.db
+      .from("projects")
+      .select("*, project_items(*)")
+      .eq("id", projectId)
+      .eq("is_shared", true)
+      .maybeSingle();
+    if (error || !data) return null;
+    return toUserProject(data as unknown as DbProject);
   }
 }
 

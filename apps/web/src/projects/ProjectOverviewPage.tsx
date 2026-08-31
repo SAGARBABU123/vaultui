@@ -1,7 +1,7 @@
 import { useMemo, useState, type ReactNode } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { Badge, Button, Card } from "@vaultui/ui";
-import { Check, Copy, Crown, Download, FolderPlus, Package, Plus, Trash2 } from "lucide-react";
+import { Check, Copy, Crown, Download, FolderPlus, Package, Plus, Share2, Trash2, Link2Off } from "lucide-react";
 import { DocsHeader } from "../layout/DocsHeader";
 import { useAuth } from "../auth/AuthContext";
 import { useProjects } from "./ProjectContext";
@@ -14,10 +14,11 @@ import type { UserProject } from "./types";
 export function ProjectOverviewPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { projects, activeProjectId, loading, removeItem, deleteProject, setActiveProject } = useProjects();
+  const { projects, activeProjectId, loading, removeItem, deleteProject, setActiveProject, setProjectShared } = useProjects();
   const { isPremium, upgrade } = useAuth();
   const [downloading, setDownloading] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
 
   const project = projects.find((p) => p.id === id) ?? null;
 
@@ -115,6 +116,52 @@ export function ProjectOverviewPage() {
           leadingIcon={<Plus className="size-5" />}
         >
           Add more components
+        </Button>
+      </div>
+
+      {/* Share kit */}
+      <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-surface-200 bg-surface-0 p-4">
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-semibold text-surface-800">Share your kit</p>
+          <p className="text-xs text-surface-400">
+            {project.isShared
+              ? "Anyone with the link can view this kit and download it — no login needed."
+              : "Flip this on to get a public link to this kit."}
+          </p>
+          {project.isShared && (
+            <div className="mt-2 flex items-center gap-2">
+              <input
+                readOnly
+                value={`${window.location.origin}/kit/${project.id}`}
+                onFocus={(e) => e.currentTarget.select()}
+                className="h-9 w-full max-w-md rounded-lg border border-surface-200 bg-surface-100 px-3 font-mono text-xs text-surface-600 shadow-inset outline-none"
+              />
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(`${window.location.origin}/kit/${project.id}`);
+                    setLinkCopied(true);
+                    window.setTimeout(() => setLinkCopied(false), 1600);
+                  } catch {
+                    /* ignore */
+                  }
+                }}
+                leadingIcon={linkCopied ? <Check className="size-4 text-success-500" /> : <Copy className="size-4" />}
+              >
+                {linkCopied ? "Copied!" : "Copy link"}
+              </Button>
+            </div>
+          )}
+        </div>
+        <Button
+          size="sm"
+          variant={project.isShared ? "secondary" : "primary"}
+          onClick={() => void setProjectShared(project.id, !project.isShared)}
+          leadingIcon={project.isShared ? <Link2Off className="size-4" /> : <Share2 className="size-4" />}
+        >
+          {project.isShared ? "Unshare" : "Share kit"}
         </Button>
       </div>
 
