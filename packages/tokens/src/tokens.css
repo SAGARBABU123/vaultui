@@ -139,10 +139,10 @@
  * var(--color-*) / var(--shadow-*) at runtime, so overriding the custom
  * properties re-skins every component and the landing page, no rebuild.
  *
- * html[data-theme="…"] has higher specificity than :root, so overrides win.
+ * [data-theme="…"] has higher specificity than :root, so overrides win.
  * Add your next theme here, e.g.:
  *
- *   html[data-theme="neon"] {
+ *   [data-theme="neon"] {
  *     --color-brand-50: …; …; --color-brand-950: …;
  *     --color-surface-0: …; …;
  *     --color-success-500: …; --color-warning-500: …;
@@ -162,19 +162,19 @@
  * applies to every theme (data-theme is always set), so new themes only need
  * to define their --shadow-* values in their block below.
  * ------------------------------------------------------------------------ */
-html[data-theme] :is(.shadow-soft, .hover\:shadow-soft:hover) {
+[data-theme] :is(.shadow-soft, .hover\:shadow-soft:hover) {
   --tw-shadow: var(--shadow-soft);
 }
-html[data-theme] :is(.shadow-raised, .hover\:shadow-raised:hover) {
+[data-theme] :is(.shadow-raised, .hover\:shadow-raised:hover) {
   --tw-shadow: var(--shadow-raised);
 }
-html[data-theme] :is(.shadow-popover) {
+[data-theme] :is(.shadow-popover) {
   --tw-shadow: var(--shadow-popover);
 }
-html[data-theme] :is(.shadow-inset, .active\:shadow-inset:active) {
+[data-theme] :is(.shadow-inset, .active\:shadow-inset:active) {
   --tw-shadow: var(--shadow-inset);
 }
-html[data-theme] :is(.shadow-pressed, .active\:shadow-pressed:active) {
+[data-theme] :is(.shadow-pressed, .active\:shadow-pressed:active) {
   --tw-shadow: var(--shadow-pressed);
 }
 
@@ -184,7 +184,7 @@ html[data-theme] :is(.shadow-pressed, .active\:shadow-pressed:active) {
  * pink + teal. Panels are translucent white; the page paints a vivid,
  * fixed gradient that the glass blurs behind it.
  * ------------------------------------------------------------------------ */
-html[data-theme="glassmorphism"] {
+[data-theme="glassmorphism"] {
   /* Brand: from spec primary #0080FF */
   --color-brand-50: #e7f3ff;
   --color-brand-100: #cfe9ff;
@@ -228,7 +228,7 @@ html[data-theme="glassmorphism"] {
 }
 
 /* Vivid fixed backdrop — this is what the frosted panels blur. */
-html[data-theme="glassmorphism"] body {
+[data-theme="glassmorphism"] body {
   background-color: #100d2b;
   background-image:
     radial-gradient(at 18% 8%, rgb(139 0 255 / 0.3), transparent 46%),
@@ -240,7 +240,7 @@ html[data-theme="glassmorphism"] body {
 }
 
 /* Frost any surface-toned panel so it reads as real glass. */
-html[data-theme="glassmorphism"]
+[data-theme="glassmorphism"]
   :where(.bg-surface-0, .bg-surface-50, .bg-surface-100, .bg-surface-950) {
   backdrop-filter: blur(16px) saturate(1.3);
   -webkit-backdrop-filter: blur(16px) saturate(1.3);
@@ -253,7 +253,7 @@ html[data-theme="glassmorphism"]
  * indigo (#6366F1) + blue (#3B82F6) accents. Hairlines land on #E0E0E0
  * (border-surface-200), the deepest `` surface-950 layer hosts code wells.
  * ------------------------------------------------------------------------ */
-html[data-theme="dimensional-layering"] {
+[data-theme="dimensional-layering"] {
   /* Brand: spec secondary #6366F1 — full indigo scale */
   --color-brand-50: #eef2ff;
   --color-brand-100: #e0e7ff;
@@ -306,7 +306,7 @@ html[data-theme="dimensional-layering"] {
 
 /* Layered paper backdrop — warm-cool light grey sheet with a faint indigo /
  * blue wash bleeding in from the top edges (spec secondary colors). */
-html[data-theme="dimensional-layering"] body {
+[data-theme="dimensional-layering"] body {
   background-color: #ecedf1;
   background-image:
     linear-gradient(180deg, #f8f8fa 0%, #ecedf1 38%, #e6e7ec 100%),
@@ -322,7 +322,7 @@ html[data-theme="dimensional-layering"] body {
  * studio-lit umber shadows. Core effects: film grain, faded colors, light
  * leaks — the whole app is one underexposed contact print.
  * ------------------------------------------------------------------------ */
-html[data-theme="vintage-retro-film"] {
+[data-theme="vintage-retro-film"] {
   /* Brand: saddle-brown ink (spec secondary #8B4513) */
   --color-brand-50: #f9efe2;
   --color-brand-100: #f2ddc2;
@@ -370,7 +370,7 @@ html[data-theme="vintage-retro-film"] {
 
 /* Light-leak backdrop — warm parchment with sand / teal / pink leaks
  * bleeding in from the corners (spec primaries). */
-html[data-theme="vintage-retro-film"] body {
+[data-theme="vintage-retro-film"] body {
   background-color: #efdfbd;
   background-image:
     radial-gradient(920px 500px at 12% -8%, rgb(212 165 116 / 0.24), transparent 56%),
@@ -381,7 +381,7 @@ html[data-theme="vintage-retro-film"] body {
 }
 
 /* Full-screen film grain — SVG turbulence noise, gently over everything. */
-html[data-theme="vintage-retro-film"] body::before {
+[data-theme="vintage-retro-film"] body::before {
   content: "";
   position: fixed;
   inset: 0;
@@ -395,7 +395,7 @@ html[data-theme="vintage-retro-film"] body::before {
 
 /* Soft analog vignette — the corners fall off into shadow like a developed
  * print seen under a loupe. Sits above the grain, still never blocks input. */
-html[data-theme="vintage-retro-film"] body::after {
+[data-theme="vintage-retro-film"] body::after {
   content: "";
   position: fixed;
   inset: 0;

@@ -1,11 +1,15 @@
 import { Badge, Button } from "@vaultui/ui";
 import { cn } from "@vaultui/utils";
 import { Check, Copy, Download, FolderPlus, Grab, Package, Plus, Terminal, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { INSTALL_COMMAND, downloadKit } from "./downloadKit";
+import { Playground, PLAYGROUNDS, type PlaygroundBuilder } from "./Playground";
+import { ThemeCompare } from "./ThemeCompare";
 import { useProjects } from "../projects/ProjectContext";
 import type { ComponentEntry, DashboardEntry } from "./types";
+
+type DemoView = "demo" | "playground" | "ab";
 
 export interface ComponentShellProps {
   entry: ComponentEntry | DashboardEntry;
@@ -17,6 +21,10 @@ export interface ComponentShellProps {
 }
 
 export function ComponentShell({ entry, prev, next, onNavigate, componentTotal }: ComponentShellProps) {
+  const [view, setView] = useState<DemoView>("demo");
+  useEffect(() => setView("demo"), [entry.id]);
+
+  const playground: PlaygroundBuilder | null = entry.kind === "dashboard" ? null : (PLAYGROUNDS[entry.id] ?? null);
   if (entry.id === "overview") {
     return (
       <article key={entry.id} className="animate-rise">
@@ -53,15 +61,15 @@ export function ComponentShell({ entry, prev, next, onNavigate, componentTotal }
 
         {/* Live preview — full-bleed composition, re-skins with the theme dropdown */}
         <section className="mt-6">
-          <div className="mb-3 flex items-center gap-2">
+          <div className="mb-3 flex flex-wrap items-center gap-2">
             <SectionLabel>Live preview</SectionLabel>
-            <Badge variant="neutral" size="sm" dot>
-              try the themes in the header
-            </Badge>
+            <DemoViewChips view={view} onChange={setView} showPlayground={false} />
           </div>
-          <div className="overflow-hidden rounded-2xl border border-surface-200 shadow-raised">
-            {entry.demo}
-          </div>
+          {view === "ab" ? (
+            <ThemeCompare demo={entry.demo} />
+          ) : (
+            <div className="overflow-hidden rounded-2xl border border-surface-200 shadow-raised">{entry.demo}</div>
+          )}
         </section>
 
         <PrevNext prev={prev} next={next} onNavigate={onNavigate} />
@@ -146,13 +154,17 @@ export function ComponentShell({ entry, prev, next, onNavigate, componentTotal }
 
       {/* Demo */}
       <section className="mt-8">
-        <div className="mb-3 flex items-center gap-2">
+        <div className="mb-3 flex flex-wrap items-center gap-2">
           <SectionLabel>Live demo</SectionLabel>
-          <Badge variant={entry.tier === "free" ? "success" : "neutral"} size="sm" dot>
-            interactive
-          </Badge>
+          <DemoViewChips view={view} onChange={setView} showPlayground={playground !== null} />
         </div>
-        <div className="rounded-2xl border-0 bg-surface-100 shadow-inset p-4 shadow-soft sm:p-6">{entry.demo}</div>
+        {view === "ab" ? (
+          <ThemeCompare demo={entry.demo} />
+        ) : view === "playground" && playground ? (
+          <Playground def={playground} />
+        ) : (
+          <div className="rounded-2xl border-0 bg-surface-100 shadow-inset p-4 shadow-soft sm:p-6">{entry.demo}</div>
+        )}
       </section>
 
       {/* Prev / Next */}
@@ -305,6 +317,43 @@ function OverviewHero({ componentTotal }: { componentTotal: number }) {
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-surface-400">{children}</h2>;
+}
+
+/** Demo / Playground / Theme A/B switcher for an entry's preview. */
+function DemoViewChips({
+  view,
+  onChange,
+  showPlayground,
+}: {
+  view: DemoView;
+  onChange: (v: DemoView) => void;
+  showPlayground: boolean;
+}) {
+  const chips: Array<{ id: DemoView; label: string }> = [
+    { id: "demo", label: "Demo" },
+    ...(showPlayground ? [{ id: "playground" as const, label: "⚙ Playground" }] : []),
+    { id: "ab", label: "⧉ Theme A/B" },
+  ];
+  return (
+    <div className="flex items-center gap-1 rounded-lg border border-surface-200 bg-surface-0 p-1 shadow-inset">
+      {chips.map((c) => (
+        <button
+          key={c.id}
+          type="button"
+          onClick={() => onChange(c.id)}
+          aria-pressed={view === c.id}
+          className={cn(
+            "rounded-md px-2.5 py-1 text-xs font-medium transition-colors",
+            view === c.id
+              ? "bg-brand-600 text-white shadow-soft"
+              : "text-surface-500 hover:bg-surface-100 hover:text-surface-800",
+          )}
+        >
+          {c.label}
+        </button>
+      ))}
+    </div>
+  );
 }
 
 /** Install snippet — CLI first (adds the exact component), npm as fallback. */
