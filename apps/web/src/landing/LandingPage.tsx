@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Badge, Button, Card } from "@vaultui/ui";
 import { Sparkline } from "@vaultui/data-viz";
 import { cn } from "@vaultui/utils";
-import { ArrowRight, Check, Copy, Download, Package, Terminal } from "lucide-react";
+import { ArrowRight, Check, Copy, Download, Lock, Package, Terminal, UserPlus } from "lucide-react";
 import { INSTALL_COMMAND, downloadKit } from "../docs/downloadKit";
 import { AuthControl } from "../auth/AuthControl";
+import { useAuth } from "../auth/AuthContext";
 import { useTheme } from "../theme/ThemeContext";
 import { ParticleField } from "./ParticleField";
 import { ClickSpark } from "./ClickSpark";
@@ -182,7 +184,7 @@ function Nav() {
     <header className="sticky top-0 z-30 border-b border-surface-200/80 bg-surface-50/85 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <a href="#top" className="flex items-center gap-2.5 font-semibold tracking-tight">
-          <span className="flex size-8 items-center justify-center rounded-xl bg-brand-600 text-sm text-white shadow-soft">
+          <span className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-sm text-white shadow-soft">
             V
           </span>
           <span className="text-[15px]">
@@ -223,7 +225,17 @@ function Nav() {
 
 function Hero({ onBrowse }: { onBrowse: () => void }) {
   const [downloading, setDownloading] = useState(false);
+  const { isSignedIn } = useAuth();
+  const navigate = useNavigate();
+
+  const goSignIn = () => navigate("/sign-in", { state: { from: "/docs" } });
+  const goSignUp = () => navigate("/sign-up", { state: { from: "/docs" } });
+
   const handleDownload = async () => {
+    if (!isSignedIn) {
+      navigate("/sign-in", { state: { from: "/docs" } });
+      return;
+    }
     setDownloading(true);
     try {
       await downloadKit();
@@ -273,7 +285,7 @@ function Hero({ onBrowse }: { onBrowse: () => void }) {
           <h1 className="mt-8 text-4xl font-bold leading-[1.08] tracking-tight text-surface-900 sm:text-6xl">
             The interface is the product.
             <br />
-            <span className="text-brand-600">Craft it accordingly.</span>
+            <span className="text-gradient-brand">Craft it accordingly.</span>
           </h1>
 
           <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-surface-500 sm:text-lg">
@@ -283,33 +295,60 @@ function Hero({ onBrowse }: { onBrowse: () => void }) {
           </p>
 
           <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Button
-              size="lg"
-              onClick={onBrowse}
-              trailingIcon={<ArrowRight className="size-5" />}
-              fullWidth
-              className="sm:w-auto"
-            >
-              Browse {TOTAL_COMPONENTS} components
-            </Button>
-            <Button
-              size="lg"
-              variant="secondary"
-              fullWidth
-              className="sm:w-auto"
-              onClick={handleDownload}
-              disabled={downloading}
-              leadingIcon={downloading ? <Package className="size-5 animate-pulse" /> : <Download className="size-5" />}
-            >
-              {downloading ? "Packing zip…" : "Download the kit"}
-            </Button>
+            {isSignedIn ? (
+              <>
+                <Button
+                  size="lg"
+                  onClick={onBrowse}
+                  trailingIcon={<ArrowRight className="size-5" />}
+                  fullWidth
+                  className="sm:w-auto"
+                >
+                  Browse {TOTAL_COMPONENTS} components
+                </Button>
+                <Button
+                  size="lg"
+                  variant="secondary"
+                  fullWidth
+                  className="sm:w-auto"
+                  onClick={handleDownload}
+                  disabled={downloading}
+                  leadingIcon={downloading ? <Package className="size-5 animate-pulse" /> : <Download className="size-5" />}
+                >
+                  {downloading ? "Packing zip…" : "Download the kit"}
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  size="lg"
+                  onClick={goSignIn}
+                  leadingIcon={<Lock className="size-5" />}
+                  trailingIcon={<ArrowRight className="size-5" />}
+                  fullWidth
+                  className="sm:w-auto"
+                >
+                  Sign in to browse
+                </Button>
+                <Button
+                  size="lg"
+                  variant="secondary"
+                  fullWidth
+                  className="sm:w-auto"
+                  onClick={goSignUp}
+                  leadingIcon={<UserPlus className="size-5" />}
+                >
+                  Create account
+                </Button>
+              </>
+            )}
           </div>
         </div>
 
         {/* specimen — the design system, alive */}
         <div className="relative mx-auto mt-16 max-w-4xl">
           <div aria-hidden="true" className="absolute -inset-6 rounded-[2rem] bg-brand-200/20 blur-2xl" />
-          <Card padding="none" shadow="raised" className="relative overflow-hidden">
+          <Card padding="none" shadow="raised" className="relative overflow-hidden rounded-[1.75rem] card-sheen">
             <div className="flex items-center justify-between gap-3 border-b border-surface-200/70 px-4 py-2.5 sm:px-5">
               <div className="flex items-center gap-1.5" aria-hidden="true">
                 <span className="size-2.5 rounded-full bg-danger-500" />
@@ -321,7 +360,7 @@ function Hero({ onBrowse }: { onBrowse: () => void }) {
             </div>
             <div className="grid gap-px bg-surface-200/70 sm:grid-cols-2">
               {/* left column: type + color */}
-              <div className="space-y-5 bg-surface-0 p-5 sm:p-6">
+              <div className="relative space-y-5 bg-surface-0 p-5 sm:p-6">
                 <div className="flex items-baseline gap-4">
                   <span className="text-5xl font-bold leading-none">Aa</span>
                   <div>
@@ -352,14 +391,14 @@ function Hero({ onBrowse }: { onBrowse: () => void }) {
                 </div>
               </div>
               {/* right column: real components */}
-              <div className="space-y-4 bg-surface-0 p-5 sm:p-6">
+              <div className="relative space-y-4 bg-surface-0 p-5 sm:p-6">
                 <div className="flex flex-wrap items-center gap-2">
                   <Badge variant="brand" dot>Soft UI</Badge>
                   <Badge variant="info" dot>Token-driven</Badge>
                   <Badge variant="neutral">0 deps</Badge>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
-                  <Card padding="sm" className="rounded-xl">
+                  <Card padding="sm" hover className="rounded-xl transition-transform duration-300 hover:-translate-y-0.5">
                     <p className="text-[11px] font-semibold uppercase tracking-wide text-surface-400">Sparkline</p>
                     <p className="mt-1 text-lg font-bold tracking-tight text-brand-600">+12.4%</p>
                     <Sparkline data={[8, 11, 9, 13, 12, 15, 14, 18]} colorClass="text-brand-600" className="mt-2 aspect-[100/28]" />
@@ -400,9 +439,9 @@ function Hero({ onBrowse }: { onBrowse: () => void }) {
             { k: "0", v: "UI dependencies" },
             { k: `${FREE_TIER}`, v: "components, free forever" },
           ].map((s) => (
-            <div key={s.v} className="bg-surface-0 px-4 py-4 text-center">
+            <div key={s.v} className="group bg-surface-0 px-4 py-4 text-center transition-colors duration-300 hover:bg-brand-50/40">
               <dt className="sr-only">{s.v}</dt>
-              <dd className="text-2xl font-bold tracking-tight text-brand-600">{s.k}</dd>
+              <dd className="text-2xl font-bold tracking-tight text-gradient-brand">{s.k}</dd>
               <dd className="mt-0.5 text-xs text-surface-500">{s.v}</dd>
             </div>
           ))}
@@ -444,9 +483,12 @@ function Philosophy() {
         body="Components drift. Systems don't. Vault UI is one set of decisions, applied consistently — so your product reads as designed, not assembled."
       />
       <div className="mt-12 grid gap-4 md:grid-cols-3">
-        {PILLARS.map((p) => (
-          <Card key={p.title} padding="lg" hover className="flex flex-col">
-            <div className="flex size-11 items-center justify-center rounded-xl bg-brand-100 text-brand-700 shadow-inset">
+        {PILLARS.map((p, i) => (
+          <Card key={p.title} padding="lg" hover className="group relative flex flex-col overflow-hidden transition-all duration-300 hover:-translate-y-1">
+            <span className="pointer-events-none absolute right-4 top-4 font-mono text-[11px] font-semibold text-surface-300 transition-colors duration-300 group-hover:text-brand-400">
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <div className="flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-brand-100 to-brand-200 text-brand-700 shadow-inset transition-all duration-300 group-hover:from-brand-500 group-hover:to-brand-600 group-hover:text-white">
               {p.icon}
             </div>
             <h3 className="mt-5 text-base font-semibold tracking-tight">{p.title}</h3>
@@ -649,9 +691,9 @@ function KitsSection({ onBrowse }: { onBrowse: () => void }) {
       />
       <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {KITS.map((k) => (
-          <Card key={k.name} padding="lg" hover className="flex flex-col">
+          <Card key={k.name} padding="lg" hover className="group relative flex flex-col overflow-hidden transition-all duration-300 hover:-translate-y-1">
             <div className="flex items-center justify-between">
-              <span className={cn("flex size-11 items-center justify-center rounded-xl text-xl shadow-inset", k.accent)}>
+              <span className={cn("flex size-11 items-center justify-center rounded-xl text-xl shadow-inset transition-transform duration-300 group-hover:scale-105", k.accent)}>
                 {k.emoji}
               </span>
               <Badge variant="brand" size="sm">
@@ -660,7 +702,7 @@ function KitsSection({ onBrowse }: { onBrowse: () => void }) {
             </div>
             <h3 className="mt-5 text-base font-semibold tracking-tight">{k.name}</h3>
             <p className="mt-2 flex-1 text-sm leading-relaxed text-surface-500">{k.blurb}</p>
-            <code className="mt-5 self-start rounded-md bg-surface-100 px-2 py-0.5 font-mono text-[11px] text-surface-500">
+            <code className="mt-5 self-start rounded-md bg-surface-100 px-2 py-0.5 font-mono text-[11px] text-brand-700">
               {k.pkg}
             </code>
           </Card>
@@ -717,7 +759,7 @@ function Licensing() {
             </ul>
           </Card>
 
-          <Card padding="lg" shadow="raised" className="relative overflow-hidden">
+          <Card padding="lg" shadow="raised" className="relative overflow-hidden bg-gradient-to-br from-surface-0 to-brand-50/50">
             <div aria-hidden="true" className="pointer-events-none absolute -right-16 -top-16 size-48 rounded-full bg-brand-200/50 blur-2xl" />
             <div className="relative flex flex-wrap items-center justify-between gap-2">
               <h3 className="text-lg font-semibold tracking-tight">Premium kits</h3>
@@ -750,6 +792,8 @@ function Licensing() {
 function InstallSection({ onBrowse }: { onBrowse: () => void }) {
   const [copied, setCopied] = useState(false);
   const [downloading, setDownloading] = useState(false);
+  const { isSignedIn } = useAuth();
+  const navigate = useNavigate();
 
   const copyInstall = async () => {
     try {
@@ -762,6 +806,11 @@ function InstallSection({ onBrowse }: { onBrowse: () => void }) {
   };
 
   const handleDownload = async () => {
+    // Signed-out visitors are routed to sign-in — the kit is post-login.
+    if (!isSignedIn) {
+      navigate("/sign-in", { state: { from: "/docs" } });
+      return;
+    }
     setDownloading(true);
     try {
       await downloadKit();
@@ -778,7 +827,7 @@ function InstallSection({ onBrowse }: { onBrowse: () => void }) {
         body="Install the free core from npm, or download the kit bundle — theme file, per-component usage, and a runnable starter app."
       />
 
-      <div className="mx-auto mt-12 max-w-2xl overflow-hidden rounded-2xl border border-surface-800 bg-surface-950 shadow-raised">
+      <div className="mx-auto mt-12 max-w-2xl overflow-hidden rounded-2xl border border-surface-800 bg-surface-950 shadow-raised ring-1 ring-brand-500/20">
         <div className="flex items-center justify-between gap-2 border-b border-surface-800 bg-surface-900 px-4 py-3">
           <div className="flex items-center gap-1.5" aria-hidden="true">
             <span className="size-2.5 rounded-full bg-danger-500" />
@@ -848,7 +897,7 @@ function FinalCta({ onBrowse }: { onBrowse: () => void }) {
         <h2 className="mt-8 text-3xl font-bold tracking-tight sm:text-5xl">
           Now build something that
           <br />
-          <span className="text-brand-600">feels inevitable.</span>
+          <span className="text-gradient-brand">feels inevitable.</span>
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-surface-500">
           {TOTAL_COMPONENTS} components, {TOTAL_KITS} kits, one token engine. The details are handled —

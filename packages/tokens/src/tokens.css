@@ -6,9 +6,11 @@
  *
  * Fonts: Inter Variable (bundled locally via @fontsource — no CDN).
  * Swap by replacing this import, e.g. "@fontsource-variable/geist".
+ *
+ * NOTE: apps import `tailwindcss` themselves and then pull this theme in
+ * (see apps/web/src/tailwind.css) — this file is pure theme tokens.
  */
 @import "@fontsource-variable/inter/opsz.css";
-@import "tailwindcss";
 
 @theme {
   /* ===== Brand scale (soft neumorphic accent) ===== */

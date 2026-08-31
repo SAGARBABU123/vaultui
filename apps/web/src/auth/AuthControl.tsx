@@ -2,12 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "@vaultui/ui";
 import { cn } from "@vaultui/utils";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ChevronDown, Crown, LayoutDashboard, LogOut } from "lucide-react";
+import { ChevronDown, Crown, Folder, LayoutDashboard, LogOut, RotateCcw } from "lucide-react";
 import { useAuth } from "./AuthContext";
+import { useOnboarding } from "../onboarding/OnboardingContext";
 
 /** Header auth control — "Sign in" button when signed out, avatar menu when signed in. */
 export function AuthControl() {
   const { isSignedIn, user, signOut, upgrade, isPremium } = useAuth();
+  const { startTour } = useOnboarding();
   const navigate = useNavigate();
   const location = useLocation();
   const [open, setOpen] = useState(false);
@@ -95,6 +97,17 @@ export function AuthControl() {
               type="button"
               onClick={() => {
                 setOpen(false);
+                navigate("/projects");
+              }}
+              className="flex w-full items-center gap-2 rounded-xl px-2.5 py-2 text-left text-sm font-medium text-surface-700 transition-colors hover:bg-surface-100"
+            >
+              <Folder className="size-4 text-brand-600" />
+              My projects
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setOpen(false);
                 navigate("/docs");
               }}
               className="flex w-full items-center gap-2 rounded-xl px-2.5 py-2 text-left text-sm font-medium text-surface-700 transition-colors hover:bg-surface-100"
@@ -115,6 +128,17 @@ export function AuthControl() {
                 Upgrade to premium (demo)
               </button>
             )}
+            <button
+              type="button"
+              onClick={() => {
+                setOpen(false);
+                startTour();
+              }}
+              className="flex w-full items-center gap-2 rounded-xl px-2.5 py-2 text-left text-sm font-medium text-surface-700 transition-colors hover:bg-surface-100"
+            >
+              <RotateCcw className="size-4 text-surface-400" />
+              Replay guide
+            </button>
             <button
               type="button"
               onClick={() => {

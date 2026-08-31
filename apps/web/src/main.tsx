@@ -1,7 +1,8 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import "@vaultui/tokens/tokens.css";
+import "./tailwind.css";
 import "./styles.css";
+import "@vaultui/ui/button.css";
 import App from "./App";
 import { AuthProvider } from "./auth/AuthContext";
 import { applyThemeToDom, readSavedThemeId, ThemeProvider } from "./theme/ThemeContext";

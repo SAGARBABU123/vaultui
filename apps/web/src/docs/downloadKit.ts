@@ -1,7 +1,8 @@
 import JSZip from "jszip";
 import { COMPONENT_GROUPS } from "./registry";
 import { EXTRA_GROUPS } from "./registry-extra";
-import type { ComponentEntry } from "./types";
+import { entryById } from "../projects/entries";
+import type { ComponentEntry, DashboardEntry } from "./types";
 
 /** The live theme source, exported raw so the zip ships the real tokens. */
 import tokensCss from "@vaultui/tokens/tokens.css?raw";
@@ -30,11 +31,34 @@ export function allEntries(): ComponentEntry[] {
 
 export const INSTALL_COMMAND = `pnpm add ${KIT_PACKAGES.join(" ")}`;
 
-function buildReadme(entries: ComponentEntry[]): string {
+/**
+ * Per-package install lines for a selection — the "make a command for those
+ * components separately" output. Free core first, then each kit actually used.
+ */
+export function buildInstallCommand(entries: ComponentEntry[]): string {
+  const packages = new Set<string>();
+  for (const e of entries) {
+    if (e.id === "overview" || e.package === "—") continue;
+    packages.add(e.package);
+  }
+  const core = packages.has("@vaultui/ui") || packages.size === 0;
+  const lines: string[] = core ? [INSTALL_COMMAND] : [`pnpm add ${KIT_PACKAGES[0]} ${KIT_PACKAGES[1]}`];
+  for (const pkg of packages) {
+    if (KIT_PACKAGES.includes(pkg)) continue;
+    lines.push(`pnpm add ${pkg}  # commercial kit — ships with the purchase license`);
+  }
+  const theme = "@import \"@vaultui/tokens/tokens.css\";";
+  return [...lines, "", "/* in your CSS entry:", `   ${theme} */`].join("\n");
+}
+
+function buildReadme(entries: ComponentEntry[], projectName?: string, dashboards?: DashboardEntry[]): string {
+  const title = projectName ? `${projectName} — Vault UI Kit Bundle` : "Vault UI — Kit Bundle";
   const lines: string[] = [
-    "# Vault UI — Kit Bundle",
+    `# ${title}`,
     "",
-    "The complete theme + component package.",
+    projectName
+      ? "A curated selection from Vault UI — your project, your components."
+      : "The complete theme + component package.",
     "",
     "## 1 · Theme",
     "",
@@ -47,10 +71,10 @@ function buildReadme(entries: ComponentEntry[]): string {
     "@import \"@vaultui/tokens/tokens.css\";",
     "```",
     "",
-    "## 2 · Install the free core (public npm, no account needed)",
+    "## 2 · Install",
     "",
     "```bash",
-    INSTALL_COMMAND,
+    buildInstallCommand(entries),
     "```",
     "",
     "Note: `@vaultui/tokens`, `@vaultui/utils`, `@vaultui/ui` are MIT; the kits are",
@@ -87,6 +111,21 @@ function buildReadme(entries: ComponentEntry[]): string {
     "",
     "Happy building! 💎",
   );
+
+  // Dashboard templates make the README, but cannot ship as copyable code.
+  if (dashboards && dashboards.length > 0) {
+    lines.splice(
+      lines.length - 2,
+      0,
+      "",
+      "## 5 · Dashboard templates",
+      "",
+      "Included templates (preview them live in the vault, re-skinned by any theme):",
+      "",
+      ...dashboards.map((d) => `- **${d.name}** — ${d.description} (${d.packages.join(", ")})`),
+      "",
+    );
+  }
   return lines.join("\n");
 }
 
@@ -121,13 +160,31 @@ function buildStarterApp(entries: ComponentEntry[]): string {
   return code.join("\n");
 }
 
-/** Build the distributable kit bundle as a ZIP. */
-export async function buildKitZip(): Promise<Blob> {
-  const entries = allEntries();
+/** Normalize a download filename (project names go into the zip). */
+function safeName(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9-_]+/g, "-").replace(/^-+|-+$/g, "") || "vault-ui";
+}
+
+/**
+ * Build the distributable kit bundle as a ZIP.
+ *
+ * With no entries → the complete kit (back-compat with the old downloadKit()).
+ * With a selection → only those components (plus theme + starter + README),
+ * plus any dashboard templates listed alongside.
+ */
+export async function buildProjectKitZip(options?: {
+  entries?: ComponentEntry[];
+  dashboards?: DashboardEntry[];
+  projectName?: string;
+}): Promise<Blob> {
+  // Explicit selection (even empty) → ship exactly that. No options → whole kit.
+  const entries = options ? options.entries! : allEntries();
+  const dashboards = options?.dashboards ?? [];
+  const name = options?.projectName?.trim() ? safeName(options.projectName) : "vault-ui";
   const zip = new JSZip();
 
   zip.file("tokens/theme.css", tokensCss);
-  zip.file("README.md", buildReadme(entries));
+  zip.file("README.md", buildReadme(entries, options?.projectName?.trim() || undefined, dashboards));
 
   // Starter app (Vite + React + Tailwind v4, pre-wired to the theme)
   const starter = zip.folder("starter")!;
@@ -135,7 +192,7 @@ export async function buildKitZip(): Promise<Blob> {
     "package.json",
     JSON.stringify(
       {
-        name: "vault-ui-starter",
+        name: `${name}-starter`,
         private: true,
         type: "module",
         scripts: { dev: "vite", build: "tsc --noEmit && vite build" },
@@ -168,13 +225,33 @@ export async function buildKitZip(): Promise<Blob> {
   return zip.generateAsync({ type: "blob" });
 }
 
-/** Trigger a browser download of the kit bundle. */
+/** Trigger a browser download of the kit bundle (whole kit — back-compat). */
 export async function downloadKit(): Promise<void> {
-  const blob = await buildKitZip();
+  const blob = await buildProjectKitZip();
+  triggerBlobDownload(blob, "vault-ui-kit.zip");
+}
+
+/** Trigger a browser download of a project's selection. */
+export async function downloadProjectSelection(
+  componentIds: string[],
+  dashboardIds: string[],
+  projectName: string,
+): Promise<void> {
+  const entries = componentIds
+    .map((id) => entryById(id))
+    .filter((e): e is ComponentEntry => e !== null && e.kind !== "dashboard");
+  const dashboards = dashboardIds
+    .map((id) => entryById(id))
+    .filter((e): e is DashboardEntry => e !== null && e.kind === "dashboard");
+  const blob = await buildProjectKitZip({ entries, dashboards, projectName });
+  triggerBlobDownload(blob, `${safeName(projectName)}-vault-ui.zip`);
+}
+
+function triggerBlobDownload(blob: Blob, filename: string) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = "vault-ui-kit.zip";
+  a.download = filename;
   document.body.appendChild(a);
   a.click();
   a.remove();

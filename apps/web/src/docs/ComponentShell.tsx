@@ -1,8 +1,10 @@
 import { Badge, Button } from "@vaultui/ui";
 import { cn } from "@vaultui/utils";
-import { Check, Copy, Download, Grab, Package, Terminal } from "lucide-react";
+import { Check, Copy, Download, FolderPlus, Grab, Package, Plus, Terminal, X } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { INSTALL_COMMAND, downloadKit } from "./downloadKit";
+import { useProjects } from "../projects/ProjectContext";
 import type { ComponentEntry, DashboardEntry } from "./types";
 
 export interface ComponentShellProps {
@@ -39,6 +41,7 @@ export function ComponentShell({ entry, prev, next, onNavigate, componentTotal }
               Dashboard template
             </Badge>
             <Badge variant="neutral" size="sm">Token-driven · all 4 themes</Badge>
+            <AddToProjectControl entryId={entry.id} className="ml-auto" />
           </div>
           <p className="mt-2 max-w-2xl leading-relaxed text-surface-500">{entry.description}</p>
           {entry.packages.length > 0 && (
@@ -77,6 +80,7 @@ export function ComponentShell({ entry, prev, next, onNavigate, componentTotal }
               {entry.tier === "free" ? "Free · MIT" : "Paid kit"}
             </Badge>
           )}
+          {entry.id !== "overview" && <AddToProjectControl entryId={entry.id} className="ml-auto" />}
         </div>
         <p className="mt-2 max-w-2xl leading-relaxed text-surface-500">{entry.description}</p>
         {entry.id !== "overview" && (
@@ -118,7 +122,7 @@ export function ComponentShell({ entry, prev, next, onNavigate, componentTotal }
           <div className="overflow-x-auto rounded-2xl border-0 bg-surface-0 shadow-soft">
             <table className="w-full min-w-[560px] border-collapse text-left">
               <thead>
-                <tr className="border-b border-surface-200 bg-surface-50">
+                <tr className="border-b border-brand-200/60 bg-brand-50/50">
                   <th className="px-4 py-2.5 text-xs font-semibold uppercase tracking-wide text-surface-400">Prop</th>
                   <th className="px-4 py-2.5 text-xs font-semibold uppercase tracking-wide text-surface-400">Type</th>
                   <th className="px-4 py-2.5 text-xs font-semibold uppercase tracking-wide text-surface-400">Default</th>
@@ -250,7 +254,7 @@ function OverviewHero({ componentTotal }: { componentTotal: number }) {
         <h1 className="mt-5 max-w-xl text-3xl font-bold tracking-tight sm:text-5xl">
           The whole kit.
           <br />
-          <span className="text-brand-600">One download.</span>
+          <span className="text-gradient-brand">One download.</span>
         </h1>
         <p className="mt-4 max-w-xl leading-relaxed text-surface-500">
           The free core — design tokens, theme and {componentTotal} components — installs with one
@@ -298,6 +302,63 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 }
 
 /**
+ * Per-entry cart control: add to the active project, or view/remove it once
+ * added. With no projects yet it points at project creation instead.
+ */
+function AddToProjectControl({ entryId, className }: { entryId: string; className?: string }) {
+  const { activeProject, projects, toggleItem, isInActiveProject } = useProjects();
+  const navigate = useNavigate();
+
+  let content: React.ReactNode;
+  if (projects.length === 0) {
+    content = (
+      <Button size="sm" variant="ghost" onClick={() => navigate("/projects")} leadingIcon={<FolderPlus className="size-4" />}>
+        New project
+      </Button>
+    );
+  } else if (!activeProject) {
+    content = (
+      <Button size="sm" variant="ghost" onClick={() => navigate("/projects")} leadingIcon={<FolderPlus className="size-4" />}>
+        Select a project
+      </Button>
+    );
+  } else if (isInActiveProject(entryId)) {
+    content = (
+      <>
+        <span className="flex items-center gap-2">
+          <Badge variant="success" size="sm" dot>
+            In {activeProject.name}
+          </Badge>
+          <Button size="sm" variant="ghost" onClick={() => navigate(`/projects/${activeProject.id}`)}>
+            View project
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            aria-label={`Remove ${entryId} from ${activeProject.name}`}
+            onClick={() => toggleItem(entryId)}
+          >
+            <X className="size-4" />
+          </Button>
+        </span>
+      </>
+    );
+  } else {
+    content = (
+      <Button size="sm" onClick={() => toggleItem(entryId)} leadingIcon={<Plus className="size-4" />}>
+        Add to project
+      </Button>
+    );
+  }
+
+  return (
+    <div id="onboard-add" className={cn("flex flex-wrap items-center gap-2", className)}>
+      {content}
+    </div>
+  );
+}
+
+/**
  * React grab — type a comment, copy the component's React snippet with the
  * comment prepended (each line becomes a `// comment`).
  */
@@ -326,6 +387,7 @@ function ReactGrab({ entry }: { entry: ComponentEntry }) {
     <div className="overflow-hidden rounded-2xl border border-surface-800 bg-surface-950 shadow-soft">
       <div className="flex items-center justify-between gap-2 border-b border-surface-800 bg-surface-900 px-3 py-2">
         <span className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-surface-400">
+          <span aria-hidden="true" className="size-1.5 rounded-full bg-brand-400" />
           <Grab className="size-4" strokeWidth={2} />
           {entry.name} · react grab
         </span>

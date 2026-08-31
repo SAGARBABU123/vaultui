@@ -1,0 +1,9 @@
+/*
+ * Tailwind entry for the Vault UI web app.
+ *
+ * The shared @vaultui/* packages live outside the app root, so their
+ * utilities are mirrored in ./tailwind-utilities.ts (auto-generated) for
+ * Tailwind's automatic source detection.
+ */
+@import "tailwindcss";
+@import "@vaultui/tokens/tokens.css";/* touch 1788159522 */

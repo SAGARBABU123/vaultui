@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 import { getSupabase } from "./supabase";
 import {
+  demoMarkOnboarded,
   demoReadSession,
   demoSignIn,
   demoSignOut,
@@ -26,9 +27,13 @@ import {
 export type AuthRole = "free" | "premium";
 
 export interface AuthUser {
+  /** Stable owner key — supabase user id, demo email (mock mode). */
+  id: string;
   name: string;
   email: string;
   role: AuthRole;
+  /** First-time onboarding consumed? Stored per user (profiles table / demo registry). */
+  hasOnboarded: boolean;
 }
 
 export type AuthMode = "supabase" | "mock";
@@ -57,17 +62,21 @@ interface AuthContextValue {
   forgotPassword: (email: string) => Promise<AuthResult>;
   signOut: () => Promise<void>;
   upgrade: () => Promise<void>;
+  /** Mark the first-time guide as consumed — per-user, survives logout/login. */
+  markOnboarded: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-function userFromSupabase(session: { user?: { email?: string | null; user_metadata?: { name?: string } } } | null): AuthUser | null {
+function userFromSupabase(session: { user?: { id?: string; email?: string | null; user_metadata?: { name?: string } } } | null): AuthUser | null {
   const email = session?.user?.email;
   if (!email) return null;
   return {
+    id: session?.user?.id ?? email,
     name: session?.user?.user_metadata?.name ?? email.split("@")[0]!,
     email,
-    role: "free", // refined below from the RLS-protected profiles row
+    role: "free",
+    hasOnboarded: false, // refined below from the RLS-protected profiles row
   };
 }
 
@@ -87,8 +96,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const syncRole = useCallback(async (base: AuthUser) => {
     if (mode !== "supabase") return base;
     try {
-      const { data } = await supabase!.from("profiles").select("role").maybeSingle();
-      if (data?.role === "premium") return { ...base, role: "premium" as const };
+      const { data } = await supabase!.from("profiles").select("role, has_onboarded").maybeSingle();
+      if (data?.role === "premium") base = { ...base, role: "premium" as const };
+      if (data?.has_onboarded) base = { ...base, hasOnboarded: true };
     } catch {
       /* table may not exist yet — free role until migration runs */
     }
@@ -243,6 +253,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [mode, supabase, user]);
 
+  const markOnboarded = useCallback(async () => {
+    if (mode === "mock") {
+      const updated = demoMarkOnboarded();
+      if (updated) setUser(updated);
+      return;
+    }
+    if (!user) return;
+    try {
+      await supabase!.from("profiles").update({ has_onboarded: true }).eq("id", user.id);
+      setUser({ ...user, hasOnboarded: true });
+    } catch {
+      /* keeps the flag in-memory if the write fails */
+      setUser({ ...user, hasOnboarded: true });
+    }
+  }, [mode, supabase, user]);
+
   return (
     <AuthContext.Provider
       value={{
@@ -260,6 +286,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         forgotPassword,
         signOut,
         upgrade,
+        markOnboarded,
       }}
     >
       {children}

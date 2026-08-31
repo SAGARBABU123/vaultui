@@ -1,0 +1,9 @@
+/*
+ * Tailwind entry for the Vault UI showroom (Storybook).
+ *
+ * Mirrors apps/web/src/tailwind.css — imports the shared theme and relies on
+ * ./tailwind-utilities.ts (auto-generated) so the @vaultui/* packages'
+ * utilities are picked up by Tailwind's scanner.
+ */
+@import "tailwindcss";
+@import "@vaultui/tokens/tokens.css";

@@ -1,52 +1,33 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactElement } from "react";
 import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { Badge, Button } from "@vaultui/ui";
 import { cn } from "@vaultui/utils";
+import { Folder } from "lucide-react";
 import { LandingPage } from "./landing/LandingPage";
-import { ThemeDropdown } from "./components/ThemeDropdown";
 import { AuthPage } from "./auth/AuthPage";
 import { AccessGate } from "./auth/AccessGate";
-import { AuthControl } from "./auth/AuthControl";
 import { useAuth } from "./auth/AuthContext";
-import { COMPONENT_GROUPS } from "./docs/registry";
-import { EXTRA_GROUPS } from "./docs/registry-extra";
-import { DASHBOARDS } from "./docs/registry-dashboards";
 import { Sidebar } from "./docs/Sidebar";
 import { ComponentShell } from "./docs/ComponentShell";
 import type { ComponentEntry, DashboardEntry } from "./docs/types";
-
-/** Merge extra entries into their matching groups (Collab Kit is new). */
-function mergeGroups(base: typeof COMPONENT_GROUPS, extra: typeof EXTRA_GROUPS) {
-  const merged = base.map((g) => ({ ...g, items: [...g.items] }));
-  for (const eg of extra) {
-    const target = merged.find((g) => g.group === eg.group);
-    if (target) target.items.push(...eg.items);
-    else merged.push({ ...eg, items: [...eg.items] });
-  }
-  return merged;
-}
-
-const ALL_GROUPS = mergeGroups(COMPONENT_GROUPS, EXTRA_GROUPS);
-const ALL_COMPONENTS = ALL_GROUPS.flatMap((g) => g.items);
-const ALL_DASHBOARDS = DASHBOARDS.flatMap((g) => g.items);
+import {
+  ALL_GROUPS,
+  ALL_COMPONENTS,
+  ALL_DASHBOARDS,
+  DASHBOARDS,
+  NAV_ITEMS,
+  OVERVIEW,
+  entryUrl,
+  isDashboard,
+} from "./projects/entries";
+import { ProjectProvider, useProjects } from "./projects/ProjectContext";
+import { ProjectsPage } from "./projects/ProjectsPage";
+import { ProjectOverviewPage } from "./projects/ProjectOverviewPage";
+import { OnboardingProvider } from "./onboarding/OnboardingContext";
+import { DocsHeader } from "./layout/DocsHeader";
 
 /** Component count shown in the header / overview (overview itself excluded). */
 const COMPONENT_TOTAL = ALL_COMPONENTS.length - 1;
-
-/** Linear prev/next spine: components first, then dashboard templates. */
-const NAV_ITEMS: (ComponentEntry | DashboardEntry)[] = [...ALL_COMPONENTS, ...ALL_DASHBOARDS];
-
-const OVERVIEW = ALL_COMPONENTS[0]!; // id "overview"
-
-function isDashboard(entry: ComponentEntry | DashboardEntry): entry is DashboardEntry {
-  return entry.kind === "dashboard";
-}
-
-/** Canonical URL for an entry (overview lives at /docs). */
-function entryUrl(entry: ComponentEntry | DashboardEntry): string {
-  if (entry.id === "overview") return "/docs";
-  return isDashboard(entry) ? `/docs/dashboards/${entry.id}` : `/docs/components/${entry.id}`;
-}
 
 /** "AI Agent Kit" → "ai-agent-kit" — used by the /docs/kits/:slug redirect. */
 function slugify(name: string) {
@@ -80,16 +61,46 @@ function resolveActive(pathname: string): ComponentEntry | DashboardEntry | null
 export default function App() {
   return (
     <BrowserRouter>
-      <ScrollManager />
-      <Routes>
-        <Route path="/" element={<LandingView />} />
-        <Route path="/docs/*" element={<DocsView />} />
-        <Route path="/sign-in" element={<AuthPage mode="sign-in" />} />
-        <Route path="/sign-up" element={<AuthPage mode="sign-up" />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <ProjectProvider>
+        <OnboardingProvider>
+          <ScrollManager />
+          <Routes>
+            <Route path="/" element={<LandingView />} />
+            <Route path="/docs/*" element={<DocsView />} />
+            <Route
+              path="/projects"
+              element={
+                <RequireAuth>
+                  <ProjectsPage />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/projects/:id"
+              element={
+                <RequireAuth>
+                  <ProjectOverviewPage />
+                </RequireAuth>
+              }
+            />
+            <Route path="/sign-in" element={<AuthPage mode="sign-in" />} />
+            <Route path="/sign-up" element={<AuthPage mode="sign-up" />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </OnboardingProvider>
+      </ProjectProvider>
     </BrowserRouter>
   );
+}
+
+/** Signed-in gate for app pages — returns the visitor to where they were. */
+function RequireAuth({ children }: { children: ReactElement }) {
+  const { isSignedIn } = useAuth();
+  const location = useLocation();
+  if (!isSignedIn) {
+    return <Navigate to="/sign-in" state={{ from: location.pathname }} replace />;
+  }
+  return children;
 }
 
 /** Scroll to top on route change — landing anchor hashes keep working. */
@@ -103,13 +114,26 @@ function ScrollManager() {
 
 function LandingView() {
   const navigate = useNavigate();
-  return <LandingPage onBrowse={() => navigate("/docs")} />;
+  const { isSignedIn } = useAuth();
+
+  // Every browse/download entry point funnels through here: signed-out
+  // visitors go to sign-in instead of being let into the vault.
+  const handleBrowse = () => {
+    if (!isSignedIn) {
+      navigate("/sign-in", { state: { from: "/docs" } });
+      return;
+    }
+    navigate("/docs");
+  };
+
+  return <LandingPage onBrowse={handleBrowse} />;
 }
 
 function DocsView() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { isSignedIn, isPremium } = useAuth();
+  const { projects } = useProjects();
   const [search, setSearch] = useState("");
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -117,6 +141,12 @@ function DocsView() {
   // Kit URLs and unknown ids land on their canonical route.
   if (!active || pathname !== entryUrl(active)) {
     return <Navigate to={active ? entryUrl(active) : "/docs"} replace />;
+  }
+
+  // The vault (overview + docs) requires an account — signed-out visitors
+  // are parked on sign-in; they return here after authenticating.
+  if (!isSignedIn) {
+    return <Navigate to="/sign-in" state={{ from: pathname }} replace />;
   }
 
   // Auth gates: dashboards need an account; paid components need premium.
@@ -141,7 +171,7 @@ function DocsView() {
 
   return (
     <div className="min-h-screen text-surface-900">
-      <Header
+      <DocsHeader
         componentTotal={COMPONENT_TOTAL}
         dashboardTotal={ALL_DASHBOARDS.length}
         onOpenDrawer={() => setDrawerOpen(true)}
@@ -150,7 +180,7 @@ function DocsView() {
 
       <div className="flex">
         {/* Desktop sidebar — flush to the left edge, hidden scrollbar */}
-        <aside className="sticky top-16 hidden h-[calc(100vh-4rem)] w-72 shrink-0 scrollbar-hidden overflow-y-auto border-r border-surface-200 bg-surface-0/60 lg:block">
+        <aside id="onboard-sidebar" className="sticky top-16 hidden h-[calc(100vh-4rem)] w-72 shrink-0 scrollbar-hidden overflow-y-auto border-r border-surface-200 bg-surface-0/60 lg:block">
           <Sidebar
             groups={ALL_GROUPS}
             dashboards={DASHBOARDS}
@@ -193,6 +223,41 @@ function DocsView() {
 
         {/* Right shell */}
         <main className="min-w-0 flex-1 px-4 py-8 sm:px-6 lg:px-10">
+          {/* Onboarding nudge — no projects yet? Getting-started with the flow. */}
+          {active.id === "overview" && projects.length === 0 && (
+            <div className="mx-auto mb-6 max-w-3xl">
+              <div className="rounded-2xl border border-dashed border-brand-300 bg-brand-50/60 p-5 sm:p-6">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-600">
+                      Getting started
+                    </p>
+                    <h2 className="mt-1 text-base font-semibold tracking-tight text-surface-800">
+                      Your kit, in three steps
+                    </h2>
+                  </div>
+                  <Button size="sm" onClick={() => navigate("/projects")} leadingIcon={<Folder className="size-4" />}>
+                    Create a project
+                  </Button>
+                </div>
+                <ol className="mt-4 grid gap-2 sm:grid-cols-3">
+                  {[
+                    ["1", "Create a project", "Name it — that's the kit you're building."],
+                    ["2", "Add components", "Hit “Add to project” on anything you like in the vault."],
+                    ["3", "Download your kit", "Your project page turns it into a themed zip + install command."],
+                  ].map(([n, t, d]) => (
+                    <li key={n} className="rounded-xl border border-surface-200/70 bg-surface-0 p-3">
+                      <span className="flex size-6 items-center justify-center rounded-lg bg-brand-600 text-xs font-bold text-white">
+                        {n}
+                      </span>
+                      <p className="mt-2 text-[13px] font-semibold text-surface-800">{t}</p>
+                      <p className="mt-0.5 text-xs leading-relaxed text-surface-500">{d}</p>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </div>
+          )}
           <div className={cn("mx-auto", isDashboard(active) ? "max-w-6xl" : "max-w-3xl")}>
             {locked && gate ? (
               <AccessGate kind={gate} />
@@ -212,125 +277,4 @@ function DocsView() {
   );
 }
 
-/* --------------------------------- header -------------------------------- */
-
-function useNpmMeta() {
-  const [meta, setMeta] = useState<{ version?: string; downloads?: string }>({});
-
-  useEffect(() => {
-    let alive = true;
-    Promise.all([
-      fetch("https://registry.npmjs.org/@vaultui/ui/latest").then((r) => (r.ok ? r.json() : null)),
-      fetch("https://api.npmjs.org/downloads/point/last-month/@vaultui/ui").then((r) => (r.ok ? r.json() : null)),
-    ])
-      .then(([pkg, dl]) => {
-        if (!alive) return;
-        setMeta({
-          version: pkg?.version,
-          downloads: dl?.downloads !== undefined ? `${(dl.downloads / 1000).toFixed(1)}k` : undefined,
-        });
-      })
-      .catch(() => {
-        /* offline — keep local fallback */
-      });
-    return () => {
-      alive = false;
-    };
-  }, []);
-
-  return meta;
-}
-
-const REPO_URL = "https://github.com/SAGARBABU123/vaultui";
-
-function Header({
-  componentTotal,
-  dashboardTotal,
-  onOpenDrawer,
-  onLogo,
-}: {
-  componentTotal: number;
-  dashboardTotal: number;
-  onOpenDrawer: () => void;
-  onLogo: () => void;
-}) {
-  const { version, downloads } = useNpmMeta();
-  const { isSignedIn } = useAuth();
-  return (
-    <header className="sticky top-0 z-30 border-b border-surface-200 bg-surface-0/80 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
-        <button type="button" onClick={onLogo} className="flex items-center gap-2 text-left font-semibold" title="Back to the landing page">
-          <span className="flex size-7 items-center justify-center rounded-lg bg-brand-600 text-sm text-white">
-            V
-          </span>
-          <span>
-            Vault&nbsp;UI
-            <span className="ml-2 hidden rounded-full bg-brand-100 px-2 py-0.5 text-xs font-medium text-brand-700 sm:inline-block">
-              v{version ?? "0.1.1"}
-              {downloads ? ` · ${downloads} dl${downloads === "1.0k" ? "" : "s"}/mo` : ""}
-            </span>
-          </span>
-        </button>
-
-        <Badge variant="neutral" size="sm" className="hidden md:inline-flex">
-          {componentTotal} components · 6 kits
-          {dashboardTotal > 0 ? ` · ${dashboardTotal} dashboard template${dashboardTotal === 1 ? "" : "s"}` : ""}
-        </Badge>
-
-        <div className="flex items-center gap-2">
-          {/* Mobile sidebar trigger */}
-          <button
-            type="button"
-            onClick={onOpenDrawer}
-            aria-label="Open components list"
-            className={cn(
-              "inline-flex size-10 items-center justify-center rounded-lg text-surface-600 transition-colors hover:bg-surface-100 lg:hidden",
-            )}
-          >
-            <MenuIcon />
-          </button>
-          {/* Account — same slot as on the landing page */}
-          <AuthControl />
-          {/* App controls — themes & GitHub are post-sign-in */}
-          {isSignedIn && (
-            <>
-              <a
-                href={REPO_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Vault UI on GitHub"
-                className="hidden size-10 items-center justify-center rounded-xl border-0 bg-surface-0 text-surface-600 shadow-soft transition-all hover:text-surface-900 active:shadow-pressed sm:inline-flex"
-              >
-                <GitHubIcon className="size-[18px]" />
-              </a>
-              {/* Theme switcher — anchored far-right, post-sign-in only */}
-              <ThemeDropdown />
-            </>
-          )}
-        </div>
-      </div>
-    </header>
-  );
-}
-
-/* --------------------------------- icons --------------------------------- */
-
-function MenuIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="size-5" aria-hidden="true">
-      <path strokeLinecap="round" d="M4 6h16M4 12h16M4 18h16" />
-    </svg>
-  );
-}
-
-function GitHubIcon({ className = "size-4" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
-      <path
-        fillRule="evenodd"
-        d="M12 2a10 10 0 00-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02a9.58 9.58 0 015 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85V21c0 .27.18.58.69.48A10 10 0 0012 2z"
-        clipRule="evenodd"
-      />
-    </svg>
-  );
-}
+/* --------------------------------- sidebar render --------------------------------- */

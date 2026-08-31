@@ -1,7 +1,9 @@
 import type { Preview } from "@storybook/react";
 
-// Load design tokens globally so every story is themed
-import "@vaultui/tokens/tokens.css";
+// Design tokens + Tailwind entry (imports @vaultui/tokens/tokens.css)
+import "./tailwind.css";
+// Scan-independent component styles
+import "@vaultui/ui/button.css";
 
 const preview: Preview = {
   parameters: {

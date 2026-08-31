@@ -13,3 +13,31 @@
 .scrollbar-hidden::-webkit-scrollbar {
   display: none;
 }
+
+/* Brand gradient text — the premium accent used on hero headlines, stats
+   and section leads. Works on every theme (reads theme tokens). */
+.text-gradient-brand {
+  background-image: linear-gradient(
+    110deg,
+    var(--color-brand-500) 0%,
+    var(--color-brand-700) 55%,
+    var(--color-info-500) 110%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Subtle top-left sheen for hero/specimen cards (theme-aware, no raw hex). */
+.card-sheen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    rgb(91 102 232 / 0.09) 0%,
+    transparent 42%
+  );
+  pointer-events: none;
+}

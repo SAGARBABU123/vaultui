@@ -16,9 +16,13 @@ import type { AuthRole } from "./AuthContext";
  */
 
 export interface DemoUser {
+  /** Owner key — demo uses the email as a stable user id. */
+  id: string;
   name: string;
   email: string;
   role: AuthRole;
+  /** First-time onboarding consumed? (db-backed per user, demo mirror). */
+  hasOnboarded: boolean;
 }
 
 export interface DemoCredentials {
@@ -27,6 +31,7 @@ export interface DemoCredentials {
   salt: string;
   passwordHash: string;
   role: AuthRole;
+  hasOnboarded: boolean;
 }
 
 const USERS_KEY = "vault-ui-users";
@@ -114,7 +119,7 @@ export async function demoSignUp(name: string, email: string, password: string):
 
   const salt = randomSalt();
   const passwordHash = await hashPassword(password, salt);
-  users[key] = { name: name.trim(), email: key, salt, passwordHash, role: "free" };
+  users[key] = { name: name.trim(), email: key, salt, passwordHash, role: "free", hasOnboarded: false };
   writeUsers(users);
   return { ok: true };
 }
@@ -151,7 +156,7 @@ export async function demoSignIn(email: string, password: string): Promise<DemoR
   delete attempts[key];
   writeAttempts(attempts);
 
-  const user: DemoUser = { name: cred!.name, email: key, role: cred!.role };
+  const user: DemoUser = { id: key, name: cred!.name, email: key, role: cred!.role, hasOnboarded: cred!.hasOnboarded };
   localStorage.setItem(
     SESSION_KEY,
     JSON.stringify({ ...user, expiresAt: now + SESSION_TTL_MS }),
@@ -165,7 +170,13 @@ export function demoReadSession(): DemoUser | null {
     if (!raw) return null;
     const parsed = JSON.parse(raw) as Partial<DemoUser> & { expiresAt?: number };
     if (!parsed.email || !parsed.expiresAt || parsed.expiresAt < Date.now()) return null;
-    return { name: parsed.name ?? "Explorer", email: parsed.email, role: (parsed.role ?? "free") as AuthRole };
+    return {
+      id: parsed.id ?? parsed.email,
+      name: parsed.name ?? "Explorer",
+      email: parsed.email,
+      role: (parsed.role ?? "free") as AuthRole,
+      hasOnboarded: parsed.hasOnboarded ?? false,
+    };
   } catch {
     return null;
   }
@@ -188,4 +199,25 @@ export function demoUpgrade(): DemoUser | null {
     JSON.stringify({ ...upgraded, expiresAt: Date.now() + SESSION_TTL_MS }),
   );
   return upgraded;
+}
+
+/**
+ * Mark onboarding as consumed for this demo account (session + registry).
+ * Mirrors the Supabase `profiles.has_onboarded` update.
+ */
+export function demoMarkOnboarded(): DemoUser | null {
+  const user = demoReadSession();
+  if (!user) return null;
+  const updated: DemoUser = { ...user, hasOnboarded: true };
+  localStorage.setItem(
+    SESSION_KEY,
+    JSON.stringify({ ...updated, expiresAt: Date.now() + SESSION_TTL_MS }),
+  );
+  const users = readUsers();
+  const cred = users[user.email];
+  if (cred) {
+    users[user.email] = { ...cred, hasOnboarded: true };
+    writeUsers(users);
+  }
+  return updated;
 }

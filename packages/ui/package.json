@@ -12,7 +12,8 @@
       "development": "./src/index.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
-    }
+    },
+    "./button.css": "./src/button.css"
   },
   "files": [
     "dist",
@@ -21,7 +22,9 @@
   "publishConfig": {
     "access": "public"
   },
-  "sideEffects": false,
+  "sideEffects": [
+    "**/*.css"
+  ],
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit",

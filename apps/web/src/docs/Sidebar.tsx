@@ -87,7 +87,7 @@ export function Sidebar({ groups, dashboards, activeId, onSelect, search, onSear
                           className={cn(
                             "flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-left text-sm transition-colors",
                             active
-                              ? "bg-brand-50 font-medium text-brand-700"
+                              ? "bg-gradient-to-r from-brand-50 to-brand-100/60 font-medium text-brand-700"
                               : "text-surface-600 hover:bg-surface-100 hover:text-surface-900",
                           )}
                         >
@@ -137,7 +137,7 @@ export function Sidebar({ groups, dashboards, activeId, onSelect, search, onSear
                       className={cn(
                         "flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-left text-sm transition-colors",
                         active
-                          ? "bg-brand-50 font-medium text-brand-700"
+                          ? "bg-gradient-to-r from-brand-50 to-brand-100/60 font-medium text-brand-700"
                           : "text-surface-600 hover:bg-surface-100 hover:text-surface-900",
                       )}
                     >
