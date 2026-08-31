@@ -1,7 +1,7 @@
 {
-  "name": "@vaultui/data-viz",
+  "name": "@vaultui/marketing",
   "version": "0.1.0",
-  "description": "Data Viz Pro — KpiCard, Sparkline, AnimatedCounter, ProgressRadial, HeatmapCalendar",
+  "description": "Marketing Kit \u2014 hero, feature grids, stats, testimonials, logos, FAQ, newsletter sections",
   "license": "SEE LICENSE IN ../COMMERCIAL-LICENSE.md",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
@@ -13,22 +13,18 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
     },
-    "./dataviz.css": "./src/dataviz.css"
+    "./marketing.css": "./src/marketing.css"
   },
   "files": [
     "dist",
     "src"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "sideEffects": [
     "**/*.css"
   ],
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit",
-    "prepublishOnly": "pnpm run build",
     "lint": "eslint src"
   },
   "dependencies": {
@@ -41,12 +37,13 @@
     "react-dom": "^18.0.0"
   },
   "devDependencies": {
-    "@vaultui/configs": "workspace:*",
     "@types/react": "^18.3.0",
     "@types/react-dom": "^18.3.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "typescript": "^5.7.0"
+    "tsup": "^8.3.0",
+    "typescript": "^5.7.0",
+    "@vaultui/configs": "workspace:*"
   },
   "tsup": {
     "entry": [
@@ -63,9 +60,12 @@
       "react",
       "react-dom",
       "react/jsx-runtime",
+      "@vaultui/utils",
       "@vaultui/tokens",
-      "@vaultui/ui",
-      "@vaultui/utils"
+      "@vaultui/ui"
     ]
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

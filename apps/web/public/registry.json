@@ -428,6 +428,116 @@
       "description": "Paid kit component — installs via the @vaultui/collab package (commercial license).",
       "files": [],
       "via": "package"
+    },
+    {
+      "id": "bar-chart",
+      "name": "BarChart",
+      "tier": "paid",
+      "package": "@vaultui/data-viz",
+      "importName": "{ BarChart }",
+      "usage": "import { BarChart } from \"@vaultui/data-viz\";",
+      "description": "Paid kit component — installs via the @vaultui/data-viz package (commercial license).",
+      "files": [],
+      "via": "package"
+    },
+    {
+      "id": "line-chart",
+      "name": "LineChart",
+      "tier": "paid",
+      "package": "@vaultui/data-viz",
+      "importName": "{ LineChart }",
+      "usage": "import { LineChart } from \"@vaultui/data-viz\";",
+      "description": "Paid kit component — installs via the @vaultui/data-viz package (commercial license).",
+      "files": [],
+      "via": "package"
+    },
+    {
+      "id": "donut-chart",
+      "name": "DonutChart",
+      "tier": "paid",
+      "package": "@vaultui/data-viz",
+      "importName": "{ DonutChart }",
+      "usage": "import { DonutChart } from \"@vaultui/data-viz\";",
+      "description": "Paid kit component — installs via the @vaultui/data-viz package (commercial license).",
+      "files": [],
+      "via": "package"
+    },
+    {
+      "id": "hero-section",
+      "name": "HeroSection",
+      "tier": "paid",
+      "package": "@vaultui/marketing",
+      "importName": "{ HeroSection }",
+      "usage": "import { HeroSection } from \"@vaultui/marketing\";",
+      "description": "Paid kit component — installs via the @vaultui/marketing package (commercial license).",
+      "files": [],
+      "via": "package"
+    },
+    {
+      "id": "feature-grid",
+      "name": "FeatureGrid",
+      "tier": "paid",
+      "package": "@vaultui/marketing",
+      "importName": "{ FeatureGrid }",
+      "usage": "import { FeatureGrid } from \"@vaultui/marketing\";",
+      "description": "Paid kit component — installs via the @vaultui/marketing package (commercial license).",
+      "files": [],
+      "via": "package"
+    },
+    {
+      "id": "stat-band",
+      "name": "StatBand",
+      "tier": "paid",
+      "package": "@vaultui/marketing",
+      "importName": "{ StatBand }",
+      "usage": "import { StatBand } from \"@vaultui/marketing\";",
+      "description": "Paid kit component — installs via the @vaultui/marketing package (commercial license).",
+      "files": [],
+      "via": "package"
+    },
+    {
+      "id": "testimonial-grid",
+      "name": "Testimonial & Grid",
+      "tier": "paid",
+      "package": "@vaultui/marketing",
+      "importName": "{ TestimonialGrid }",
+      "usage": "import { TestimonialGrid } from \"@vaultui/marketing\";",
+      "description": "Paid kit component — installs via the @vaultui/marketing package (commercial license).",
+      "files": [],
+      "via": "package"
+    },
+    {
+      "id": "logos-strip",
+      "name": "LogosStrip",
+      "tier": "paid",
+      "package": "@vaultui/marketing",
+      "importName": "{ LogosStrip }",
+      "usage": "import { LogosStrip } from \"@vaultui/marketing\";",
+      "description": "Paid kit component — installs via the @vaultui/marketing package (commercial license).",
+      "files": [],
+      "via": "package"
+    },
+    {
+      "id": "faq-section",
+      "name": "FaqSection",
+      "tier": "paid",
+      "package": "@vaultui/marketing",
+      "importName": "{ FaqSection }",
+      "usage": "import { FaqSection } from \"@vaultui/marketing\";",
+      "description": "Paid kit component — installs via the @vaultui/marketing package (commercial license).",
+      "files": [],
+      "via": "package"
+    },
+    {
+      "id": "newsletter-signup",
+      "name": "NewsletterSignup",
+      "tier": "paid",
+      "package": "@vaultui/marketing",
+      "importName": "{ NewsletterSignup }",
+      "usage": "import { NewsletterSignup } from \"@vaultui/marketing\";",
+      "description": "Paid kit component — installs via the @vaultui/marketing package (commercial license).",
+      "files": [],
+      "via": "package"
     }
   ]
 }

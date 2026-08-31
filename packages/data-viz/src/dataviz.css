@@ -1,0 +1,79 @@
+/**
+ * Vault UI — Data Viz chart chrome (scan-independent CSS, token-driven).
+ * Small finishing touches for the zero-dependency chart components.
+ */
+
+.vault-chart-value {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  color: var(--color-surface-500, #64708c);
+  line-height: 1;
+}
+
+.vault-chart-label {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 10px;
+  color: var(--color-surface-400, #93a0ba);
+  white-space: nowrap;
+}
+
+.vault-chart-bar {
+  border-radius: calc(var(--radius-sm, 0.5rem) - 3px) calc(var(--radius-sm, 0.5rem) - 3px) 0 0;
+  transition: filter 0.15s ease, opacity 0.15s ease;
+}
+
+.vault-chart-bar:hover {
+  filter: brightness(1.08);
+  opacity: 0.95;
+}
+
+.vault-chart-dot {
+  transition: r 0.12s ease;
+}
+
+.vault-chart-dot:hover {
+  r: 4.5;
+}
+
+.vault-chart-xaxis {
+  position: relative;
+  height: 16px;
+  margin-top: 2px;
+}
+
+.vault-chart-xaxis span {
+  position: absolute;
+  transform: translateX(-50%);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 9px;
+  color: var(--color-surface-400, #93a0ba);
+  white-space: nowrap;
+}
+
+.vault-chart-slice {
+  transition: stroke-width 0.15s ease, filter 0.15s ease;
+}
+
+.vault-chart-slice:hover {
+  stroke-width: calc(var(--vault-slice-w, 24px) + 4px);
+  filter: brightness(1.06);
+}
+
+.vault-chart-center {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-surface-900, #1a2336);
+  line-height: 1.1;
+}
+
+.vault-chart-center-sub {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 10px;
+  color: var(--color-surface-400, #93a0ba);
+}
+
+.vault-chart-swatch {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}

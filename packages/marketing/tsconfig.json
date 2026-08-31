@@ -1,0 +1,4 @@
+{
+  "extends": "@vaultui/configs/tsconfig.base.json",
+  "include": ["src"]
+}

@@ -260,7 +260,7 @@ function OverviewHero({ componentTotal }: { componentTotal: number }) {
           <Badge variant="brand" size="sm" dot>
             Soft UI · {componentTotal + 1} components
           </Badge>
-          <Badge variant="neutral" size="sm">6 kits · 8 packages</Badge>
+          <Badge variant="neutral" size="sm">7 kits · 9 packages</Badge>
         </div>
 
         <h1 className="mt-5 max-w-xl text-3xl font-bold tracking-tight sm:text-5xl">

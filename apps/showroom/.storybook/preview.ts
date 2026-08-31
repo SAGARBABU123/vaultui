@@ -4,6 +4,9 @@ import type { Preview } from "@storybook/react";
 import "./tailwind.css";
 // Scan-independent component styles
 import "@vaultui/ui/button.css";
+import "@vaultui/ui/primitives.css";
+import "@vaultui/data-viz/dataviz.css";
+import "@vaultui/marketing/marketing.css";
 
 const preview: Preview = {
   parameters: {

@@ -1,0 +1,252 @@
+/**
+ * Vault UI — Marketing Kit styles (scan-independent CSS, token-driven).
+ * Section primitives for landing pages: hero, features, stats, testimonials,
+ * logos, FAQ and newsletter blocks.
+ */
+
+/* --------------------------------- Hero ---------------------------------- */
+
+.vault-mk-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 64px 24px;
+  text-align: center;
+}
+
+.vault-mk-hero__glow {
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 560px;
+  height: 320px;
+  border-radius: 999px;
+  background: radial-gradient(closest-side, var(--color-brand-200, #c9d0ff), transparent 72%);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.vault-mk-hero__inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.vault-mk-eyebrow {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-brand-600, #5b66e8);
+}
+
+.vault-mk-hero__title {
+  font-size: clamp(34px, 6vw, 60px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.06;
+  color: var(--color-surface-900, #1a2336);
+}
+
+.vault-mk-hero__body {
+  max-width: 560px;
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--color-surface-500, #64708c);
+}
+
+.vault-mk-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+/* ------------------------------- Feature grid ------------------------------ */
+
+.vault-mk-features {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.vault-mk-feature {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 22px;
+  border: 1px solid var(--color-surface-200, #d3dae8);
+  border-radius: var(--radius-lg, 1rem);
+  background-color: var(--color-surface-0, #f3f6fb);
+  box-shadow: var(--shadow-soft, 0 1px 2px rgb(16 24 42 / 0.1));
+}
+
+.vault-mk-feature__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background-color: var(--color-brand-100, #e2e6ff);
+  color: var(--color-brand-700, #4a53c9);
+}
+
+.vault-mk-feature__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-surface-900, #1a2336);
+}
+
+.vault-mk-feature__body {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--color-surface-500, #64708c);
+  margin: 0;
+}
+
+/* --------------------------------- Stats ---------------------------------- */
+
+.vault-mk-stats {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+}
+
+.vault-mk-stat {
+  text-align: center;
+  padding: 20px 12px;
+  border-radius: var(--radius-md, 0.75rem);
+  background-color: var(--color-surface-50, #e9edf5);
+  box-shadow: var(--shadow-inset, inset 0 1px 3px rgb(16 24 42 / 0.08));
+}
+
+.vault-mk-stat__value {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-brand-600, #5b66e8);
+}
+
+.vault-mk-stat__label {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--color-surface-500, #64708c);
+}
+
+/* ------------------------------- Testimonials ------------------------------ */
+
+.vault-mk-testimonial {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 22px;
+  border: 1px solid var(--color-surface-200, #d3dae8);
+  border-radius: var(--radius-lg, 1rem);
+  background-color: var(--color-surface-0, #f3f6fb);
+  box-shadow: var(--shadow-soft, 0 1px 2px rgb(16 24 42 / 0.1));
+}
+
+.vault-mk-testimonial__quote {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--color-surface-700, #38445f);
+}
+
+.vault-mk-testimonial__person {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.vault-mk-testimonial__name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-surface-900, #1a2336);
+}
+
+.vault-mk-testimonial__role {
+  font-size: 12px;
+  color: var(--color-surface-400, #93a0ba);
+}
+
+.vault-mk-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background-color: var(--color-brand-100, #e2e6ff);
+  color: var(--color-brand-700, #4a53c9);
+}
+
+.vault-mk-avatar--initials {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* --------------------------------- Logos ----------------------------------- */
+
+.vault-mk-logos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px 36px;
+  padding: 20px 0;
+}
+
+.vault-mk-logos__name {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-surface-400, #93a0ba);
+  white-space: nowrap;
+}
+
+/* ---------------------------------- FAQ ------------------------------------ */
+
+.vault-mk-faq {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ------------------------------- Newsletter -------------------------------- */
+
+.vault-mk-newsletter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.vault-mk-newsletter__note {
+  width: 100%;
+  margin: 6px 0 0;
+  text-align: center;
+  font-size: 12px;
+  color: var(--color-surface-400, #93a0ba);
+}
+.vault-mk-accent {
+  background-image: linear-gradient(
+    110deg,
+    var(--color-brand-500),
+    var(--color-brand-700) 55%,
+    var(--color-info-500)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}

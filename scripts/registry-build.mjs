@@ -71,6 +71,16 @@ const KIT_ENTRIES = [
   { id: "gantt-chart", name: "GanttChart", pkg: "@vaultui/project", importName: "{ GanttChart }" },
   { id: "presence-list", name: "PresenceList", pkg: "@vaultui/collab", importName: "{ PresenceList }" },
   { id: "live-cursors", name: "LiveCursors", pkg: "@vaultui/collab", importName: "{ LiveCursors }" },
+  { id: "bar-chart", name: "BarChart", pkg: "@vaultui/data-viz", importName: "{ BarChart }" },
+  { id: "line-chart", name: "LineChart", pkg: "@vaultui/data-viz", importName: "{ LineChart }" },
+  { id: "donut-chart", name: "DonutChart", pkg: "@vaultui/data-viz", importName: "{ DonutChart }" },
+  { id: "hero-section", name: "HeroSection", pkg: "@vaultui/marketing", importName: "{ HeroSection }" },
+  { id: "feature-grid", name: "FeatureGrid", pkg: "@vaultui/marketing", importName: "{ FeatureGrid }" },
+  { id: "stat-band", name: "StatBand", pkg: "@vaultui/marketing", importName: "{ StatBand }" },
+  { id: "testimonial-grid", name: "Testimonial & Grid", pkg: "@vaultui/marketing", importName: "{ TestimonialGrid }" },
+  { id: "logos-strip", name: "LogosStrip", pkg: "@vaultui/marketing", importName: "{ LogosStrip }" },
+  { id: "faq-section", name: "FaqSection", pkg: "@vaultui/marketing", importName: "{ FaqSection }" },
+  { id: "newsletter-signup", name: "NewsletterSignup", pkg: "@vaultui/marketing", importName: "{ NewsletterSignup }" },
 ];
 
 /* --------------------------------- build --------------------------------- */

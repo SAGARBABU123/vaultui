@@ -145,11 +145,19 @@ const KITS = [
     blurb: "Presence, live cursors, activity feeds — the room, rendered to the pixel.",
     accent: "bg-danger-500/15 text-danger-500",
   },
+  {
+    emoji: "📣",
+    name: "Marketing Kit",
+    pkg: "@vaultui/marketing",
+    count: 7,
+    blurb: "Hero sections, feature grids, stats, testimonials, logos, FAQ and newsletter capture — landing pages that read as designed, in minutes.",
+    accent: "bg-brand-100 text-brand-700",
+  },
 ] as const;
 
-const TOTAL_COMPONENTS = 59;
+const TOTAL_COMPONENTS = 69;
 const FREE_TIER = 14;
-const TOTAL_KITS = 6;
+const TOTAL_KITS = 7;
 
 /* ================================ page ==================================== */
 

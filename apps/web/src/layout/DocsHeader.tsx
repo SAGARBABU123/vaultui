@@ -76,7 +76,7 @@ export function DocsHeader({
         </button>
 
         <Badge variant="neutral" size="sm" className="hidden md:inline-flex">
-          {componentTotal} components · 6 kits
+          {componentTotal} components · 7 kits
           {dashboardTotal > 0 ? ` · ${dashboardTotal} dashboard template${dashboardTotal === 1 ? "" : "s"}` : ""}
         </Badge>
 
