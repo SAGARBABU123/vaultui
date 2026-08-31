@@ -1,7 +1,7 @@
 import { useMemo, useState, type ReactNode } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { Badge, Button, Card } from "@vaultui/ui";
-import { Check, Copy, Crown, Download, FolderPlus, Package, Plus, Share2, Trash2, Link2Off } from "lucide-react";
+import { ArrowLeft, Check, Copy, Crown, Download, FolderPlus, Package, Plus, Share2, Trash2, Link2Off } from "lucide-react";
 import { DocsHeader } from "../layout/DocsHeader";
 import { useAuth } from "../auth/AuthContext";
 import { useProjects } from "./ProjectContext";
@@ -76,6 +76,15 @@ export function ProjectOverviewPage() {
 
   return (
     <PageShell onLogo={() => navigate("/")}>
+      {/* Back to the vault */}
+      <button
+        type="button"
+        onClick={() => navigate("/docs")}
+        className="mb-4 inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-sm font-medium text-surface-500 transition-colors hover:bg-surface-100 hover:text-surface-900"
+      >
+        <ArrowLeft className="size-4" /> Back to dashboard
+      </button>
+
       {/* Header */}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="min-w-0">
