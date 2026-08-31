@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Lock } from "lucide-react";
+import { ChevronDown, Lock } from "lucide-react";
 import { cn } from "@vaultui/utils";
 import { useAuth } from "../auth/AuthContext";
 import type { ComponentEntry, ComponentGroup, DashboardEntry, DashboardGroup } from "./types";
@@ -22,6 +23,19 @@ export interface SidebarProps {
 export function Sidebar({ groups, dashboards, activeId, onSelect, search, onSearchChange }: SidebarProps) {
   const { isSignedIn, isPremium } = useAuth();
   const q = search.trim().toLowerCase();
+
+  /** Collapsed section names; search always expands everything. */
+  const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
+  const toggleSection = (name: string) => {
+    setCollapsed((prev) => {
+      const next = new Set(prev);
+      if (next.has(name)) next.delete(name);
+      else next.add(name);
+      return next;
+    });
+  };
+  const isCollapsed = (name: string) => (q !== "" ? false : collapsed.has(name));
+
   const filtered = q
     ? groups
         .map((g) => ({
@@ -65,18 +79,90 @@ export function Sidebar({ groups, dashboards, activeId, onSelect, search, onSear
       {/* Dashboard templates section */}
       {(() => {
         const dashCount = filteredDashboards.reduce((n, g) => n + g.items.length, 0);
+        const dashCollapsed = isCollapsed("Dashboard Templates");
         return dashCount > 0 || q === "" ? (
           <div>
-            <div className="mb-1.5 flex items-center justify-between px-2">
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-surface-400">
+            <button
+              type="button"
+              onClick={() => toggleSection("Dashboard Templates")}
+              aria-expanded={!dashCollapsed}
+              className="mb-1.5 flex w-full items-center justify-between rounded-lg px-2 py-1 text-left transition-colors hover:bg-surface-100"
+            >
+              <span className="flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-surface-400">
+                <ChevronDown
+                  className={cn("size-3.5 text-surface-400 transition-transform duration-200", dashCollapsed && "-rotate-90")}
+                />
                 Dashboard Templates
               </span>
               <span className="font-mono text-[11px] text-surface-400">{dashCount}</span>
-            </div>
-            {dashCount > 0 ? (
-              <ul className="space-y-0.5">
-                {filteredDashboards.map((group) =>
-                  group.items.map((item) => {
+            </button>
+            {!dashCollapsed && (
+              dashCount > 0 ? (
+                <ul className="space-y-0.5">
+                  {filteredDashboards.map((group) =>
+                    group.items.map((item) => {
+                      const active = item.id === activeId;
+                      return (
+                        <li key={item.id}>
+                          <Link
+                            to={entryTo(item)}
+                            onClick={() => onSelect(item.id)}
+                            aria-current={active ? "page" : undefined}
+                            className={cn(
+                              "flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-left text-sm transition-colors",
+                              active
+                                ? "bg-gradient-to-r from-brand-50 to-brand-100/60 font-medium text-brand-700"
+                                : "text-surface-600 hover:bg-surface-100 hover:text-surface-900",
+                            )}
+                          >
+                            <span className="truncate">{item.name}</span>
+                            <span
+                              className={cn(
+                                "shrink-0 rounded px-1 py-0.5 font-mono text-[10px]",
+                                active ? "bg-brand-100 text-brand-700" : "bg-surface-100 text-surface-400",
+                              )}
+                            >
+                              {isSignedIn ? "tmpl" : <Lock className="size-3" />}
+                            </span>
+                          </Link>
+                        </li>
+                      );
+                    }),
+                  )}
+                </ul>
+              ) : (
+                <p className="px-2.5 pb-1 text-xs italic leading-relaxed text-surface-400">
+                  Coming soon — each template ships token-driven, so all 4 themes apply.
+                </p>
+              )
+            )}
+          </div>
+        ) : null;
+      })()}
+
+      {/* Groups */}
+      <div className="space-y-5 px-3 pb-6 pt-2">
+        {filtered.map((group) => {
+          const groupCollapsed = isCollapsed(group.group);
+          return (
+            <div key={group.group}>
+              <button
+                type="button"
+                onClick={() => toggleSection(group.group)}
+                aria-expanded={!groupCollapsed}
+                className="mb-1.5 flex w-full items-center justify-between rounded-lg px-2 py-1 text-left transition-colors hover:bg-surface-100"
+              >
+                <span className="flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-surface-400">
+                  <ChevronDown
+                    className={cn("size-3.5 text-surface-400 transition-transform duration-200", groupCollapsed && "-rotate-90")}
+                  />
+                  {group.group}
+                </span>
+                <span className="font-mono text-[11px] text-surface-400">{group.items.length}</span>
+              </button>
+              {!groupCollapsed && (
+                <ul className="space-y-0.5">
+                  {group.items.map((item) => {
                     const active = item.id === activeId;
                     return (
                       <li key={item.id}>
@@ -95,74 +181,26 @@ export function Sidebar({ groups, dashboards, activeId, onSelect, search, onSear
                           <span
                             className={cn(
                               "shrink-0 rounded px-1 py-0.5 font-mono text-[10px]",
-                              active ? "bg-brand-100 text-brand-700" : "bg-surface-100 text-surface-400",
+                              item.tier === "free"
+                                ? active
+                                  ? "bg-brand-100 text-brand-700"
+                                  : "bg-success-500/10 text-success-500"
+                                : active
+                                  ? "bg-brand-100 text-brand-700"
+                                  : "bg-surface-100 text-surface-400",
                             )}
                           >
-                            {isSignedIn ? "tmpl" : <Lock className="size-3" />}
+                            {item.tier === "free" ? "free" : isPremium ? "$" : <Lock className="size-3" />}
                           </span>
                         </Link>
                       </li>
                     );
-                  }),
-                )}
-              </ul>
-            ) : (
-              <p className="px-2.5 pb-1 text-xs italic leading-relaxed text-surface-400">
-                Coming soon — each template ships token-driven, so all 4 themes apply.
-              </p>
-            )}
-          </div>
-        ) : null;
-      })()}
-
-      {/* Groups */}
-      <div className="space-y-5 px-3 pb-6 pt-2">
-        {filtered.map((group) => (
-          <div key={group.group}>
-            <div className="mb-1.5 flex items-center justify-between px-2">
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-surface-400">
-                {group.group}
-              </span>
-              <span className="font-mono text-[11px] text-surface-400">{group.items.length}</span>
+                  })}
+                </ul>
+              )}
             </div>
-            <ul className="space-y-0.5">
-              {group.items.map((item) => {
-                const active = item.id === activeId;
-                return (
-                  <li key={item.id}>
-                    <Link
-                      to={entryTo(item)}
-                      onClick={() => onSelect(item.id)}
-                      aria-current={active ? "page" : undefined}
-                      className={cn(
-                        "flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-left text-sm transition-colors",
-                        active
-                          ? "bg-gradient-to-r from-brand-50 to-brand-100/60 font-medium text-brand-700"
-                          : "text-surface-600 hover:bg-surface-100 hover:text-surface-900",
-                      )}
-                    >
-                      <span className="truncate">{item.name}</span>
-                      <span
-                        className={cn(
-                          "shrink-0 rounded px-1 py-0.5 font-mono text-[10px]",
-                          item.tier === "free"
-                            ? active
-                              ? "bg-brand-100 text-brand-700"
-                              : "bg-success-500/10 text-success-500"
-                            : active
-                              ? "bg-brand-100 text-brand-700"
-                              : "bg-surface-100 text-surface-400",
-                        )}
-                      >
-                        {item.tier === "free" ? "free" : isPremium ? "$" : <Lock className="size-3" />}
-                      </span>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        ))}
+          );
+        })}
         {filtered.length === 0 && (
           <p className="px-2 py-6 text-center text-sm text-surface-400">No components match “{search}”.</p>
         )}
