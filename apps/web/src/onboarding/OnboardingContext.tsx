@@ -324,5 +324,8 @@ function positionFor(rect: DOMRect | null): { left: number; top: number } {
   if (top + H > vh - 12 && rect.top - H - GAP > 0) {
     top = rect.top - H - GAP;
   }
+  // Never leave the card off-screen (e.g. full-height rails like the
+  // sidebar step, where neither below nor above fits) — clamp into view.
+  top = Math.max(12, Math.min(top, vh - H - 12));
   return { left, top };
 }
