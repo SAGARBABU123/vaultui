@@ -2,18 +2,18 @@ import { useMemo, useRef, useState } from "react";
 import { cn } from "@vaultui/utils";
 import { ALL_GROUPS } from "../projects/entries";
 import { CopyButton } from "@vaultui/ui";
+import { scriptedAnswer } from "./askKitScripts";
 
 /**
  * "Ask the Kit" — an in-docs assistant over the live registry.
- * No external AI: it answers from component metadata, usage snippets and an
- * FAQ, and every code answer is copyable. Novel: docs that answer themselves.
+ *
+ * Two layers:
+ *  1. SCRIPTED INTENTS (deterministic, $0, instant, no AI) — component
+ *     lookups, install/CLI, theming, licensing, pricing, kit/dashboard
+ *     catalog. Answers come straight from registry + FAQ content.
+ *  2. GEMINI FALLBACK — only when no script matches, via the serverless
+ *     proxy (api/ask.ts), grounded on this project's knowledge base.
  */
-
-interface Answer {
-  title: string;
-  body: string;
-  code?: string;
-}
 
 interface ChatMsg {
   role: "user" | "kit";
@@ -61,14 +61,15 @@ function textLower(s: string) {
   return s.toLowerCase();
 }
 
+/** Questions no script handled yet — surfaced in dev to grow the catalog. */
+const missedScripts = new Set<string>();
+
 export function AskTheKit() {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const [chat, setChat] = useState<ChatMsg[]>([]);
   const [thinking, setThinking] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-
-  const entries = useMemo(() => ALL_GROUPS.flatMap((g) => g.items).filter((e) => e.id !== "overview"), []);
 
   /** Compact registry + FAQ knowledge base sent to the Gemini fallback. */
   const knowledge = useMemo(() => {
@@ -120,31 +121,26 @@ export function AskTheKit() {
   const ask = (raw: string) => {
     const query = textLower(raw.trim());
     if (!query) return;
-    const faq = FAQ.find((f) => query.includes(f.q.split(" ")[0]!) || f.a.toLowerCase().slice(0, 20) === query);
-    const matched = faq
-      ? null
-      : entries
-          .filter((e) => e.name.toLowerCase().includes(query) || e.id.includes(query) || e.description.toLowerCase().includes(query))
-          .slice(0, 2);
-    if (matched && matched.length > 0) {
-      const e = matched[0]!;
-      const answer: Answer = {
-        title: `${e.name} — ready to use`,
-        body: e.description,
-        code: `import ${e.importName} from "${e.package}";\n\n${e.usage}`,
-      };
-      setChat((prev) => [...prev, { role: "user", text: raw }, { role: "kit", text: answer.body, code: answer.code }]);
-    } else if (faq) {
-      setChat((prev) => [...prev, { role: "user", text: raw }, { role: "kit", text: faq.a, code: faq.code }]);
-    } else {
-      // Local engine missed → let Gemini (free tier) try, grounded on the
-      // knowledge base so it stays about *our* project, not general answers.
-      void geminiAsk(raw);
+
+    // 1) Scripted intents first — deterministic, instant, no AI involved.
+    const scripted = scriptedAnswer(raw);
+    if (scripted) {
+      setChat((prev) => [...prev, { role: "user", text: raw }, { role: "kit", text: scripted.body, code: scripted.code }]);
+      setQ("");
+      return;
     }
-    setQ("");
+
+    // 2) Not scripted → Gemini (free tier), grounded on this project's
+    //    knowledge base. Log the miss once so the script catalog can grow.
+    const key = raw.trim();
+    if (!missedScripts.has(key)) {
+      missedScripts.add(key);
+      console.warn("[ask-the-kit] no script for:", key);
+    }
+    void geminiAsk(raw);
   };
 
-  const suggestions = ["install a component", "free tier", "how do themes work", "license?", "pricing"];
+  const suggestions = ["How to install", "Which themes?", "License — MIT?", "Free vs premium", "What's in the vault", "Data tables"];
 
   return (
     <>
