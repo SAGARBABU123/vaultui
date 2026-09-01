@@ -236,7 +236,7 @@ function TourStep({
         <h3 className="mt-2 text-sm font-bold tracking-tight text-surface-900">{step.title}</h3>
         <p className="mt-1.5 text-[13px] leading-relaxed text-surface-500">{step.body}</p>
 
-        <div className="mt-4 flex items-center justify-between gap-2">
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
           <Button size="sm" variant="ghost" onClick={onSkip}>
             Skip tour
           </Button>
