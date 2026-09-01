@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Badge, Button, Card } from "@vaultui/ui";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ArrowLeft, LogIn, MailCheck, ShieldCheck, UserPlus } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, LogIn, MailCheck, ShieldCheck, UserPlus } from "lucide-react";
 import { useAuth } from "./AuthContext";
 import { validateEmail, validatePassword } from "./mockAuth";
 
@@ -11,17 +11,59 @@ import { validateEmail, validatePassword } from "./mockAuth";
  * Validation runs client-side (email format, password strength, confirm
  * match) AND the engine re-validates: demo mode against its account
  * registry, Supabase server-side. Sign-in requires an existing account;
- * sign-up leads to an email-verification state (real Supabase sends the
- * link; demo simulates the step).
+ * sign-up completes by redirecting to the sign-in form.
  */
 
-type Step = "form" | "verification" | "reset" | "reset-sent";
+type Step = "form" | "reset" | "reset-sent";
 
 const EMAIL_INPUT_CLASS =
   "h-10 w-full rounded-xl border-0 bg-surface-100 px-3 text-sm text-surface-800 shadow-inset outline-none placeholder:text-surface-400 focus:border-brand-400 focus:ring-2 focus:ring-brand-500/20";
 
+/** Password field with a show/hide toggle (WCAG-visible, aria-labeled). */
+function PasswordField({
+  value,
+  onChange,
+  visible,
+  onToggle,
+  label,
+  hint,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  visible: boolean;
+  onToggle: () => void;
+  label: string;
+  hint?: string;
+}) {
+  return (
+    <label className="block">
+      <span className="mb-1 block text-xs font-medium text-surface-600">{label}</span>
+      <div className="relative">
+        <input
+          type={visible ? "text" : "password"}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          required
+          placeholder="••••••••"
+          className={`${EMAIL_INPUT_CLASS} pr-10`}
+        />
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-label={visible ? `Hide ${label.toLowerCase()}` : `Show ${label.toLowerCase()}`}
+          aria-pressed={visible}
+          className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1 text-surface-400 transition-colors hover:text-surface-700 focus:outline-none focus:ring-2 focus:ring-brand-500/30"
+        >
+          {visible ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+        </button>
+      </div>
+      {hint && <span className="mt-1 block text-[11px] text-surface-400">{hint}</span>}
+    </label>
+  );
+}
+
 export function AuthPage({ mode: reqMode }: { mode: "sign-in" | "sign-up" }) {
-  const { mode, signIn, signUp, resendVerification, forgotPassword } = useAuth();
+  const { mode, signIn, signUp, forgotPassword } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const from = (location.state as { from?: string } | null)?.from ?? "/docs";
@@ -31,9 +73,10 @@ export function AuthPage({ mode: reqMode }: { mode: "sign-in" | "sign-up" }) {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [step, setStep] = useState<Step>("form");
+  const [showPw, setShowPw] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [resent, setResent] = useState(false);
   const notice = (location.state as { notice?: string } | null)?.notice ?? null;
 
   const isUp = reqMode === "sign-up";
@@ -54,15 +97,17 @@ export function AuthPage({ mode: reqMode }: { mode: "sign-in" | "sign-up" }) {
       const res = await signUp(name, email, password);
       setLoading(false);
       if (!res.ok) return setError(res.error);
-      if (mode === "mock") {
-        // Demo mode sends no email — go straight to sign-in (mirrors real flow).
-        navigate("/sign-in", {
-          replace: true,
-          state: { from, notice: "Account created — now sign in with your email and password (demo, no email needed)." },
-        });
-      } else {
-        setStep("verification");
-      }
+      // No verification card — sign-up redirects straight to sign-in.
+      navigate("/sign-in", {
+        replace: true,
+        state: {
+          from,
+          notice:
+            mode === "supabase"
+              ? "Account created — confirm your email from the inbox, then sign in."
+              : "Account created — now sign in with your email and password (demo, no email needed).",
+        },
+      });
       return;
     }
 
@@ -71,16 +116,10 @@ export function AuthPage({ mode: reqMode }: { mode: "sign-in" | "sign-up" }) {
     const res = await signIn(email, password);
     setLoading(false);
     if (!res.ok) {
-      if (res.needsVerification) setStep("verification");
+      // Email-not-confirmed still surfaces inline (no separate card).
       return setError(res.error);
     }
     navigate(from, { replace: true });
-  };
-
-  const resend = async () => {
-    setResent(true);
-    await resendVerification();
-    window.setTimeout(() => setResent(false), 2000);
   };
 
   const resetSubmit = async (e: FormEvent) => {
@@ -94,38 +133,6 @@ export function AuthPage({ mode: reqMode }: { mode: "sign-in" | "sign-up" }) {
     if (!res.ok) return setError(res.error);
     setStep("reset-sent");
   };
-
-  /* ----------------------------- verification ---------------------------- */
-  if (step === "verification") {
-    return (
-      <AuthShell>
-        <Card padding="lg" className="relative overflow-hidden text-center">
-          <span className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 shadow-soft">
-            <MailCheck className="size-6" />
-          </span>
-          <h1 className="mt-4 text-xl font-bold tracking-tight text-surface-900">Check your inbox</h1>
-          <p className="mt-2 text-sm leading-relaxed text-surface-500">
-            We sent a confirmation link to <span className="font-semibold text-surface-800">{email}</span>.
-            Open it to activate your account.
-          </p>
-          <Button fullWidth size="lg" className="mt-5" onClick={resend} disabled={resent}>
-            {resent ? "Re-sent ✓" : "Resend confirmation"}
-          </Button>
-          <p className="mt-4 rounded-xl bg-warning-500/10 px-3 py-2 text-left text-[11px] leading-relaxed text-warning-500">
-            Not receiving it? Check spam/junk, confirm <code className="font-mono">Email → Confirm email</code> is
-            enabled in Supabase Auth settings, and look under <code className="font-mono">Logs → Auth</code> — new
-            projects hit Supabase's default email rate limits until custom SMTP is configured.
-          </p>
-          <p className="mt-4 text-center text-sm text-surface-500">
-            Already confirmed?{" "}
-            <Link to="/sign-in" state={{ from }} className="font-semibold text-brand-600 hover:text-brand-700">
-              Sign in
-            </Link>
-          </p>
-        </Card>
-      </AuthShell>
-    );
-  }
 
   /* ------------------------------ reset sent ----------------------------- */
   if (step === "reset-sent") {
@@ -201,20 +208,22 @@ export function AuthPage({ mode: reqMode }: { mode: "sign-in" | "sign-up" }) {
             <span className="mb-1 block text-xs font-medium text-surface-600">Email</span>
             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="you@vault.dev" className={EMAIL_INPUT_CLASS} />
           </label>
-          <label className="block">
-            <span className="mb-1 block text-xs font-medium text-surface-600">Password</span>
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required placeholder="••••••••" className={EMAIL_INPUT_CLASS} />
-            {isUp && (
-              <span className="mt-1 block text-[11px] text-surface-400">
-                At least 8 characters, upper &amp; lower case, one number.
-              </span>
-            )}
-          </label>
+          <PasswordField
+            value={password}
+            onChange={setPassword}
+            visible={showPw}
+            onToggle={() => setShowPw((v) => !v)}
+            label="Password"
+            hint={isUp ? "At least 8 characters, upper & lower case, one number." : undefined}
+          />
           {isUp && (
-            <label className="block">
-              <span className="mb-1 block text-xs font-medium text-surface-600">Confirm password</span>
-              <input type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} required placeholder="••••••••" className={EMAIL_INPUT_CLASS} />
-            </label>
+            <PasswordField
+              value={confirm}
+              onChange={setConfirm}
+              visible={showConfirm}
+              onToggle={() => setShowConfirm((v) => !v)}
+              label="Confirm password"
+            />
           )}
 
           {notice && (

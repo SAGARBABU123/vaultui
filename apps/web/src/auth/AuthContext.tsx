@@ -49,15 +49,11 @@ interface AuthContextValue {
   isSignedIn: boolean;
   isPremium: boolean;
   status: AuthStatus;
-  /** Email awaiting confirmation after sign-up (Supabase). */
-  pendingVerification: string | null;
   /** Last auth error (form never throws — read this instead). */
   error: string | null;
   clearError: () => void;
   signIn: (email: string, password: string) => Promise<AuthResult>;
   signUp: (name: string, email: string, password: string) => Promise<AuthResult>;
-  /** Resend the sign-up confirmation email (Supabase; no-op in demo). */
-  resendVerification: () => Promise<AuthResult>;
   /** Send a password reset link (Supabase; simulated confirmation in demo). */
   forgotPassword: (email: string) => Promise<AuthResult>;
   signOut: () => Promise<void>;
@@ -84,7 +80,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const supabase = getSupabase();
   const [mode] = useState<AuthMode>(supabase ? "supabase" : "mock");
   const [user, setUser] = useState<AuthUser | null>(() => (supabase ? null : demoReadSession()));
-  const [pendingVerification, setPendingVerification] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   // Derived — a session equals a signed-in user.
@@ -181,7 +176,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           return res;
         }
         // Sign-up is complete; the user signs in explicitly (mirrors real flow).
-        setPendingVerification(email.toLowerCase());
         return { ok: true, needsVerification: true };
       }
 
@@ -196,25 +190,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setError(message);
         return { ok: false, error: message };
       }
-      // Supabase sends a confirmation email (default) → verification state.
-      setPendingVerification(email.toLowerCase());
+      // Supabase sends a confirmation email (default) — user confirms, then signs in.
       return { ok: true, needsVerification: true };
     },
     [mode, supabase, clearError],
   );
-
-  const resendVerification = useCallback(async (): Promise<AuthResult> => {
-    if (mode === "mock" || !pendingVerification) return { ok: true };
-    const { error: err } = await supabase!.auth.resend({
-      type: "signup",
-      email: pendingVerification,
-    });
-    if (err) {
-      setError(err.message);
-      return { ok: false, error: err.message };
-    }
-    return { ok: true };
-  }, [mode, supabase, pendingVerification]);
 
   const forgotPassword = useCallback(
     async (email: string): Promise<AuthResult> => {
@@ -237,7 +217,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (mode === "mock") demoSignOut();
     else await supabase!.auth.signOut();
     setUser(null);
-    setPendingVerification(null);
   }, [mode, supabase]);
 
   const upgrade = useCallback(async () => {
@@ -277,12 +256,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isSignedIn: status === "signed-in" && user !== null,
         isPremium: user?.role === "premium",
         status,
-        pendingVerification,
         error,
         clearError,
         signIn,
         signUp,
-        resendVerification,
         forgotPassword,
         signOut,
         upgrade,
