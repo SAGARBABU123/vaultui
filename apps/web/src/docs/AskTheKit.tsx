@@ -19,6 +19,8 @@ interface ChatMsg {
   role: "user" | "kit";
   text: string;
   code?: string;
+  /** True when this kit reply came from the Gemini fallback. */
+  ai?: boolean;
 }
 
 const FAQ: Array<{ q: string; a: string; code?: string }> = [
@@ -63,9 +65,57 @@ export function AskTheKit() {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const [chat, setChat] = useState<ChatMsg[]>([]);
+  const [thinking, setThinking] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const entries = useMemo(() => ALL_GROUPS.flatMap((g) => g.items).filter((e) => e.id !== "overview"), []);
+
+  /** Compact registry + FAQ knowledge base sent to the Gemini fallback. */
+  const knowledge = useMemo(() => {
+    const kits = ALL_GROUPS.map(
+      (g) => `${g.group}: ${g.items.filter((i) => i.id !== "overview").map((i) => i.name).join(", ")}`,
+    ).join("\n");
+    const faq = FAQ.map((f) => `Q: ${f.q}\nA: ${f.a}${f.code ? `\nCODE:\n${f.code}` : ""}`).join("\n\n");
+    return [
+      `KITS AND COMPONENTS:\n${kits}`,
+      `FAQ:\n${faq}`,
+      `THEMES: Neumorphic, Glassmorphism, Dimensional Layering, Vintage Retro Film.\nINSTALL: pnpm add @vaultui/ui @vaultui/tokens (or npx vault-ui init / add).`,
+    ].join("\n\n");
+  }, []);
+
+  /** Gemini fallback — POST to the serverless proxy; the key never leaves the server. */
+  const geminiAsk = async (raw: string) => {
+    setThinking(true);
+    try {
+      const r = await fetch("/api/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ q: raw, context: knowledge }),
+      });
+      const data = await r.json().catch(() => null);
+      const text = r.ok ? String(data?.text ?? "").trim() : "";
+      if (!text) throw new Error("empty or failed response");
+      const codeMatch = text.match(/```[\s\S]*?\n([\s\S]*?)```/);
+      const code = codeMatch?.[1]?.trim();
+      const body = codeMatch ? text.replace(/```[\s\S]*?```/g, "").trim() : text;
+      setChat((prev) => [
+        ...prev,
+        { role: "user", text: raw },
+        { role: "kit", text: body || "Here you go —", code, ai: true },
+      ]);
+    } catch {
+      setChat((prev) => [
+        ...prev,
+        { role: "user", text: raw },
+        {
+          role: "kit",
+          text: "I couldn't answer that yet — I'm good at components, install, licensing, themes and pricing.",
+        },
+      ]);
+    } finally {
+      setThinking(false);
+    }
+  };
 
   const ask = (raw: string) => {
     const query = textLower(raw.trim());
@@ -87,16 +137,9 @@ export function AskTheKit() {
     } else if (faq) {
       setChat((prev) => [...prev, { role: "user", text: raw }, { role: "kit", text: faq.a, code: faq.code }]);
     } else {
-      const similar = entries.filter((e) => e.id.includes(query) || e.name.toLowerCase().includes(query)).slice(0, 3);
-      const names = similar.length > 0 ? similar.map((e) => e.name).join(", ") : "…";
-      setChat((prev) => [
-        ...prev,
-        { role: "user", text: raw },
-        {
-          role: "kit",
-          text: `I couldn't answer that yet — I'm good at components, install, licensing, themes and pricing.${similar.length ? ` Did you mean: ${names}?` : ""}`,
-        },
-      ]);
+      // Local engine missed → let Gemini (free tier) try, grounded on the
+      // knowledge base so it stays about *our* project, not general answers.
+      void geminiAsk(raw);
     }
     setQ("");
   };
@@ -128,14 +171,22 @@ export function AskTheKit() {
           </div>
 
           <div className="max-h-72 space-y-3 overflow-y-auto p-4">
-            {chat.length === 0 && (
+            {chat.length === 0 && !thinking && (
               <p className="text-[13px] leading-relaxed text-surface-400">
-                Ask me about any component, install, licensing, theming or pricing — I answer from the live registry and copy the code for you.
+                Ask me about any component, install, licensing, theming or pricing — local answers first, and
+                Gemini (grounded on this vault) tries the rest.
               </p>
             )}
             {chat.map((m, i) => (
               <div key={i} className={cn("text-[13px] leading-relaxed", m.role === "user" ? "text-right text-surface-400" : "text-surface-700")}>
-                <p>{m.text}</p>
+                <p style={{ whiteSpace: "pre-line" }}>
+                  {m.ai && (
+                    <span className="mr-1.5 inline-block rounded bg-brand-100 px-1 py-0.5 align-middle text-[9px] font-bold uppercase tracking-wide text-brand-700">
+                      AI
+                    </span>
+                  )}
+                  {m.text}
+                </p>
                 {m.code && (
                   <div className="mt-2 overflow-hidden rounded-lg border border-surface-800 bg-surface-950 text-left">
                     <div className="flex items-center justify-between border-b border-surface-800 px-2.5 py-1.5">
@@ -147,6 +198,12 @@ export function AskTheKit() {
                 )}
               </div>
             ))}
+            {thinking && (
+              <div className="flex items-center gap-2 text-[13px] text-surface-400">
+                <span className="inline-block size-3 animate-spin rounded-full border-2 border-surface-300 border-t-brand-600" />
+                Asking Gemini…
+              </div>
+            )}
           </div>
 
           <div className="flex flex-wrap gap-1.5 px-4 pb-2">
@@ -177,7 +234,9 @@ export function AskTheKit() {
                 placeholder="e.g. show me the data table…"
                 className="vault-input"
               />
-              <button type="submit" className="vault-btn vault-btn-primary vault-btn-sm">Ask</button>
+              <button type="submit" disabled={thinking} className="vault-btn vault-btn-primary vault-btn-sm">
+                {thinking ? "…" : "Ask"}
+              </button>
             </form>
           </div>
         </div>
