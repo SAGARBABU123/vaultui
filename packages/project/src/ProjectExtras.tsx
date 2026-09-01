@@ -113,7 +113,7 @@ export function DependencyGraph({ nodes, edges, className }: DependencyGraphProp
         return (
           <g key={n.id}>
             <circle cx={p.x} cy={p.y} r="7" fill="var(--color-brand-600)" stroke="var(--color-surface-0)" strokeWidth="2" />
-            <text x={p.x} y={p.y + 4} textAnchor="middle" style={{ fontSize: 9, fill: "#fff", fontWeight: 700 }}>
+            <text x={p.x} y={p.y + 4} textAnchor="middle" style={{ fontSize: 9, fill: "var(--color-surface-0, #fff)", fontWeight: 700 }}>
               {n.label.slice(0, 2)}
             </text>
             <text x={p.x + 12} y={p.y + 3} style={{ fontSize: 10, fill: "var(--color-surface-500)" }}>{n.label}</text>

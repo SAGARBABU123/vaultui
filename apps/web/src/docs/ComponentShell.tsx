@@ -295,10 +295,10 @@ function OverviewHero({ componentTotal }: { componentTotal: number }) {
           <span className="text-gradient-brand">One download.</span>
         </h1>
         <p className="mt-4 max-w-xl leading-relaxed text-surface-500">
-          104 components across 7 kits + 5 dashboard templates live in this vault. 24 make up the
-          free core (MIT) — install them with one line from npm, add any component with the CLI
-          (npx vault-ui add &lt;component&gt;), or download the bundle: the real theme file,
-          per-component usage snippets, and a runnable starter app.
+          {componentTotal + 1} components across 7 kits + {ALL_DASHBOARDS.length} dashboard templates live
+          in this vault. 24 make up the free core (MIT) — install them with one line from npm, add any
+          component with the CLI (npx vault-ui add &lt;component&gt;), or download the bundle: the real
+          theme file, per-component usage snippets, and a runnable starter app.
         </p>
 
         <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">

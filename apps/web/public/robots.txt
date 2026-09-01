@@ -1,0 +1,6 @@
+# Vault UI — crawl rules.
+# NOTE: update the domain below if you add a custom domain.
+User-agent: *
+Allow: /
+
+Sitemap: https://vault-ui.vercel.app/sitemap.xml

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@vaultui/utils";
 import { Kbd } from "@vaultui/ui";
 import { NAV_ITEMS } from "../projects/entries";
@@ -36,6 +36,13 @@ export function CommandPalette({
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onOpenChange]);
+
+  const listRef = useRef<HTMLUListElement>(null);
+
+  // Keep the arrow-highlighted option visible while navigating long lists.
+  useEffect(() => {
+    listRef.current?.querySelector<HTMLElement>("[data-focused=\"true\"]")?.scrollIntoView({ block: "nearest" });
+  }, [idx]);
 
   const results = useMemo(() => {
     const query = q.trim().toLowerCase();
@@ -88,7 +95,7 @@ export function CommandPalette({
           />
           <Kbd>esc</Kbd>
         </div>
-        <ul className="max-h-96 overflow-y-auto p-2" role="listbox">
+        <ul ref={listRef} className="max-h-96 overflow-y-auto p-2" role="listbox">
           {results.length === 0 && (
             <li className="px-3 py-6 text-center text-sm text-surface-400">Nothing matches “{q}”.</li>
           )}

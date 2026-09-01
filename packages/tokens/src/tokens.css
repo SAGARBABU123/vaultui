@@ -32,7 +32,7 @@
   --color-surface-100: #e0e5f0;
   --color-surface-200: #d3dae8;
   --color-surface-300: #c2cada;
-  --color-surface-400: #93a0ba;
+  --color-surface-400: #657187; /* darkened for 4.5:1 text contrast on surface-0/white */
   --color-surface-500: #64708c;
   --color-surface-600: #4a5672;
   --color-surface-700: #38445f;
@@ -276,7 +276,7 @@
   --color-surface-100: #f5f5f5;
   --color-surface-200: #e0e0e0;
   --color-surface-300: #b9b9c1;
-  --color-surface-400: #9a9aa5;
+  --color-surface-400: #60636b; /* darkened for 4.5:1 text contrast on white */
   --color-surface-500: #6f6f7a;
   --color-surface-600: #4c4c56;
   --color-surface-700: #38383f;
@@ -344,7 +344,7 @@
   --color-surface-100: #f5e6c8;
   --color-surface-200: #e9d4ab;
   --color-surface-300: #d9bf91;
-  --color-surface-400: #b39668;
+  --color-surface-400: #7a6342; /* darkened for 4.5:1 text contrast on parchment */
   --color-surface-500: #8a6f48;
   --color-surface-600: #675133;
   --color-surface-700: #4d3c26;
@@ -402,4 +402,35 @@
   z-index: 10001;
   pointer-events: none;
   background: radial-gradient(120% 92% at 50% 44%, transparent 60%, rgb(36 28 17 / 0.14) 100%);
+}
+
+/* --------------------------------------------------------------------------
+ * REDUCED MOTION
+ * Honor prefers-reduced-motion: turn off decorative animation and smooth
+ * scrolling for users who ask for less movement. Interactive state changes
+ * (colors, shadows) still apply instantly. This is what the landing page's
+ * Motion card promises — kept honest here.
+ * ------------------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .animate-caret,
+  .animate-bounce-dot,
+  .animate-pulse-ring,
+  .animate-rise,
+  .animate-spin,
+  .vault-skeleton,
+  .vault-modal__backdrop,
+  .vault-modal__dialog,
+  .vault-toast,
+  .vault-menu,
+  .vault-combobox__pop {
+    animation: none !important;
+  }
+
+  .vault-btn:active {
+    transform: none;
+  }
 }

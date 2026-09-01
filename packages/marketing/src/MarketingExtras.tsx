@@ -104,7 +104,16 @@ export interface IntegrationsGridProps {
   className?: string;
 }
 
-const TILE_COLORS = ["#5b66e8", "#2fbf7f", "#e8a93d", "#5aa7e2", "#e56b7a", "#8b96f7"];
+// Theme-aware tile palette — reads the active theme's CSS variables so the
+// grid re-skins across all four themes instead of hardcoding hex.
+const TILE_COLORS = [
+  "var(--color-brand-600, #5b66e8)",
+  "var(--color-success-500, #2fbf7f)",
+  "var(--color-warning-500, #e8a93d)",
+  "var(--color-info-500, #5aa7e2)",
+  "var(--color-danger-500, #e56b7a)",
+  "var(--color-brand-400, #8b96f7)",
+];
 
 export function IntegrationsGrid({ integrations, className }: IntegrationsGridProps) {
   return (

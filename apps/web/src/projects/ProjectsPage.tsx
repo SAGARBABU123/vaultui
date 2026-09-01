@@ -1,4 +1,4 @@
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { Badge, Button, Card } from "@vaultui/ui";
 import { ArrowLeft, CopyPlus, FolderPlus, Pencil, Plus, Trash2 } from "lucide-react";
@@ -282,8 +282,20 @@ export function ProjectsPage() {
   );
 }
 
-/** Small centered modal with a dimmed backdrop. */
+/** Small centered modal with a dimmed backdrop. ESC closes; focus lands inside. */
 function ModalOverlay({ children, onClose }: { children: ReactNode; onClose: () => void }) {
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    const focusable = panelRef.current?.querySelector<HTMLElement>("input, button");
+    focusable?.focus();
+    return () => document.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <button
@@ -292,7 +304,7 @@ function ModalOverlay({ children, onClose }: { children: ReactNode; onClose: () 
         onClick={onClose}
         className="absolute inset-0 bg-surface-950/40 backdrop-blur-[2px]"
       />
-      <div className="relative w-full max-w-md rounded-2xl border border-surface-200 bg-surface-0 p-5 shadow-raised animate-rise">
+      <div ref={panelRef} className="relative w-full max-w-md rounded-2xl border border-surface-200 bg-surface-0 p-5 shadow-raised animate-rise">
         {children}
       </div>
     </div>

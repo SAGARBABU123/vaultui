@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useId, useRef, type ReactNode } from "react";
 import { cn } from "@vaultui/utils";
 
 export interface ModalProps {
@@ -12,19 +12,53 @@ export interface ModalProps {
   className?: string;
 }
 
-/** Centered dialog with dimmed backdrop; ESC + backdrop close, scroll lock. */
+const FOCUSABLE =
+  'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
+
+/**
+ * Centered dialog with dimmed backdrop; ESC + backdrop close, scroll lock,
+ * initial focus, a Tab focus trap, and focus restore to the trigger on close.
+ */
 export function Modal({ open, onClose, title, children, footer, className }: ModalProps) {
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const titleId = useId();
+
   useEffect(() => {
     if (!open) return;
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        onClose();
+        return;
+      }
+      if (e.key === "Tab") {
+        const dialog = dialogRef.current;
+        const focusable = dialog?.querySelectorAll<HTMLElement>(FOCUSABLE);
+        if (!focusable || focusable.length === 0) return;
+        const first = focusable[0]!;
+        const last = focusable[focusable.length - 1]!;
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     };
+
     document.addEventListener("keydown", onKey);
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    // Land keyboard users inside the trap on open (first focusable, else the dialog).
+    const focusable = dialogRef.current?.querySelector<HTMLElement>(FOCUSABLE);
+    (focusable ?? dialogRef.current)?.focus();
+
     return () => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = prev;
+      previouslyFocused?.focus();
     };
   }, [open, onClose]);
 
@@ -34,17 +68,21 @@ export function Modal({ open, onClose, title, children, footer, className }: Mod
     <>
       <div className="vault-modal__backdrop" onClick={onClose} aria-hidden="true" />
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
-        aria-label={typeof title === "string" ? title : undefined}
+        tabIndex={-1}
+        aria-labelledby={title ? titleId : undefined}
         className={cn("vault-modal__dialog", className)}
       >
-        <div className="vault-modal__head">
-            <div className="vault-modal__title">{title}</div>
+        {title && (
+          <div className="vault-modal__head">
+            <div id={titleId} className="vault-modal__title">{title}</div>
             <button type="button" className="vault-modal__close" aria-label="Close dialog" onClick={onClose}>
               <XIcon />
             </button>
           </div>
+        )}
         <div className="vault-modal__body">{children}</div>
         {footer && <div className="vault-modal__footer">{footer}</div>}
       </div>

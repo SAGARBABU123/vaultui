@@ -1,64 +1,24 @@
-import { useEffect, useState, type ReactElement } from "react";
+import { lazy, Suspense, useEffect, type ReactElement } from "react";
 import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import { Button } from "@vaultui/ui";
-import { cn } from "@vaultui/utils";
 import { LandingPage } from "./landing/LandingPage";
 import { AuthPage } from "./auth/AuthPage";
-import { AccessGate } from "./auth/AccessGate";
 import { useAuth } from "./auth/AuthContext";
-import { Sidebar } from "./docs/Sidebar";
-import { ComponentShell } from "./docs/ComponentShell";
-import { CommandPalette } from "./docs/CommandPalette";
-import { AskTheKit } from "./docs/AskTheKit";
-import type { ComponentEntry, DashboardEntry } from "./docs/types";
-import {
-  ALL_GROUPS,
-  ALL_COMPONENTS,
-  ALL_DASHBOARDS,
-  DASHBOARDS,
-  NAV_ITEMS,
-  OVERVIEW,
-  entryUrl,
-  isDashboard,
-} from "./projects/entries";
-import { ProjectProvider, useProjects } from "./projects/ProjectContext";
-import { ProjectsPage } from "./projects/ProjectsPage";
-import { ProjectOverviewPage } from "./projects/ProjectOverviewPage";
-import { ShareKitPage } from "./projects/ShareKitPage";
-import { LabPage } from "./lab/LabPage";
-import { ComposerPage } from "./composer/ComposerPage";
+import { ProjectProvider } from "./projects/ProjectContext";
 import { OnboardingProvider } from "./onboarding/OnboardingContext";
-import { DocsHeader } from "./layout/DocsHeader";
 
-/** Component count shown in the header / overview (overview itself excluded). */
-const COMPONENT_TOTAL = ALL_COMPONENTS.length - 1;
-
-/** "AI Agent Kit" → "ai-agent-kit" — used by the /docs/kits/:slug redirect. */
-function slugify(name: string) {
-  return name
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
-}
-
-/** Resolve a /docs pathname to an entry; null means "unknown → redirect to /docs". */
-function resolveActive(pathname: string): ComponentEntry | DashboardEntry | null {
-  const segs = pathname
-    .slice("/docs".length)
-    .split("/")
-    .filter(Boolean);
-  const [kind, id] = segs;
-  if (!kind) return OVERVIEW;
-  if (kind === "components") return ALL_COMPONENTS.find((c) => c.id === id) ?? null;
-  if (kind === "dashboards") return ALL_DASHBOARDS.find((d) => d.id === id) ?? null;
-  if (kind === "kits") {
-    const group = ALL_GROUPS.find((g) => slugify(g.group) === id);
-    if (!group) return null;
-    const first = group.items.find((i) => i.id !== "overview") ?? group.items[0];
-    return first ?? null;
-  }
-  return null;
-}
+/**
+ * Route-level code splitting: landing + auth stay in the initial bundle
+ * (first paint / sign-in gate); the docs vault and workspace pages load
+ * on demand so the landing page ships much less JavaScript.
+ */
+const DocsView = lazy(() => import("./docs/DocsView").then((m) => ({ default: m.DocsView })));
+const ProjectsPage = lazy(() => import("./projects/ProjectsPage").then((m) => ({ default: m.ProjectsPage })));
+const ProjectOverviewPage = lazy(() =>
+  import("./projects/ProjectOverviewPage").then((m) => ({ default: m.ProjectOverviewPage })),
+);
+const ShareKitPage = lazy(() => import("./projects/ShareKitPage").then((m) => ({ default: m.ShareKitPage })));
+const LabPage = lazy(() => import("./lab/LabPage").then((m) => ({ default: m.LabPage })));
+const ComposerPage = lazy(() => import("./composer/ComposerPage").then((m) => ({ default: m.ComposerPage })));
 
 /* --------------------------------- router -------------------------------- */
 
@@ -68,32 +28,34 @@ export default function App() {
       <ProjectProvider>
         <OnboardingProvider>
           <ScrollManager />
-          <Routes>
-            <Route path="/" element={<LandingView />} />
-            <Route path="/docs/*" element={<DocsView />} />
-            <Route
-              path="/projects"
-              element={
-                <RequireAuth>
-                  <ProjectsPage />
-                </RequireAuth>
-              }
-            />
-            <Route
-              path="/projects/:id"
-              element={
-                <RequireAuth>
-                  <ProjectOverviewPage />
-                </RequireAuth>
-              }
-            />
-            <Route path="/kit/:id" element={<ShareKitPage />} />
-            <Route path="/lab" element={<LabPage />} />
-            <Route path="/composer" element={<ComposerPage />} />
-            <Route path="/sign-in" element={<AuthPage mode="sign-in" />} />
-            <Route path="/sign-up" element={<AuthPage mode="sign-up" />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
+          <Suspense fallback={null}>
+            <Routes>
+              <Route path="/" element={<LandingView />} />
+              <Route path="/docs/*" element={<DocsView />} />
+              <Route
+                path="/projects"
+                element={
+                  <RequireAuth>
+                    <ProjectsPage />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/projects/:id"
+                element={
+                  <RequireAuth>
+                    <ProjectOverviewPage />
+                  </RequireAuth>
+                }
+              />
+              <Route path="/kit/:id" element={<ShareKitPage />} />
+              <Route path="/lab" element={<LabPage />} />
+              <Route path="/composer" element={<ComposerPage />} />
+              <Route path="/sign-in" element={<AuthPage mode="sign-in" />} />
+              <Route path="/sign-up" element={<AuthPage mode="sign-up" />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Suspense>
         </OnboardingProvider>
       </ProjectProvider>
     </BrowserRouter>
@@ -135,153 +97,3 @@ function LandingView() {
 
   return <LandingPage onBrowse={handleBrowse} />;
 }
-
-function DocsView() {
-  const { pathname } = useLocation();
-  const navigate = useNavigate();
-  const { isSignedIn, isPremium } = useAuth();
-  const [search, setSearch] = useState("");
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [paletteOpen, setPaletteOpen] = useState(false);
-
-  // j / k — previous / next entry while browsing docs (skip form fields).
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      const t = e.target as HTMLElement | null;
-      if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
-      if (e.key !== "j" && e.key !== "k") return;
-      const cur = resolveActive(location.pathname);
-      if (!cur) return;
-      const idx = NAV_ITEMS.findIndex((x) => x.id === cur.id);
-      const target = e.key === "j" ? NAV_ITEMS[idx - 1] : NAV_ITEMS[idx + 1];
-      if (!target) return;
-      e.preventDefault();
-      navigate(entryUrl(target));
-      setDrawerOpen(false);
-      window.scrollTo({ top: 0 });
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [navigate]);
-
-  const active = resolveActive(pathname);
-  // Kit URLs and unknown ids land on their canonical route.
-  if (!active || pathname !== entryUrl(active)) {
-    return <Navigate to={active ? entryUrl(active) : "/docs"} replace />;
-  }
-
-  // The vault (overview + docs) requires an account — signed-out visitors
-  // are parked on sign-in; they return here after authenticating.
-  if (!isSignedIn) {
-    return <Navigate to="/sign-in" state={{ from: pathname }} replace />;
-  }
-
-  // Auth gates: dashboards need an account; paid components need premium.
-  const gate: "premium" | "dashboard" | null = isDashboard(active)
-    ? "dashboard"
-    : "tier" in active && active.tier === "paid"
-      ? "premium"
-      : null;
-  const locked = gate ? (gate === "dashboard" ? !isSignedIn : !isPremium) : false;
-
-  const activeIndex = NAV_ITEMS.findIndex((e) => e.id === active.id);
-  const prev = NAV_ITEMS[activeIndex - 1] ?? null;
-  const next = NAV_ITEMS[activeIndex + 1] ?? null;
-
-  const navigateEntry = (id: string) => {
-    const e = NAV_ITEMS.find((x) => x.id === id);
-    if (!e) return;
-    navigate(entryUrl(e));
-    setDrawerOpen(false);
-    window.scrollTo({ top: 0 });
-  };
-
-  // j / k — previous / next entry while browsing docs (skip form fields).
-
-
-  return (
-    <div className="min-h-screen text-surface-900">
-      <div className="flex">
-        {/* Desktop sidebar — full-height rail, flush left */}
-        <aside
-          id="onboard-sidebar"
-          className="sticky top-0 hidden h-screen w-72 shrink-0 scrollbar-hidden overflow-y-auto border-r border-surface-200 bg-surface-0/60 lg:block"
-        >
-          <Sidebar
-            groups={ALL_GROUPS}
-            dashboards={DASHBOARDS}
-            activeId={active.id}
-            onSelect={navigateEntry}
-            search={search}
-          />
-        </aside>
-
-        {/* Right shell — header + content live inside the column, under the rail */}
-        <div className="min-w-0 flex-1">
-          <DocsHeader
-            componentTotal={COMPONENT_TOTAL}
-            dashboardTotal={ALL_DASHBOARDS.length}
-            onOpenDrawer={() => setDrawerOpen(true)}
-            searchValue={search}
-            onSearchChange={setSearch}
-            onOpenPalette={() => setPaletteOpen(true)}
-          />
-
-          <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} onNavigate={navigateEntry} />
-          <AskTheKit />
-
-          {/* Mobile drawer */}
-          {drawerOpen && (
-            <div className="fixed inset-0 z-40 lg:hidden">
-              <button
-                type="button"
-                aria-label="Close navigation"
-                onClick={() => setDrawerOpen(false)}
-                className="absolute inset-0 w-full bg-surface-950/40 backdrop-blur-[2px]"
-              />
-              <div className="absolute inset-y-0 left-0 flex w-[85%] max-w-xs flex-col bg-surface-50 shadow-popover animate-rise">
-                <div className="flex items-center justify-between border-b border-surface-200 px-4 py-3">
-                  <span className="text-sm font-semibold">Browse docs</span>
-                  <Button variant="ghost" size="sm" onClick={() => setDrawerOpen(false)}>
-                    Close
-                  </Button>
-                </div>
-                <div className="min-h-0 flex-1 scrollbar-hidden overflow-y-auto">
-                  <Sidebar
-                    groups={ALL_GROUPS}
-                    dashboards={DASHBOARDS}
-                    activeId={active.id}
-                    onSelect={navigateEntry}
-                    search={search}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-
-          <main className="px-4 py-8 sm:px-6 lg:px-10">
-          <div
-            className={cn(
-              isDashboard(active) ? "mx-auto max-w-6xl" : active.id === "overview" ? "w-full" : "mx-auto max-w-3xl",
-            )}
-          >
-            {locked && gate ? (
-              <AccessGate kind={gate} />
-            ) : (
-              <ComponentShell
-                entry={active}
-                prev={prev}
-                next={next}
-                onNavigate={navigateEntry}
-                componentTotal={COMPONENT_TOTAL}
-              />
-            )}
-          </div>
-        </main>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* --------------------------------- sidebar render --------------------------------- */

@@ -75,7 +75,13 @@ export function DataTable<R extends Record<string, unknown> = Record<string, unk
           <thead>
             <tr>
               {columns.map((col) => (
-                <th key={col.key} style={{ textAlign: col.align ?? "left" }}>
+                <th
+                  key={col.key}
+                  style={{ textAlign: col.align ?? "left" }}
+                  aria-sort={
+                    sortKey === col.key ? (sortDir === "asc" ? "ascending" : "descending") : undefined
+                  }
+                >
                   {col.sortable && sortable ? (
                     <button type="button" className="vault-table__sort" onClick={() => toggleSort(col.key)} aria-label={`Sort by ${col.key}`}>
                       {col.label}

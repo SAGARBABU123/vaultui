@@ -1,0 +1,19 @@
+# Vault UI
+
+> Vault UI is a premium React + Tailwind component line: 100+ components across seven kits plus five dashboard templates, unified by one token engine (soft-ui, aether, paper, parchment, and more).
+
+## About
+
+Vault UI ships dependency-light components driven by a single design-token system. It is built as a pnpm + Turborepo monorepo (`apps/web` SPA, `packages/*` for ui, tokens, utils, data-viz, marketing, ai-chat, collab, commerce). The app is a static Vite/React SPA on Vercel backed by Supabase (auth, Postgres, RLS) — no custom backend.
+
+## Key pages
+
+- https://vault-ui.vercel.app/ — product landing page (kits, licensing, install)
+- https://vault-ui.vercel.app/sign-in — account sign-in
+- https://vault-ui.vercel.app/sign-up — account sign-up
+- https://vault-ui.vercel.app/docs — component vault (auth required)
+
+## Notes for AI agents
+
+- The docs vault, projects, and kit sharing require a user account.
+- Component sources live in the repo (`apps/web/src/docs/registry*.tsx`).

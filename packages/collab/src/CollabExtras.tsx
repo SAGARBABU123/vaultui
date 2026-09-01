@@ -17,7 +17,15 @@ export interface CommentsThreadProps {
   className?: string;
 }
 
-const AVATAR_COLORS = ["#5b66e8", "#2fbf7f", "#e8a93d", "#5aa7e2", "#e56b7a"];
+// Theme-aware avatar palette — reads the active theme's CSS variables so
+// avatars re-skin across all four themes instead of hardcoding hex.
+const AVATAR_COLORS = [
+  "var(--color-brand-600, #5b66e8)",
+  "var(--color-success-500, #2fbf7f)",
+  "var(--color-warning-500, #e8a93d)",
+  "var(--color-info-500, #5aa7e2)",
+  "var(--color-danger-500, #e56b7a)",
+];
 
 function initials(name: string) {
   return name.split(/\s+/).map((w) => w[0]).filter(Boolean).slice(0, 2).join("").toUpperCase();
@@ -86,7 +94,13 @@ export interface ReactionPickerProps {
   className?: string;
 }
 
-const REACTION_COLORS = ["#e8a93d", "#5aa7e2", "#e56b7a", "#2fbf7f", "#8b96f7"];
+const REACTION_COLORS = [
+  "var(--color-warning-500, #e8a93d)",
+  "var(--color-info-500, #5aa7e2)",
+  "var(--color-danger-500, #e56b7a)",
+  "var(--color-success-500, #2fbf7f)",
+  "var(--color-brand-400, #8b96f7)",
+];
 
 export function ReactionPicker({ reactions, onReact, className }: ReactionPickerProps) {
   const [picked, setPicked] = useState<string | null>(null);
@@ -108,7 +122,7 @@ export function ReactionPicker({ reactions, onReact, className }: ReactionPicker
               "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm transition-colors",
               active ? "border-brand-300 bg-brand-50" : "border-surface-200 bg-surface-0 hover:bg-surface-100",
             )}
-            style={active ? { boxShadow: `inset 0 0 0 1px ${REACTION_COLORS[i % REACTION_COLORS.length]}33` } : undefined}
+            style={active ? { boxShadow: `inset 0 0 0 1px color-mix(in srgb, ${REACTION_COLORS[i % REACTION_COLORS.length]} 20%, transparent)` } : undefined}
           >
             <span className="text-base">{r.emoji}</span>
             <span className="font-semibold" style={{ color: active ? REACTION_COLORS[i % REACTION_COLORS.length] : undefined }}>

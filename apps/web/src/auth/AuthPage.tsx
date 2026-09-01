@@ -278,13 +278,13 @@ export function AuthPage({ mode: reqMode }: { mode: "sign-in" | "sign-up" }) {
 /** Centered page shell behind the auth card. */
 function AuthShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-surface-50 px-4 py-10">
+    <main className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-surface-50 px-4 py-10">
       <div className="w-full max-w-sm">
         <Link to="/" className="mb-4 inline-flex items-center gap-1.5 text-sm text-surface-500 transition-colors hover:text-surface-800">
           <ArrowLeft className="size-4" /> Back to home
         </Link>
         {children}
       </div>
-    </div>
+    </main>
   );
 }

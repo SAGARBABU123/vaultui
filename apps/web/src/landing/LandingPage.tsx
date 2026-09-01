@@ -6,6 +6,7 @@ import { cn } from "@vaultui/utils";
 import { ArrowRight, Check, Copy, Download, Lock, Package, Terminal, UserPlus } from "lucide-react";
 import { INSTALL_COMMAND, downloadKit } from "../docs/downloadKit";
 import { AuthControl } from "../auth/AuthControl";
+import { ALL_COMPONENTS, ALL_DASHBOARDS } from "../projects/entries";
 import { VaultLogo } from "../brand/VaultLogo";
 import { useAuth } from "../auth/AuthContext";
 import { useTheme } from "../theme/ThemeContext";
@@ -156,10 +157,12 @@ const KITS = [
   },
 ] as const;
 
-const TOTAL_COMPONENTS = 104;
+/** Live registry counts — the same source of truth as the docs vault, so the
+ *  landing page and the sidebar/header never disagree. */
+const TOTAL_COMPONENTS = ALL_COMPONENTS.length;
 const FREE_TIER = 24;
 const TOTAL_KITS = 7;
-const DASHBOARD_COUNT = 5;
+const DASHBOARD_COUNT = ALL_DASHBOARDS.length;
 
 /* ================================ page ==================================== */
 
@@ -174,13 +177,15 @@ export function LandingPage({ onBrowse }: { onBrowse: () => void }) {
     >
       <div className="min-h-screen text-surface-900">
         <Nav />
-        <Hero onBrowse={onBrowse} />
-        <Philosophy />
-        <SystemLab />
-        <KitsSection onBrowse={onBrowse} />
-        <Licensing />
-        <InstallSection onBrowse={onBrowse} />
-        <FinalCta onBrowse={onBrowse} />
+        <main id="main-content">
+          <Hero onBrowse={onBrowse} />
+          <Philosophy />
+          <SystemLab />
+          <KitsSection onBrowse={onBrowse} />
+          <Licensing />
+          <InstallSection onBrowse={onBrowse} />
+          <FinalCta onBrowse={onBrowse} />
+        </main>
         <Footer />
       </div>
     </ClickSpark>
@@ -499,7 +504,7 @@ function Philosophy() {
     <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
       <SectionHeading
         kicker="A quiet philosophy"
-        title="Most kits are collections.<br />This is a <em>system</em>."
+        title={<>Most kits are collections.<br />This is a <em>system</em>.</>}
         body="Components drift. Systems don't. Vault UI is one set of decisions, applied consistently — so your product reads as designed, not assembled."
       />
       <div className="mt-12 grid gap-4 md:grid-cols-3">
@@ -542,7 +547,7 @@ function SystemLab() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <SectionHeading
           kicker="The design system"
-          title="Every pixel, a decision.<br />Every token, a <em>standard</em>."
+          title={<>Every pixel, a decision.<br />Every token, a <em>standard</em>.</>}
           body="The lab below is not documentation from a screenshot — it is the live theme file rendered. What you adjust here is what every component reads."
         />
 
@@ -706,7 +711,7 @@ function KitsSection({ onBrowse }: { onBrowse: () => void }) {
     <section id="kits" className="scroll-mt-20 mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
       <SectionHeading
         kicker="Seven kits, one language"
-        title="Built for the product,<br />not the <em>demo</em>."
+        title={<>Built for the product,<br />not the <em>demo</em>.</>}
         body="Each kit solves a real product surface end-to-end. They share props, tokens and spacing rules, so mixing kits mid-feature never feels like mixing libraries."
       />
       <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -772,7 +777,7 @@ function Licensing() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <SectionHeading
           kicker="Licensing, in plain language"
-          title="Free where it should be.<br />Paid where it <em>must</em> be."
+          title={<>Free where it should be.<br />Paid where it <em>must</em> be.</>}
           body="No trials, no seats, no phone calls. The core is open; the premium kits are a straight-forward commercial license with the source included."
         />
         <div className="mt-12 grid gap-4 md:grid-cols-2">
@@ -866,7 +871,7 @@ function InstallSection({ onBrowse }: { onBrowse: () => void }) {
     <section id="install" className="scroll-mt-20 mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
       <SectionHeading
         kicker="One line, then yours"
-        title="Start in seconds.<br />Ship for <em>years</em>."
+        title={<>Start in seconds.<br />Ship for <em>years</em>.</>}
         body="Install the free core from npm, or download the kit bundle — theme file, per-component usage, and a runnable starter app."
       />
 
@@ -998,14 +1003,13 @@ function Footer() {
 
 /* --------------------------------- helpers ---------------------------------- */
 
-function SectionHeading({ kicker, title, body }: { kicker: string; title: string; body: string }) {
+function SectionHeading({ kicker, title, body }: { kicker: string; title: React.ReactNode; body: string }) {
   return (
     <div className="mx-auto max-w-2xl text-center">
       <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-600">{kicker}</p>
-      <h2
-        className="mt-3 text-3xl font-bold leading-tight tracking-tight text-surface-900 sm:text-4xl"
-        dangerouslySetInnerHTML={{ __html: title }}
-      />
+      <h2 className="mt-3 text-3xl font-bold leading-tight tracking-tight text-surface-900 sm:text-4xl">
+        {title}
+      </h2>
       <p className="mt-4 text-base leading-relaxed text-surface-500">{body}</p>
     </div>
   );

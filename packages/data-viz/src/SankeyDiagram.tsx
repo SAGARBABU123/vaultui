@@ -74,7 +74,7 @@ export function SankeyDiagram({ nodes, links, className }: SankeyDiagramProps) {
       {lLeft.map((r) => (
         <g key={r.node.id}>
           <rect x={4} y={r.top} width={COL_W - 6} height={r.h} rx="3" fill="currentColor" fillOpacity="0.82" />
-          <text x={8} y={Math.max(10, r.top + Math.min(12, r.h / 2))} fontSize="9" fill="#fff" className="font-medium">
+          <text x={8} y={Math.max(10, r.top + Math.min(12, r.h / 2))} fontSize="9" fill="var(--color-surface-0, #fff)" className="font-medium">
             {r.node.label.slice(0, 12)}
           </text>
         </g>

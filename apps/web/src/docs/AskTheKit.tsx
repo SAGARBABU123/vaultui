@@ -47,7 +47,7 @@ const FAQ: Array<{ q: string; a: string; code?: string }> = [
   },
   {
     q: "pricing",
-    a: "Free core forever. Premium kits: Pro $49 (all kits, one license) or Teams $129 (includes Collab + seats). Demo upgrade in the app flips instantly.",
+    a: "Free core forever. Premium kits ship under a single commercial license covering all kits, source included — the demo upgrade in the app flips instantly.",
   },
   {
     q: "tokens",
