@@ -2,6 +2,7 @@ import JSZip from "jszip";
 import { COMPONENT_GROUPS } from "./registry";
 import { EXTRA_GROUPS } from "./registry-extra";
 import { entryById } from "../projects/entries";
+import { INSTALL_COMMAND } from "../projects/counts";
 import type { ComponentEntry, DashboardEntry } from "./types";
 
 /** The live theme source, exported raw so the zip ships the real tokens. */
@@ -26,10 +27,7 @@ export function allEntries(): ComponentEntry[] {
   return [...map.values()].flat();
 }
 
-export const INSTALL_COMMAND = `pnpm add ${KIT_PACKAGES.join(" ")}`;
-
-/**
- * Per-package install lines for a selection — the "make a command for those
+/** Per-package install lines for a selection — the "make a command for those
  * components separately" output. Free core first, then each kit actually used.
  */
 export function buildInstallCommand(entries: ComponentEntry[]): string {

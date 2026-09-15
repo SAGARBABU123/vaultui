@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@vaultui/ui";
 import { cn } from "@vaultui/utils";
+// Kit styles render only inside the docs vault — importing here keeps them out
+// of the landing page css.
+import "@vaultui/data-viz/dataviz.css";
+import "@vaultui/marketing/marketing.css";
 import { useAuth } from "../auth/AuthContext";
 import { AccessGate } from "../auth/AccessGate";
 import { DocsHeader } from "../layout/DocsHeader";
@@ -9,7 +13,14 @@ import { Sidebar } from "./Sidebar";
 import { ComponentShell } from "./ComponentShell";
 import { CommandPalette } from "./CommandPalette";
 import { AskTheKit } from "./AskTheKit";
-import type { ComponentEntry, DashboardEntry } from "./types";
+import { GuidelinesView } from "./GuidelinesView";
+import {
+  GUIDELINE_GROUPS,
+  GUIDELINE_NAV,
+  GUIDELINE_VIEWS,
+  guidelineUrl,
+} from "./guidelines";
+import type { ComponentEntry, DashboardEntry, GuidelineRoute } from "./types";
 import {
   ALL_GROUPS,
   ALL_COMPONENTS,
@@ -32,14 +43,19 @@ function slugify(name: string) {
     .replace(/^-|-$/g, "");
 }
 
+type ActiveDoc = ComponentEntry | DashboardEntry | GuidelineRoute;
+
 /** Resolve a /docs pathname to an entry; null means "unknown → redirect to /docs". */
-function resolveActive(pathname: string): ComponentEntry | DashboardEntry | null {
+function resolveActive(pathname: string): ActiveDoc | null {
   const segs = pathname
     .slice("/docs".length)
     .split("/")
     .filter(Boolean);
   const [kind, id] = segs;
   if (!kind) return OVERVIEW;
+  if (kind === "guidelines") {
+    return id && GUIDELINE_VIEWS[id] ? ({ kind: "guideline", id } satisfies GuidelineRoute) : null;
+  }
   if (kind === "components") return ALL_COMPONENTS.find((c) => c.id === id) ?? null;
   if (kind === "dashboards") return ALL_DASHBOARDS.find((d) => d.id === id) ?? null;
   if (kind === "kits") {
@@ -49,6 +65,11 @@ function resolveActive(pathname: string): ComponentEntry | DashboardEntry | null
     return first ?? null;
   }
   return null;
+}
+
+/** Canonical URL for any active doc (components, dashboards, guidelines). */
+function canonicalUrl(active: ActiveDoc): string {
+  return active.kind === "guideline" ? guidelineUrl(active.id) : entryUrl(active);
 }
 
 export function DocsView() {
@@ -67,11 +88,16 @@ export function DocsView() {
       if (e.key !== "j" && e.key !== "k") return;
       const cur = resolveActive(location.pathname);
       if (!cur) return;
-      const idx = NAV_ITEMS.findIndex((x) => x.id === cur.id);
-      const target = e.key === "j" ? NAV_ITEMS[idx - 1] : NAV_ITEMS[idx + 1];
+      const spine = cur.kind === "guideline" ? GUIDELINE_NAV : NAV_ITEMS;
+      const idx = spine.findIndex((x) => x.id === cur.id);
+      const target = e.key === "j" ? spine[idx - 1] : spine[idx + 1];
       if (!target) return;
       e.preventDefault();
-      navigate(entryUrl(target));
+      navigate(
+        cur.kind === "guideline"
+          ? guidelineUrl(target.id)
+          : entryUrl(target as ComponentEntry | DashboardEntry),
+      );
       setDrawerOpen(false);
       window.scrollTo({ top: 0 });
     };
@@ -81,8 +107,8 @@ export function DocsView() {
 
   const active = resolveActive(pathname);
   // Kit URLs and unknown ids land on their canonical route.
-  if (!active || pathname !== entryUrl(active)) {
-    return <Navigate to={active ? entryUrl(active) : "/docs"} replace />;
+  if (!active || pathname !== canonicalUrl(active)) {
+    return <Navigate to={active ? canonicalUrl(active) : "/docs"} replace />;
   }
 
   // The vault (overview + docs) requires an account — signed-out visitors
@@ -91,22 +117,35 @@ export function DocsView() {
     return <Navigate to="/sign-in" state={{ from: pathname }} replace />;
   }
 
+  // Guidelines are educational vault content — never premium-gated.
+  const isGuideline = active.kind === "guideline";
+
   // Auth gates: dashboards need an account; paid components need premium.
-  const gate: "premium" | "dashboard" | null = isDashboard(active)
-    ? "dashboard"
-    : "tier" in active && active.tier === "paid"
-      ? "premium"
-      : null;
+  const gate: "premium" | "dashboard" | null =
+    !isGuideline && isDashboard(active)
+      ? "dashboard"
+      : !isGuideline && "tier" in active && active.tier === "paid"
+        ? "premium"
+        : null;
   const locked = gate ? (gate === "dashboard" ? !isSignedIn : !isPremium) : false;
 
   const activeIndex = NAV_ITEMS.findIndex((e) => e.id === active.id);
-  const prev = NAV_ITEMS[activeIndex - 1] ?? null;
-  const next = NAV_ITEMS[activeIndex + 1] ?? null;
+  const prev = activeIndex > 0 ? NAV_ITEMS[activeIndex - 1] ?? null : null;
+  const next = activeIndex >= 0 && activeIndex < NAV_ITEMS.length - 1 ? NAV_ITEMS[activeIndex + 1] ?? null : null;
 
   const navigateEntry = (id: string) => {
+    // Component / dashboard entries only (CommandPalette + kit sidebar).
     const e = NAV_ITEMS.find((x) => x.id === id);
     if (!e) return;
     navigate(entryUrl(e));
+    setDrawerOpen(false);
+    window.scrollTo({ top: 0 });
+  };
+
+  // Guidelines share ids with kit entries (tabs, modals, overview…), so they
+  // get their own url + handler — never route through the component spine.
+  const navigateGuideline = (id: string) => {
+    navigate(guidelineUrl(id));
     setDrawerOpen(false);
     window.scrollTo({ top: 0 });
   };
@@ -122,8 +161,11 @@ export function DocsView() {
           <Sidebar
             groups={ALL_GROUPS}
             dashboards={DASHBOARDS}
-            activeId={active.id}
+            guidelineGroups={GUIDELINE_GROUPS}
+            activeId={isGuideline ? "" : active.id}
+            activeGuidelineId={isGuideline ? active.id : ""}
             onSelect={navigateEntry}
+            onSelectGuideline={navigateGuideline}
             search={search}
           />
         </aside>
@@ -162,8 +204,11 @@ export function DocsView() {
                   <Sidebar
                     groups={ALL_GROUPS}
                     dashboards={DASHBOARDS}
-                    activeId={active.id}
+                    guidelineGroups={GUIDELINE_GROUPS}
+                    activeId={isGuideline ? "" : active.id}
+                    activeGuidelineId={isGuideline ? active.id : ""}
                     onSelect={navigateEntry}
+                    onSelectGuideline={navigateGuideline}
                     search={search}
                   />
                 </div>
@@ -172,24 +217,31 @@ export function DocsView() {
           )}
 
           <main className="px-4 py-8 sm:px-6 lg:px-10">
-          <div
-            className={cn(
-              isDashboard(active) ? "mx-auto max-w-6xl" : active.id === "overview" ? "w-full" : "mx-auto max-w-3xl",
-            )}
-          >
-            {locked && gate ? (
-              <AccessGate kind={gate} />
-            ) : (
-              <ComponentShell
-                entry={active}
-                prev={prev}
-                next={next}
-                onNavigate={navigateEntry}
-                componentTotal={COMPONENT_TOTAL}
-              />
-            )}
-          </div>
-        </main>
+            <div
+              className={cn(
+                isGuideline || active.id === "overview"
+                  ? "w-full"
+                  : isDashboard(active)
+                    ? "mx-auto max-w-6xl"
+                    : "mx-auto max-w-3xl",
+              )}
+            >
+              {isGuideline ? (
+                <GuidelinesView item={GUIDELINE_NAV.find((g) => g.id === active.id)!} onNavigate={navigateGuideline} />
+              ) : locked && gate ? (
+                <AccessGate kind={gate} />
+              ) : (
+                <ComponentShell
+                  entry={active}
+                  prev={prev}
+                  next={next}
+                  onNavigate={navigateEntry}
+                  onNavigateGuideline={navigateGuideline}
+                  componentTotal={COMPONENT_TOTAL}
+                />
+              )}
+            </div>
+          </main>
         </div>
       </div>
     </div>

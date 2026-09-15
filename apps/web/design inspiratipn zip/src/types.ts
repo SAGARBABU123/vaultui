@@ -1,0 +1,52 @@
+export type SectionId = 
+  | 'overview'
+  | 'starting' 
+  | 'hierarchy' 
+  | 'spacing' 
+  | 'typography' 
+  | 'color' 
+  | 'depth' 
+  | 'images'
+  | 'responsive'
+  | 'dark-mode'
+  | 'components' 
+  | 'component-states'
+  | 'forms-dashboards'
+  | 'form-validation'
+  | 'data-tables'
+  | 'empty-states' 
+  | 'loading-states'
+  | 'modals'
+  | 'borders' 
+  | 'motion'
+  | 'iconography'
+  | 'badges'
+  | 'navigation'
+  | 'tabs'
+  | 'dropdowns'
+  | 'inputs-controls'
+  | 'toasts'
+  | 'tooltips'
+  | 'cards-anatomy'
+  | 'avatars'
+  | 'accordions'
+  | 'advanced-inputs'
+  | 'complex-data'
+  | 'advanced-overlays'
+  | 'feedback-indicators'
+  | 'breadcrumbs'
+  | 'otp-inputs'
+  | 'hover-cards'
+  | 'sliders'
+  | 'carousels'
+  | 'copywriting'
+  | 'design-tokens'
+  | 'do-dont' 
+  | 'checklist';
+
+export interface AppState {
+  currentSection: SectionId;
+  agentMode: boolean;
+  searchQuery: string;
+  sidebarOpen: boolean;
+}

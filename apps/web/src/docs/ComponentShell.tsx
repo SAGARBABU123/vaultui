@@ -3,7 +3,8 @@ import { cn } from "@vaultui/utils";
 import { ArrowRight, Check, Copy, Download, FolderPlus, Grab, Package, Plus, Terminal, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { INSTALL_COMMAND, downloadKit } from "./downloadKit";
+import { INSTALL_COMMAND } from "../projects/counts";
+import { downloadKit } from "./downloadKit";
 import { Playground, PLAYGROUNDS, type PlaygroundBuilder } from "./Playground";
 import { ThemeCompare } from "./ThemeCompare";
 import { ThemeWall } from "./ThemeWall";
@@ -20,11 +21,13 @@ export interface ComponentShellProps {
   prev: ComponentEntry | DashboardEntry | null;
   next: ComponentEntry | DashboardEntry | null;
   onNavigate: (id: string) => void;
+  /** Guideline ids are namespaced (/docs/guidelines/:id) — used by the overview strip. */
+  onNavigateGuideline?: (id: string) => void;
   /** Number of component entries (overview excluded) — used for the overview copy. */
   componentTotal: number;
 }
 
-export function ComponentShell({ entry, prev, next, onNavigate, componentTotal }: ComponentShellProps) {
+export function ComponentShell({ entry, prev, next, onNavigate, onNavigateGuideline, componentTotal }: ComponentShellProps) {
   const [view, setView] = useState<DemoView>("demo");
   useEffect(() => {
     const t = window.setTimeout(() => setView("demo"), 0);
@@ -54,6 +57,13 @@ export function ComponentShell({ entry, prev, next, onNavigate, componentTotal }
           <SectionLabel>Power tools</SectionLabel>
           <FeatureLinks navigate={navigate} />
         </section>
+        {/* The do/don't playbook — the reference styles guide, now a vault product page */}
+        {onNavigateGuideline && (
+          <section className="mt-8">
+            <SectionLabel>UI guidelines</SectionLabel>
+            <GuidelinesStrip onNavigate={onNavigateGuideline} />
+          </section>
+        )}
         <section className="mt-8">
           <StartCard hasProjects={projects.length > 0} navigate={navigate} />
         </section>
@@ -215,7 +225,7 @@ function PrevNext({
           onClick={() => onNavigate(prev.id)}
           className="group flex max-w-full flex-col items-start gap-0.5 rounded-lg px-3 py-2 text-left transition-colors hover:bg-surface-100"
         >
-          <span className="flex items-center gap-1 text-xs text-surface-400">
+          <span className="flex items-center gap-1 text-[11px] font-semibold uppercase tracking-widest text-surface-400">
             <ArrowL /> Previous
           </span>
           <span className="truncate text-sm font-semibold text-surface-800 group-hover:text-brand-700">
@@ -231,7 +241,7 @@ function PrevNext({
           onClick={() => onNavigate(next.id)}
           className="group flex max-w-full flex-col items-end gap-0.5 rounded-lg px-3 py-2 text-right transition-colors hover:bg-surface-100"
         >
-          <span className="flex items-center gap-1 text-xs text-surface-400">
+          <span className="flex items-center gap-1 text-[11px] font-semibold uppercase tracking-widest text-surface-400">
             Next <ArrowR />
           </span>
           <span className="truncate text-sm font-semibold text-surface-800 group-hover:text-brand-700">
@@ -733,6 +743,46 @@ function FeatureLinks({ navigate }: { navigate: (to: string) => void }) {
           <span className="mt-1 font-mono text-[10px] font-medium text-brand-600">{t.action ?? "open →"}</span>
         </button>
       ))}
+    </div>
+  );
+}
+
+function GuidelinesStrip({ onNavigate }: { onNavigate: (id: string) => void }) {
+  const topics = [
+    { id: "typography", label: "Typography", desc: "type scale · line-height · line length" },
+    { id: "spacing", label: "Spacing", desc: "proximity · grouping · constrained widths" },
+    { id: "color", label: "Color", desc: "tinted neutrals · 50–950 scales · contrast" },
+    { id: "component-states", label: "States", desc: "hover · focus · disabled · loading" },
+    { id: "do-dont", label: "DO / DON'T", desc: "the anti-pattern wall of shame" },
+    { id: "checklist", label: "Quality checker", desc: "48-point pre-ship checklist" },
+  ];
+  return (
+    <div className="rounded-2xl border border-surface-200 bg-surface-0 p-5 shadow-soft">
+      <div className="flex flex-wrap items-end justify-between gap-2">
+        <div>
+          <p className="text-sm font-semibold text-surface-800">The do/don't playbook</p>
+          <p className="mt-0.5 text-xs leading-relaxed text-surface-500">
+            Rule → Why → Do / Don't → Agent Check, plus ✕/✓ visual comparisons — the same
+            style guide this product was built against, live in the vault.
+          </p>
+        </div>
+      </div>
+      <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+        {topics.map((t) => (
+          <button
+            key={t.id}
+            type="button"
+            onClick={() => onNavigate(t.id)}
+            className="group flex items-center justify-between gap-2 rounded-xl border border-surface-200 bg-surface-50/60 px-3 py-2.5 text-left transition-colors hover:border-brand-300 hover:bg-brand-50/40"
+          >
+            <span>
+              <span className="block text-sm font-semibold text-surface-800 group-hover:text-brand-700">{t.label}</span>
+              <span className="block text-[11px] leading-relaxed text-surface-400">{t.desc}</span>
+            </span>
+            <ArrowRight className="size-4 shrink-0 text-surface-300 transition-transform group-hover:translate-x-0.5 group-hover:text-brand-500" />
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

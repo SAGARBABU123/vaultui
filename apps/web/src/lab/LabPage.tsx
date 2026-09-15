@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Badge, Button, Card, Input, Progress, Switch } from "@vaultui/ui";
 import { BarChart, KpiCard } from "@vaultui/data-viz";
+import "@vaultui/data-viz/dataviz.css"; // BarChart/KpiCard chrome — not global
 import { ArrowLeft, Check, Copy, Download } from "lucide-react";
 import { DocsHeader } from "../layout/DocsHeader";
 import { ALL_COMPONENTS, ALL_DASHBOARDS } from "../projects/entries";

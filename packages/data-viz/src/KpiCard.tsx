@@ -45,7 +45,7 @@ export function KpiCard({
         )}
       </div>
 
-      <div className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">
+      <div className="mt-2 text-2xl font-bold leading-tight tracking-tight sm:text-3xl">
         <AnimatedCounter value={value} format={format} />
       </div>
 

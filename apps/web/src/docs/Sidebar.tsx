@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ChevronDown, Lock } from "lucide-react";
+import { BookOpen, ChevronDown, Lock } from "lucide-react";
 import { cn } from "@vaultui/utils";
 import { useAuth } from "../auth/AuthContext";
 import { VaultLogo } from "../brand/VaultLogo";
+import type { GuidelineGroup } from "./guidelines";
 import type { ComponentEntry, ComponentGroup, DashboardEntry, DashboardGroup } from "./types";
 
 /** Canonical URL for a sidebar entry (mirrors App.entryUrl). */
@@ -15,12 +16,21 @@ function entryTo(item: ComponentEntry | DashboardEntry): string {
 export interface SidebarProps {
   groups: ComponentGroup[];
   dashboards: DashboardGroup[];
+  /** UI Guidelines — ids deliberately namespaced to /docs/guidelines/:id. */
+  guidelineGroups?: GuidelineGroup[];
   activeId: string;
   onSelect: (id: string) => void;
+  /** Guidelines use the same ids as some kit entries (tabs, modals…) — they
+   *  MUST route through their own url, never the component spine. */
+  onSelectGuideline?: (id: string) => void;
+  /** Active guideline id — kept separate from `activeId` so component entries
+   *  and guideline entries that share an id (e.g. "overview") never both
+   *  highlight. */
+  activeGuidelineId?: string;
   search: string;
 }
 
-export function Sidebar({ groups, dashboards, activeId, onSelect, search }: SidebarProps) {
+export function Sidebar({ groups, dashboards, guidelineGroups, activeId, onSelect, onSelectGuideline, activeGuidelineId = "", search }: SidebarProps) {
   const { isSignedIn, isPremium } = useAuth();
   const q = search.trim().toLowerCase();
 
@@ -75,6 +85,61 @@ export function Sidebar({ groups, dashboards, activeId, onSelect, search }: Side
           <NpmMetaPill />
         </span>
       </Link>
+
+      {/* UI Guidelines — the do/don't playbook. Distinct namespace so its ids
+          never collide with kit entries (tabs, modals, overview…). */}
+      {guidelineGroups && guidelineGroups.length > 0 && (
+        <div className="border-b border-surface-200/70 pb-3 pt-2">
+          <div className="mb-1 flex items-center gap-1.5 px-3 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-600">
+            <BookOpen className="size-3.5" />
+            Guidelines
+          </div>
+          {guidelineGroups.map((group) => {
+            const groupCollapsed = isCollapsed(group.title);
+            return (
+              <div key={group.title} className="mt-0.5">
+                <button
+                  type="button"
+                  onClick={() => toggleSection(group.title)}
+                  aria-expanded={!groupCollapsed}
+                  className="mb-0.5 flex w-full items-center justify-between rounded-lg px-2 py-1 text-left transition-colors hover:bg-surface-100"
+                >
+                  <span className="flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-surface-400">
+                    <ChevronDown
+                      className={cn("size-3.5 text-surface-400 transition-transform duration-200", groupCollapsed && "-rotate-90")}
+                    />
+                    {group.title}
+                  </span>
+                </button>
+                {!groupCollapsed && (
+                  <ul className="space-y-0.5">
+                    {group.items.map((item) => {
+                      const active = item.id === activeGuidelineId;
+                      return (
+                        <li key={item.id}>
+                          <button
+                            type="button"
+                            onClick={() => onSelectGuideline?.(item.id)}
+                            aria-current={active ? "page" : undefined}
+                            className={cn(
+                              "flex w-full items-center rounded-lg px-2.5 py-1.5 text-left text-sm transition-colors",
+                              active
+                                ? "bg-brand-50 font-medium text-brand-700"
+                                : "text-surface-600 hover:bg-surface-100 hover:text-surface-900",
+                            )}
+                          >
+                            <span className="truncate">{item.label}</span>
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       {/* Dashboard templates section */}
       {(() => {

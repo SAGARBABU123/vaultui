@@ -18,11 +18,10 @@ const preview: Preview = {
     },
     options: {
       storySort: {
-        order: ["Introduction", ["Welcome"], "Free Tier", ["Button"]],
+        order: ["Components", "Charts", "Marketing"],
       },
     },
   },
-  tags: ["autodocs"],
 };
 
 export default preview;

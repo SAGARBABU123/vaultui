@@ -20,12 +20,12 @@ export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
 }
 
 const variantClasses: Record<BadgeVariant, string> = {
-  neutral: "bg-surface-100 text-surface-700",
-  brand: "bg-brand-100 text-brand-700",
-  success: "bg-success-500/15 text-success-500",
-  warning: "bg-warning-500/15 text-warning-500",
-  danger: "bg-danger-500/15 text-danger-500",
-  info: "bg-info-500/15 text-info-500",
+  neutral: "bg-surface-100 text-surface-700 border-surface-200",
+  brand: "bg-brand-50 text-brand-700 border-brand-200/60",
+  success: "bg-success-50 text-success-700 border-success-200/60",
+  warning: "bg-warning-50 text-warning-800 border-warning-200/60",
+  danger: "bg-danger-50 text-danger-700 border-danger-200/60",
+  info: "bg-info-50 text-info-700 border-info-200/60",
 };
 
 const sizeClasses: Record<BadgeSize, string> = {
@@ -49,7 +49,7 @@ export function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full font-medium leading-none",
+        "inline-flex items-center rounded-full border font-medium leading-none",
         variantClasses[variant],
         sizeClasses[size],
         className,

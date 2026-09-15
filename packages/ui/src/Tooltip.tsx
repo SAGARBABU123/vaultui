@@ -17,7 +17,7 @@ export function Tooltip({ label, placement = "top", children, className }: Toolt
       {children}
       <span
         role="tooltip"
-        className="vault-tooltip__pop"
+        className={cn("vault-tooltip__pop", placement === "bottom" && "vault-tooltip__pop--bottom")}
         style={placement === "bottom" ? { top: "calc(100% + 8px)", bottom: "auto" } : undefined}
       >
         {label}

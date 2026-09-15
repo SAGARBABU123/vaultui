@@ -4,13 +4,32 @@
  * Every component in the monorepo consumes these tokens, so a consumer
  * can re-brand Vault components by overriding the CSS variables below.
  *
- * Fonts: Inter Variable (bundled locally via @fontsource — no CDN).
- * Swap by replacing this import, e.g. "@fontsource-variable/geist".
+ * Fonts: Inter Variable — latin + latin-ext subsets bundled locally
+ * (cyrillic / greek / vietnamese subsets were shipping ~140 KB of fonts the
+ * English UI never renders). Swap by replacing the @font-face blocks below,
+ * e.g. with "@fontsource-variable/geist".
  *
  * NOTE: apps import `tailwindcss` themselves and then pull this theme in
  * (see apps/web/src/tailwind.css) — this file is pure theme tokens.
  */
-@import "@fontsource-variable/inter/opsz.css";
+/* Inter Variable (400 weight range 100–900, with opsz axis) — latin */
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url(./fonts/inter-latin-opsz-normal.woff2) format("woff2-variations");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Inter Variable — latin-ext (accented Latin: é, ñ, ø …) */
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url(./fonts/inter-latin-ext-opsz-normal.woff2) format("woff2-variations");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
 
 @theme {
   /* ===== Brand scale (soft neumorphic accent) ===== */
@@ -26,44 +45,97 @@
   --color-brand-900: #333a86;
   --color-brand-950: #242a5e;
 
-  /* ===== Surface / neutral scale (soft mid-tone UI base) ===== */
-  --color-surface-0: #f3f6fb;
-  --color-surface-50: #e9edf5;
-  --color-surface-100: #e0e5f0;
-  --color-surface-200: #d3dae8;
-  --color-surface-300: #c2cada;
-  --color-surface-400: #657187; /* darkened for 4.5:1 text contrast on surface-0/white */
-  --color-surface-500: #64708c;
-  --color-surface-600: #4a5672;
-  --color-surface-700: #38445f;
-  --color-surface-800: #27324a;
-  --color-surface-900: #1a2336;
-  --color-surface-950: #10182a;
+  /* ===== Surface / neutral scale — warm tinted paper (guidelines §Design Tokens,
+     §Color: “greys don't have to be grey”). 50 = app background, 0 = white
+     panels, 200 = hairline borders, 600 = secondary text (~4.6:1 on white),
+     900 = primary text. ===== */
+  --color-surface-0: #ffffff;
+  --color-surface-50: #faf9f8;
+  --color-surface-100: #f4f3f1;
+  --color-surface-200: #e8e6e1;
+  --color-surface-300: #ddd9d2;
+  --color-surface-400: #b0aba0; /* muted hints / icons (de-emphasized) */
+  --color-surface-500: #a49f93; /* muted icons — guideline value */
+  --color-surface-600: #7a7465; /* secondary text — darkened for 4.5:1 on white */
+  --color-surface-700: #5f594d;
+  --color-surface-800: #48423a;
+  --color-surface-900: #34312b; /* primary text — guideline value */
+  --color-surface-950: #211f1a; /* code wells / deep layers */
 
-  /* ===== Semantic ===== */
+  /* ===== Semantic scales (50–950) — tinted, WCAG-aware pairs =====
+     Guidelines / do-don't surfaces use the light steps (50/100) for tint
+     fills and the deep steps (600–800) for readable text on them. */
+  --color-success-50: #e9f8f1;
+  --color-success-100: #cdf0df;
+  --color-success-200: #a1e2c2;
+  --color-success-300: #6ad2a1;
+  --color-success-400: #3ec287;
   --color-success-500: #2fbf7f;
+  --color-success-600: #239e6b;
+  --color-success-700: #1c8059;
+  --color-success-800: #176547;
+  --color-success-900: #124c36;
+  --color-success-950: #0b3424;
+  --color-warning-50: #fdf8ec;
+  --color-warning-100: #faf0d0;
+  --color-warning-200: #f4df9e;
+  --color-warning-300: #eecc6c;
+  --color-warning-400: #eabb52;
   --color-warning-500: #e8a93d;
+  --color-warning-600: #c98a28;
+  --color-warning-700: #a46d20;
+  --color-warning-800: #7f521c;
+  --color-warning-900: #5c3c18;
+  --color-warning-950: #3f2911;
+  --color-danger-50: #fdedf0;
+  --color-danger-100: #f9d3da;
+  --color-danger-200: #f3aeb8;
+  --color-danger-300: #ec8393;
+  --color-danger-400: #e76f80;
   --color-danger-500: #e56b7a;
+  --color-danger-600: #c94f60;
+  --color-danger-700: #a83e4e;
+  --color-danger-800: #863141;
+  --color-danger-900: #652830;
+  --color-danger-950: #461b21;
+  --color-info-50: #e9f5fd;
+  --color-info-100: #cbe8fa;
+  --color-info-200: #9dd4f3;
+  --color-info-300: #66bcea;
+  --color-info-400: #53a9dc;
   --color-info-500: #5aa7e2;
+  --color-info-600: #3d8cc7;
+  --color-info-700: #2f70a3;
+  --color-info-800: #285780;
+  --color-info-900: #21425f;
+  --color-info-950: #152c41;
 
   /* ===== Type ===== */
   --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
-  /* ===== Radii (generous, pill-friendly) ===== */
-  --radius-xs: 0.375rem;
-  --radius-sm: 0.5rem;
-  --radius-md: 0.75rem;
-  --radius-lg: 1rem;
-  --radius-xl: 1.25rem;
-  --radius-2xl: 1.5rem;
+  /* Headings sit tight (guidelines §Typography: 1.0–1.2 for large display) */
+  --leading-tight: 1.15;
 
-  /* ===== Elevation: neumorphic dual shadows ===== */
-  --shadow-soft: 6px 6px 14px rgb(163 177 198 / 0.55), -6px -6px 14px rgb(255 255 255 / 0.8);
-  --shadow-raised: 10px 10px 22px rgb(163 177 198 / 0.55), -10px -10px 22px rgb(255 255 255 / 0.85);
-  --shadow-popover: 14px 14px 32px rgb(140 155 180 / 0.5), -6px -6px 16px rgb(255 255 255 / 0.75);
-  --shadow-inset: inset 3px 3px 7px rgb(163 177 198 / 0.55), inset -3px -3px 7px rgb(255 255 255 / 0.7);
-  --shadow-pressed: inset 4px 4px 9px rgb(163 177 198 / 0.6), inset -4px -4px 9px rgb(255 255 255 / 0.7);
+  /* ===== Radii (tight, guideline-aligned: 6px buttons, 8px cards,
+     pills for chips/badges, 12px overlays, 16px dialogs) ===== */
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+
+  /* ===== Elevation: light from above (guidelines §Depth — “cast shadows
+     downward only”). Three tiers: soft=sm (clickable buttons/cards),
+     raised=md (dropdowns/popovers/tooltips), popover=lg (modals/dialogs).
+     Each is a two-part shadow: tight ambient + diffuse offset. ===== */
+  --shadow-soft: 0 1px 2px rgb(63 57 43 / 0.05), 0 2px 6px rgb(63 57 43 / 0.07);
+  --shadow-raised: 0 2px 4px rgb(63 57 43 / 0.05), 0 10px 20px rgb(63 57 43 / 0.1);
+  --shadow-popover: 0 2px 6px rgb(63 57 43 / 0.06), 0 18px 40px rgb(63 57 43 / 0.14);
+  --shadow-inset: inset 0 1px 2px rgb(63 57 43 / 0.06);
+  --shadow-pressed: 0 1px 2px rgb(63 57 43 / 0.04), inset 0 2px 4px rgb(63 57 43 / 0.08);
 
   /* ===== Motion ===== */
   --animate-caret: caret 1s step-end infinite;

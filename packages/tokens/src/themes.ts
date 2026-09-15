@@ -16,7 +16,7 @@ export interface VaultTheme {
 }
 
 export const THEMES: VaultTheme[] = [
-  { id: "neumorphic", label: "Neumorphic" },
+  { id: "neumorphic", label: "Warm Paper" },
   { id: "glassmorphism", label: "Glassmorphism" },
   { id: "dimensional-layering", label: "Dimensional Layering" },
   { id: "vintage-retro-film", label: "Vintage Retro Film" },

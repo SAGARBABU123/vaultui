@@ -4,8 +4,8 @@ import "./tailwind.css";
 import "./styles.css";
 import "@vaultui/ui/button.css";
 import "@vaultui/ui/primitives.css";
-import "@vaultui/data-viz/dataviz.css";
-import "@vaultui/marketing/marketing.css";
+// NOTE: kit CSS (dataviz.css, marketing.css) is NOT global — it loads with the
+// docs / lab chunks that actually render those components.
 import App from "./App";
 import { AuthProvider } from "./auth/AuthContext";
 import { applyThemeToDom, readSavedThemeId, ThemeProvider } from "./theme/ThemeContext";

@@ -52,6 +52,7 @@
 }
 .vault-btn-primary:hover {
   background-color: var(--color-brand-500);
+  box-shadow: var(--shadow-raised, 0 1px 2px rgb(16 24 42 / 0.12));
 }
 .vault-btn-primary:active {
   box-shadow: var(--shadow-pressed, inset 0 1px 3px rgb(16 24 42 / 0.25));
@@ -64,6 +65,7 @@
 }
 .vault-btn-secondary:hover {
   background-color: var(--color-surface-50);
+  box-shadow: var(--shadow-raised, 0 1px 2px rgb(16 24 42 / 0.12));
 }
 .vault-btn-secondary:active {
   box-shadow: var(--shadow-pressed, inset 0 1px 3px rgb(16 24 42 / 0.25));
@@ -87,6 +89,7 @@
 }
 .vault-btn-danger:hover {
   background-color: var(--color-danger-400);
+  box-shadow: var(--shadow-raised, 0 1px 2px rgb(16 24 42 / 0.12));
 }
 .vault-btn-danger:active {
   box-shadow: var(--shadow-pressed, inset 0 1px 3px rgb(16 24 42 / 0.25));
@@ -94,23 +97,24 @@
 
 /* -------------------------------- sizes ---------------------------------- */
 /* Each size declares its own text size, height, padding, radius and icon —
-   text is always proportional to the button, never larger than the box. */
+   text is always proportional to the button, never larger than the box.
+   Spacing lives on the 4px grid; radii come from the token table. */
 
 .vault-btn-xs {
   --vault-btn-icon: 14px;
   height: 28px;
-  padding: 0 10px;
-  gap: 6px;
-  border-radius: 6px;
+  padding: 0 12px;
+  gap: 4px;
+  border-radius: var(--radius-xs, 4px);
   font-size: 12px;
 }
 
 .vault-btn-sm {
   --vault-btn-icon: 16px;
   height: 36px;
-  padding: 0 14px;
-  gap: 6px;
-  border-radius: 6px;
+  padding: 0 16px;
+  gap: 8px;
+  border-radius: var(--radius-sm, 6px);
   font-size: 14px;
 }
 
@@ -119,25 +123,25 @@
   height: 40px;
   padding: 0 16px;
   gap: 8px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm, 6px);
   font-size: 14px;
 }
 
 .vault-btn-lg {
   --vault-btn-icon: 20px;
   height: 48px;
-  padding: 0 20px;
+  padding: 0 24px;
   gap: 8px;
-  border-radius: 8px;
+  border-radius: var(--radius-md, 8px);
   font-size: 16px;
 }
 
 .vault-btn-xl {
   --vault-btn-icon: 20px;
   height: 56px;
-  padding: 0 28px;
-  gap: 10px;
-  border-radius: 10px;
+  padding: 0 32px;
+  gap: 12px;
+  border-radius: var(--radius-md, 8px);
   font-size: 18px;
 }
 

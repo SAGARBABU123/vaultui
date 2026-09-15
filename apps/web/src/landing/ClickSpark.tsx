@@ -49,6 +49,18 @@ export function ClickSpark({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const sparksRef = useRef<Spark[]>([]);
   const colorRef = useRef("#ffffff");
+  const reducedRef = useRef(false);
+
+  /* Honour prefers-reduced-motion: no spark bursts for users who opt out. */
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    reducedRef.current = mq.matches;
+    const onChange = (e: MediaQueryListEvent) => {
+      reducedRef.current = e.matches;
+    };
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
 
   /* Keep the canvas sized to the wrapper (round on resize). */
   useEffect(() => {
@@ -126,6 +138,7 @@ export function ClickSpark({
   }, [sparkSize, sparkRadius, duration, easing, extraScale, ease]);
 
   const spawn = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (reducedRef.current) return; // reduced-motion: no sparks
     const canvas = canvasRef.current;
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();

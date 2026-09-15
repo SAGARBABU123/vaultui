@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
-import { Badge, Button, Card } from "@vaultui/ui";
+import { Badge, Button, Card, Skeleton } from "@vaultui/ui";
 import { ArrowLeft, CopyPlus, FolderPlus, Pencil, Plus, Trash2 } from "lucide-react";
 import { DocsHeader } from "../layout/DocsHeader";
 import { useAuth } from "../auth/AuthContext";
@@ -127,7 +127,7 @@ export function ProjectsPage() {
         </div>
 
         {loading ? (
-          <p className="mt-10 text-sm text-surface-400">Loading your projects…</p>
+          <ProjectGridSkeleton />
         ) : projects.length === 0 ? (
           <Card padding="lg" className="mt-10 text-center">
             <span className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-100 to-brand-200 text-brand-700 shadow-inset">
@@ -186,17 +186,19 @@ export function ProjectsPage() {
                       type="button"
                       onClick={() => browseWith(p)}
                       title="Add from the vault"
-                      className="rounded-lg p-2 text-surface-400 transition-colors hover:bg-surface-100 hover:text-surface-700"
+                      aria-label={`Add components to ${p.name}`}
+                      className="inline-flex size-11 items-center justify-center rounded-lg text-surface-400 transition-colors hover:bg-surface-100 hover:text-surface-700"
                     >
-                      <FolderPlus className="size-4" />
+                      <FolderPlus className="size-[18px]" />
                     </button>
                     <button
                       type="button"
                       onClick={() => openRename(p)}
                       title="Rename"
-                      className="rounded-lg p-2 text-surface-400 transition-colors hover:bg-surface-100 hover:text-surface-700"
+                      aria-label={`Rename ${p.name}`}
+                      className="inline-flex size-11 items-center justify-center rounded-lg text-surface-400 transition-colors hover:bg-surface-100 hover:text-surface-700"
                     >
-                      <Pencil className="size-4" />
+                      <Pencil className="size-[18px]" />
                     </button>
                     <button
                       type="button"
@@ -205,17 +207,19 @@ export function ProjectsPage() {
                         if (copy) openProject(copy);
                       }}
                       title="Duplicate"
-                      className="rounded-lg p-2 text-surface-400 transition-colors hover:bg-surface-100 hover:text-surface-700"
+                      aria-label={`Duplicate ${p.name}`}
+                      className="inline-flex size-11 items-center justify-center rounded-lg text-surface-400 transition-colors hover:bg-surface-100 hover:text-surface-700"
                     >
-                      <CopyPlus className="size-4" />
+                      <CopyPlus className="size-[18px]" />
                     </button>
                     <button
                       type="button"
                       onClick={() => openDelete(p)}
                       title="Delete"
-                      className="ml-auto rounded-lg p-2 text-surface-400 transition-colors hover:bg-danger-500/10 hover:text-danger-500"
+                      aria-label={`Delete ${p.name}`}
+                      className="ml-auto inline-flex size-11 items-center justify-center rounded-lg text-surface-400 transition-colors hover:bg-danger-500/10 hover:text-danger-500"
                     >
-                      <Trash2 className="size-4" />
+                      <Trash2 className="size-[18px]" />
                     </button>
                   </div>
                 </Card>
@@ -283,6 +287,30 @@ export function ProjectsPage() {
 }
 
 /** Small centered modal with a dimmed backdrop. ESC closes; focus lands inside. */
+
+/** Skeleton grid mirroring the project cards — prevents layout shift while loading. */
+function ProjectGridSkeleton() {
+  return (
+    <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-hidden="true">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <Card key={i} padding="lg" className="flex flex-col">
+          <div className="flex items-start justify-between gap-2">
+            <Skeleton className="size-10 rounded-xl" />
+            <Skeleton className="h-5 w-24 rounded-full" />
+          </div>
+          <Skeleton className="mt-4 h-5 w-2/3 rounded-md" />
+          <Skeleton className="mt-2 h-3 w-1/3 rounded-md" />
+          <div className="mt-5 space-y-2">
+            <Skeleton className="h-9 w-full rounded-lg" />
+            <Skeleton className="h-9 w-full rounded-lg" />
+          </div>
+          <Skeleton className="mt-4 h-8 w-full rounded-lg" />
+        </Card>
+      ))}
+    </div>
+  );
+}
+
 function ModalOverlay({ children, onClose }: { children: ReactNode; onClose: () => void }) {
   const panelRef = useRef<HTMLDivElement>(null);
 

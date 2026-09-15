@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Badge, Button, Card } from "@vaultui/ui";
 import { Sparkline } from "@vaultui/data-viz";
 import { cn } from "@vaultui/utils";
-import { ArrowRight, Check, Copy, Download, Lock, Package, Terminal, UserPlus } from "lucide-react";
-import { INSTALL_COMMAND, downloadKit } from "../docs/downloadKit";
+import { ArrowRight, BarChart3, Bot, Check, Copy, Download, Kanban, Lock, Megaphone, Package, ShoppingCart, Terminal, UserPlus, Users, Wrench } from "lucide-react";
 import { AuthControl } from "../auth/AuthControl";
-import { ALL_COMPONENTS, ALL_DASHBOARDS } from "../projects/entries";
+// Registry-dependent helpers (downloadKit) are lazy-imported at call time —
+// statically importing them would pull the whole kit registry into this chunk.
+import { COMPONENT_COUNT, DASHBOARD_COUNT, INSTALL_COMMAND } from "../projects/counts";
 import { VaultLogo } from "../brand/VaultLogo";
 import { useAuth } from "../auth/AuthContext";
 import { useTheme } from "../theme/ThemeContext";
@@ -33,18 +34,18 @@ const BRAND_SCALE = [
 ] as const;
 
 const SURFACE_SCALE = [
-  { name: "0", hex: "#f3f6fb" },
-  { name: "50", hex: "#e9edf5" },
-  { name: "100", hex: "#e0e5f0" },
-  { name: "200", hex: "#d3dae8" },
-  { name: "300", hex: "#c2cada" },
-  { name: "400", hex: "#93a0ba" },
-  { name: "500", hex: "#64708c" },
-  { name: "600", hex: "#4a5672" },
-  { name: "700", hex: "#38445f" },
-  { name: "800", hex: "#27324a" },
-  { name: "900", hex: "#1a2336" },
-  { name: "950", hex: "#10182a" },
+  { name: "0", hex: "#ffffff" },
+  { name: "50", hex: "#faf9f8" },
+  { name: "100", hex: "#f4f3f1" },
+  { name: "200", hex: "#e8e6e1" },
+  { name: "300", hex: "#ddd9d2" },
+  { name: "400", hex: "#b0aba0" },
+  { name: "500", hex: "#a49f93" },
+  { name: "600", hex: "#7a7465" },
+  { name: "700", hex: "#5f594d" },
+  { name: "800", hex: "#48423a" },
+  { name: "900", hex: "#34312b" },
+  { name: "950", hex: "#211f1a" },
 ] as const;
 
 const SEMANTIC_COLORS = [
@@ -55,17 +56,17 @@ const SEMANTIC_COLORS = [
 ] as const;
 
 const RADII = [
-  { token: "xs", px: "6px" },
-  { token: "sm", px: "8px" },
-  { token: "md", px: "12px" },
-  { token: "lg", px: "16px" },
-  { token: "xl", px: "20px" },
-  { token: "2xl", px: "24px" },
+  { token: "xs", px: "4px" },
+  { token: "sm", px: "6px" },
+  { token: "md", px: "8px" },
+  { token: "lg", px: "12px" },
+  { token: "xl", px: "16px" },
+  { token: "2xl", px: "20px" },
 ] as const;
 
-/** Elevation CTA copy per theme — the default caption only describes neumorphic. */
+/** Elevation CTA copy per theme — the default caption only describes the guideline tiering. */
 const ELEVATION_CAPTIONS: Record<string, string> = {
-  neumorphic: "neumorphic · dual light & dark shadow",
+  neumorphic: "warm paper · light-from-above elevation",
   glassmorphism: "glassmorphism · soft drop glows",
   "dimensional-layering": "dimensional · 4-level elevation stack",
   "vintage-retro-film": "vintage · warm sepia shadows",
@@ -100,7 +101,8 @@ function swatchText(bg: string): string {
 
 const KITS = [
   {
-    emoji: "🤖",
+    icon: Bot,
+    accentBorder: "border-t-brand-300",
     name: "AI Agent Kit",
     pkg: "@vaultui/ai-chat",
     count: 14,
@@ -108,7 +110,8 @@ const KITS = [
     accent: "bg-brand-100 text-brand-700",
   },
   {
-    emoji: "📈",
+    icon: BarChart3,
+    accentBorder: "border-t-success-300",
     name: "Data Viz Pro",
     pkg: "@vaultui/data-viz",
     count: 19,
@@ -116,7 +119,8 @@ const KITS = [
     accent: "bg-success-500/15 text-success-500",
   },
   {
-    emoji: "🛒",
+    icon: ShoppingCart,
+    accentBorder: "border-t-warning-300",
     name: "Commerce Kit",
     pkg: "@vaultui/commerce",
     count: 13,
@@ -124,7 +128,8 @@ const KITS = [
     accent: "bg-warning-500/15 text-warning-500",
   },
   {
-    emoji: "🧰",
+    icon: Wrench,
+    accentBorder: "border-t-surface-300",
     name: "Dev Tools Kit",
     pkg: "@vaultui/dev-tools",
     count: 11,
@@ -132,7 +137,8 @@ const KITS = [
     accent: "bg-surface-200 text-surface-700",
   },
   {
-    emoji: "🗂️",
+    icon: Kanban,
+    accentBorder: "border-t-info-300",
     name: "Project Mgmt Kit",
     pkg: "@vaultui/project",
     count: 6,
@@ -140,7 +146,8 @@ const KITS = [
     accent: "bg-info-500/15 text-info-500",
   },
   {
-    emoji: "👥",
+    icon: Users,
+    accentBorder: "border-t-danger-300",
     name: "Collab Kit",
     pkg: "@vaultui/collab",
     count: 6,
@@ -148,7 +155,8 @@ const KITS = [
     accent: "bg-danger-500/15 text-danger-500",
   },
   {
-    emoji: "📣",
+    icon: Megaphone,
+    accentBorder: "border-t-brand-300",
     name: "Marketing Kit",
     pkg: "@vaultui/marketing",
     count: 11,
@@ -157,12 +165,11 @@ const KITS = [
   },
 ] as const;
 
-/** Live registry counts — the same source of truth as the docs vault, so the
- *  landing page and the sidebar/header never disagree. */
-const TOTAL_COMPONENTS = ALL_COMPONENTS.length;
+/** Registry totals (latin counts, kept in sync via scripts/registry-count.mjs —
+ *  importing the registries here would bundle the whole kit into the main chunk). */
+const TOTAL_COMPONENTS = COMPONENT_COUNT;
 const FREE_TIER = 24;
-const TOTAL_KITS = 7;
-const DASHBOARD_COUNT = ALL_DASHBOARDS.length;
+const TOTAL_KITS = 7; // DASHBOARD_COUNT imported from ../projects/counts
 
 /* ================================ page ==================================== */
 
@@ -175,7 +182,7 @@ export function LandingPage({ onBrowse }: { onBrowse: () => void }) {
       sparkSize={10}
       duration={420}
     >
-      <div className="min-h-screen text-surface-900">
+      <div className="min-h-screen scroll-smooth text-surface-900">
         <Nav />
         <main id="main-content">
           <Hero onBrowse={onBrowse} />
@@ -194,7 +201,31 @@ export function LandingPage({ onBrowse }: { onBrowse: () => void }) {
 
 /* ---------------------------------- nav ----------------------------------- */
 
+const SECTION_IDS = ["system", "kits", "pricing", "install"] as const;
+
+/** Track which anchored section is in view for the sticky nav's active state. */
+function useActiveSection(ids: readonly string[]) {
+  const [active, setActive] = useState<string>("");
+  useEffect(() => {
+    const onScroll = () => {
+      // Sticky header is h-16 (64px) — anything whose top crosses ~120px is "in view".
+      const threshold = 120;
+      let current = "";
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= threshold) current = id;
+      }
+      setActive(current);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [ids]);
+  return active;
+}
+
 function Nav() {
+  const active = useActiveSection(SECTION_IDS);
   return (
     <header className="sticky top-0 z-30 border-b border-surface-200/80 bg-surface-50/85 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
@@ -214,15 +245,25 @@ function Nav() {
             { href: "#kits", label: "Kits" },
             { href: "#pricing", label: "Licensing" },
             { href: "#install", label: "Install" },
-          ].map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              className="rounded-lg px-3 py-2 text-sm text-surface-600 transition-colors hover:bg-surface-100 hover:text-surface-900"
-            >
-              {l.label}
-            </a>
-          ))}
+          ].map((l) => {
+            const id = l.href.slice(1);
+            const isActive = active === id;
+            return (
+              <a
+                key={l.href}
+                href={l.href}
+                aria-current={isActive ? "true" : undefined}
+                className={cn(
+                  "rounded-lg px-3 py-2 text-sm transition-colors",
+                  isActive
+                    ? "bg-brand-50 font-medium text-brand-700"
+                    : "text-surface-600 hover:bg-surface-100 hover:text-surface-900",
+                )}
+              >
+                {l.label}
+              </a>
+            );
+          })}
           <Link
             to="/lab"
             className="rounded-lg px-3 py-2 text-sm text-surface-600 transition-colors hover:bg-surface-100 hover:text-surface-900"
@@ -263,7 +304,9 @@ function Hero({ onBrowse }: { onBrowse: () => void }) {
     }
     setDownloading(true);
     try {
-      await downloadKit();
+      // Lazy — downloadKit statically pulls the registry (whole kit): load
+      // only when the user actually clicks “Download kit”.
+      await import("../docs/downloadKit").then((m) => m.downloadKit());
     } finally {
       setDownloading(false);
     }
@@ -307,7 +350,7 @@ function Hero({ onBrowse }: { onBrowse: () => void }) {
           </figure>
 
           {/* the slogan */}
-          <h1 className="mt-8 text-4xl font-bold leading-[1.08] tracking-tight text-surface-900 sm:text-6xl">
+          <h1 className="mt-8 text-4xl font-extrabold leading-[1.08] tracking-tight text-surface-900 sm:text-6xl">
             The interface is the product.
             <br />
             <span className="text-gradient-brand">Craft it accordingly.</span>
@@ -442,18 +485,18 @@ function Hero({ onBrowse }: { onBrowse: () => void }) {
                 </div>
               </div>
             </div>
-          </Card>
-        </div>
 
-        {/* component name strip */}
-        <div className="mx-auto mt-10 flex max-w-4xl flex-wrap items-center justify-center gap-x-3 gap-y-1.5 font-mono text-[11px] text-surface-400">
-          <span className="font-semibold uppercase tracking-wider text-surface-500">Inside the vault</span>
-          {["ChatCanvas", "KpiCard", "SankeyDiagram", "PricingTable", "LogStream", "KanbanBoard", "LiveCursors", "CronBuilder", "GiftCardBuilder", "GeoMap"].map((n, i) => (
-            <span key={n} className={cn("flex items-center gap-3", i === 0 && "")}>
-              <span className="text-brand-400">·</span>
-              {n}
-            </span>
-          ))}
+            {/* inside the vault — the component inventory, one scrolling row */}
+            <div className="flex items-center gap-x-3 gap-y-1.5 overflow-x-auto border-t border-surface-200/70 bg-surface-0 px-5 py-3 font-mono text-[11px] text-surface-400 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              <span className="shrink-0 font-semibold uppercase tracking-wider text-surface-500">Inside the vault</span>
+              {["ChatCanvas", "KpiCard", "SankeyDiagram", "PricingTable", "LogStream", "KanbanBoard", "LiveCursors", "CronBuilder", "GiftCardBuilder", "GeoMap"].map((n) => (
+                <span key={n} className="flex shrink-0 items-center gap-3">
+                  <span className="text-brand-400">·</span>
+                  {n}
+                </span>
+              ))}
+            </div>
+          </Card>
         </div>
 
         {/* stats */}
@@ -716,10 +759,10 @@ function KitsSection({ onBrowse }: { onBrowse: () => void }) {
       />
       <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {KITS.map((k) => (
-          <Card key={k.name} padding="lg" hover className="group relative flex flex-col overflow-hidden transition-all duration-300 hover:-translate-y-1">
+          <Card key={k.name} padding="lg" hover className={cn("group relative flex flex-col overflow-hidden border-t-4 transition-all duration-300 hover:-translate-y-1", k.accentBorder)}>
             <div className="flex items-center justify-between">
-              <span className={cn("flex size-11 items-center justify-center rounded-xl text-xl shadow-inset transition-transform duration-300 group-hover:scale-105", k.accent)}>
-                {k.emoji}
+              <span className={cn("flex size-11 items-center justify-center rounded-xl shadow-inset transition-transform duration-300 group-hover:scale-105", k.accent)}>
+                <k.icon className="size-5" />
               </span>
               <Badge variant="brand" size="sm">
                 {k.count} components
@@ -821,7 +864,7 @@ function Licensing() {
               {KITS.map((k) => (
                 <li key={k.name} className="flex items-center justify-between text-sm">
                   <span className="text-surface-700">
-                    <span className="mr-2">{k.emoji}</span>
+                    <k.icon className="mr-2 inline size-4 align-[-2px] text-surface-500" />
                     {k.name}
                   </span>
                   <code className="font-mono text-[11px] text-surface-400">{k.count} components</code>
@@ -861,7 +904,7 @@ function InstallSection({ onBrowse }: { onBrowse: () => void }) {
     }
     setDownloading(true);
     try {
-      await downloadKit();
+      await import("../docs/downloadKit").then((m) => m.downloadKit());
     } finally {
       setDownloading(false);
     }

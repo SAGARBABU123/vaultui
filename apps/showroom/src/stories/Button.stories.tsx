@@ -2,7 +2,7 @@ import { Button } from "@vaultui/ui";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof Button> = {
-  title: "Free Tier/Button",
+  title: "Components/Button",
   component: Button,
   argTypes: {
     variant: {
@@ -11,7 +11,7 @@ const meta: Meta<typeof Button> = {
     },
     size: {
       control: "select",
-      options: ["sm", "md", "lg"],
+      options: ["xs", "sm", "md", "lg", "xl"],
     },
     loading: { control: "boolean" },
     fullWidth: { control: "boolean" },
@@ -58,13 +58,30 @@ export const WithLeadingIcon: Story = {
   },
 };
 
+export const WithTrailingIcon: Story = {
+  args: {
+    trailingIcon: (
+      <svg viewBox="0 0 20 20" fill="currentColor" className="size-4">
+        <path
+          fillRule="evenodd"
+          d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z"
+          clipRule="evenodd"
+        />
+      </svg>
+    ),
+  },
+};
+
 export const Loading: Story = {
   args: { loading: true },
 };
 
 export const Disabled: Story = {
   args: { disabled: true },
-  parameters: { docs: { description: { story: "Disabled buttons block all interaction." } } },
+};
+
+export const SizeExtraSmall: Story = {
+  args: { size: "xs" },
 };
 
 export const SizeSmall: Story = {
@@ -73,6 +90,10 @@ export const SizeSmall: Story = {
 
 export const SizeLarge: Story = {
   args: { size: "lg" },
+};
+
+export const SizeExtraLarge: Story = {
+  args: { size: "xl" },
 };
 
 export const FullWidth: Story = {

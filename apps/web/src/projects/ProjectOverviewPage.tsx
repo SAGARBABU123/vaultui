@@ -1,6 +1,6 @@
 import { useMemo, useState, type ReactNode } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
-import { Badge, Button, Card } from "@vaultui/ui";
+import { Badge, Button, Card, Skeleton } from "@vaultui/ui";
 import { ArrowLeft, Check, Copy, Crown, Download, FolderPlus, Package, Plus, Share2, Trash2, Link2Off } from "lucide-react";
 import { DocsHeader } from "../layout/DocsHeader";
 import { useAuth } from "../auth/AuthContext";
@@ -39,7 +39,7 @@ export function ProjectOverviewPage() {
   if (loading) {
     return (
       <PageShell>
-        <p className="text-sm text-surface-400">Loading project…</p>
+        <ProjectSkeleton />
       </PageShell>
     );
   }
@@ -129,7 +129,7 @@ export function ProjectOverviewPage() {
       </div>
 
       {/* Share kit */}
-      <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-surface-200 bg-surface-0 p-4">
+      <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-surface-200 border-l-4 border-l-brand-400 bg-surface-0 p-4">
         <div className="min-w-0 flex-1">
           <p className="text-sm font-semibold text-surface-800">Share your kit</p>
           <p className="text-xs text-surface-400">
@@ -176,7 +176,7 @@ export function ProjectOverviewPage() {
 
       {/* Premium notice */}
       {paidCount > 0 && !isPremium && (
-        <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-dashed border-warning-300 bg-warning-50/60 p-4">
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-warning-200 border-l-4 border-l-warning-400 bg-warning-50/60 p-4">
           <p className="flex items-center gap-2 text-sm text-surface-600">
             <Crown className="size-4 shrink-0 text-warning-500" />
             This project includes paid-kit components. The zip ships the theme + free core; paid kit
@@ -243,7 +243,7 @@ export function ProjectOverviewPage() {
       )}
 
       {/* Danger zone */}
-      <div className="mt-12 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-surface-200 bg-surface-0 p-4">
+      <div className="mt-12 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-surface-200 border-l-4 border-l-danger-400 bg-surface-0 p-4">
         <div>
           <p className="text-sm font-semibold text-surface-800">Delete this project</p>
           <p className="text-xs text-surface-400">Removes the project and its item collection.</p>
@@ -265,6 +265,24 @@ export function ProjectOverviewPage() {
 }
 
 /* ------------------------------- helpers -------------------------------- */
+
+/** Skeleton mirroring the overview layout — prevents layout shift while loading. */
+function ProjectSkeleton() {
+  return (
+    <div aria-hidden="true">
+      <Skeleton className="h-4 w-32 rounded-md" />
+      <Skeleton className="mt-6 h-9 w-2/3 max-w-sm rounded-lg" />
+      <Skeleton className="mt-3 h-4 w-1/2 max-w-xs rounded-md" />
+      <div className="mt-6 flex flex-wrap items-center gap-2">
+        <Skeleton className="h-11 w-44 rounded-lg" />
+        <Skeleton className="h-11 w-44 rounded-lg" />
+        <Skeleton className="h-11 w-40 rounded-lg" />
+      </div>
+      <Skeleton className="mt-6 h-20 w-full rounded-2xl" />
+      <Skeleton className="mt-8 h-72 w-full rounded-2xl" />
+    </div>
+  );
+}
 
 function PageShell({ children }: { children: ReactNode }) {
   return (

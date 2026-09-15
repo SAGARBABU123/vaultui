@@ -52,3 +52,9 @@ export interface DashboardGroup {
   group: string;
   items: DashboardEntry[];
 }
+
+/** Route descriptor for the UI Guidelines section (/docs/guidelines/:id). */
+export interface GuidelineRoute {
+  kind: "guideline";
+  id: string;
+}

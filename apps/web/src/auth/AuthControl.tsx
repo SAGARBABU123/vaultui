@@ -41,6 +41,9 @@ export function AuthControl() {
     };
   }, [open]);
 
+  // Close the menu on route change (incl. browser back/forward). Open/close is
+  // cheap and idempotent — no cascading renders here.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setOpen(false), [location.pathname]);
 
   const go = (to: string) => {

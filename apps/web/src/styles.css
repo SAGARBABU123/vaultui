@@ -28,6 +28,22 @@
   color: transparent;
 }
 
+/* ------------------------------------------------------------------
+ * Focus & selection — keyboard navigability is a hard requirement
+ * (guidelines: “Component States”). Every interactive element gets a
+ * visible, theme-aware focus ring; components that set their own
+ * focus-visible styles (ring-* utilities) naturally override this.
+ * ------------------------------------------------------------------ */
+:focus-visible {
+  outline: 2px solid var(--color-brand-500);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--color-brand-200);
+  color: var(--color-brand-950);
+}
+
 /* Subtle top-left sheen for hero/specimen cards (theme-aware, no raw hex). */
 .card-sheen::after {
   content: "";

@@ -42,7 +42,7 @@ export function Card({
   return (
     <div
       className={cn(
-        "rounded-2xl bg-surface-0",
+        "rounded-xl bg-surface-0",
         paddingClasses[padding],
         shadowClasses[shadow],
         bordered && "border border-surface-200",

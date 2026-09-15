@@ -11,7 +11,10 @@ import { useNavigate } from "react-router-dom";
 import { Check, Plus } from "lucide-react";
 import { Button } from "@vaultui/ui";
 import { useAuth } from "../auth/AuthContext";
-import { entryById } from "./entries";
+import type { ComponentEntry, DashboardEntry } from "../docs/types";
+// NOTE: `./entries` is NOT imported here — ProjectContext mounts on every
+// route (incl. the landing page) and entries pulls the full registry + kit.
+// toggleItem resolves it lazily via import("./entries").
 import { getProjectAPI, newProjectId, readActiveProjectId, writeActiveProjectId } from "./api";
 import type { ProjectItemMeta, UserProject } from "./types";
 
@@ -47,8 +50,7 @@ interface ProjectContextValue {
 const ProjectContext = createContext<ProjectContextValue | null>(null);
 
 /** Snapshot a registry entry into storable item metadata (no React nodes). */
-function snapshotItem(entryId: string): ProjectItemMeta | null {
-  const entry = entryById(entryId);
+function snapshotItem(entry: ComponentEntry | DashboardEntry | null): ProjectItemMeta | null {
   if (!entry) return null;
   if (entry.kind === "dashboard") {
     return {
@@ -245,13 +247,17 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      const meta = snapshotItem(entryId);
-      if (!meta) return;
-      const next = projects.map((p) =>
-        p.id === activeProject.id ? { ...p, updatedAt: Date.now(), items: [...p.items, meta] } : p,
-      );
-      void commit(next);
-      showToast({ componentName: meta.name, projectId: activeProject.id, projectName: activeProject.name });
+      // Add path loads the registry lazily (keeps the whole kit out of the
+      // main bundle — ProjectContext mounts on every route).
+      void import("./entries").then(({ entryById }) => {
+        const meta = snapshotItem(entryById(entryId));
+        if (!meta) return;
+        const next = projects.map((p) =>
+          p.id === activeProject.id ? { ...p, updatedAt: Date.now(), items: [...p.items, meta] } : p,
+        );
+        void commit(next);
+        showToast({ componentName: meta.name, projectId: activeProject.id, projectName: activeProject.name });
+      });
     },
     [activeProject, projects, commit, navigate, showToast],
   );
