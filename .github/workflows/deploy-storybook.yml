@@ -1,18 +1,17 @@
 name: Deploy — Storybook
 
 # Publishes the Vault UI showroom (apps/showroom → static Storybook) to the
-# Vercel project "vault-ui-storybook". Runs on every push to main and can be
-# triggered manually from the Actions tab.
+# Vercel project "vault-ui-storybook".
 #
-# The build runs from the REPO ROOT (pnpm workspace needed) and is configured
-# by vercel.storybook.json (--local-config), so it never touches the web app's
-# root vercel.json.
+# Reliable path: build in CI (repo root, pnpm workspace), stage the static
+# output as a Build Output API bundle (.vercel/output), then `vercel deploy
+# --prebuilt` from inside apps/showroom/dist. Prebuilt deploys ignore the
+# project's framework/build settings, so this can never accidentally build
+# the web app (which is what the root vercel.json would otherwise do).
 #
-# Secrets used (same ones the web deploy already uses, plus one optional):
-#   VERCEL_TOKEN               — required (already set for the web deploy)
-#   VERCEL_ORG_ID              — required (already set for the web deploy)
-#   VERCEL_STORYBOOK_PROJECT_ID — optional; set once the project exists so CI
-#                                 skips the link/create step.
+# Secrets (same ones the web deploy already uses):
+#   VERCEL_TOKEN   — required
+#   VERCEL_ORG_ID  — required
 
 on:
   push:
@@ -25,7 +24,6 @@ jobs:
     env:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      STORYBOOK_PROJECT_ID: ${{ secrets.VERCEL_STORYBOOK_PROJECT_ID }}
     steps:
       - uses: actions/checkout@v4
 
@@ -39,33 +37,27 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
+      - name: Build Storybook
+        run: pnpm turbo run build --filter=@vaultui/showroom
+
+      - name: Stage prebuilt output
+        run: |
+          mkdir -p apps/showroom/dist/.vercel/output/static
+          cd apps/showroom/dist
+          for f in * .[!.]*; do
+            [ "$f" = ".vercel" ] && continue
+            [ -e "$f" ] && cp -r "$f" .vercel/output/static/
+          done
+          printf '{"version":3}' > .vercel/output/config.json
+
       - name: Deploy Storybook to Vercel (production)
         run: |
           if [ -z "$VERCEL_TOKEN" ]; then
             echo "::warning::VERCEL_TOKEN not set — skipping Storybook deploy"
             exit 0
           fi
-
-          mkdir -p .vercel
-          if [ -n "$STORYBOOK_PROJECT_ID" ]; then
-            echo "Linking to existing project id ${STORYBOOK_PROJECT_ID}"
-            printf '{"projectId":"%s","orgId":"%s","projectName":"vault-ui-storybook"}' \
-              "$STORYBOOK_PROJECT_ID" "$VERCEL_ORG_ID" > .vercel/project.json
-          elif ! npx vercel link --yes --project vault-ui-storybook --team "$VERCEL_ORG_ID" --token="$VERCEL_TOKEN"; then
-            # Never fall through to a bare deploy: without an explicit link the
-            # CLI could resolve to a repo-name project and clobber the web app's
-            # production deployment. Try an explicit --project deploy, else skip.
-            echo "::warning::Could not link 'vault-ui-storybook' — trying explicit --project deploy"
-            if npx vercel deploy --prod --yes --project vault-ui-storybook \
-                 --token="$VERCEL_TOKEN" --scope "$VERCEL_ORG_ID" \
-                 --local-config vercel.storybook.json; then
-              exit 0
-            fi
-            echo "::warning::Create the project in the Vercel dashboard (Import repo → Root Directory '/' → Build 'pnpm turbo run build --filter=@vaultui/showroom' → Output 'apps/showroom/dist'), then set the VERCEL_STORYBOOK_PROJECT_ID secret and re-run this workflow."
-            exit 0
-          fi
-
-          npx vercel deploy --prod --yes \
+          npx vercel deploy --prebuilt --prod --yes \
+            --project vault-ui-storybook \
             --token="$VERCEL_TOKEN" \
             --scope "$VERCEL_ORG_ID" \
-            --local-config vercel.storybook.json
+            --cwd apps/showroom/dist
