@@ -88,17 +88,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const clearError = useCallback(() => setError(null), []);
 
   /* ------------------------------ role loader ----------------------------- */
-  const syncRole = useCallback(async (base: AuthUser) => {
-    if (mode !== "supabase") return base;
-    try {
-      const { data } = await supabase!.from("profiles").select("role, has_onboarded").maybeSingle();
-      if (data?.role === "premium") base = { ...base, role: "premium" as const };
-      if (data?.has_onboarded) base = { ...base, hasOnboarded: true };
-    } catch {
-      /* table may not exist yet — free role until migration runs */
-    }
-    return base;
-  }, [mode, supabase]);
+  const syncRole = useCallback(
+    async (base: AuthUser) => {
+      if (mode !== "supabase") return base;
+      try {
+        const { data, error } = await supabase!
+          .from("profiles")
+          .select("role, has_onboarded")
+          .eq("id", base.id) // explicit owner filter — never trust a bare maybeSingle
+          .maybeSingle();
+        if (error) throw error;
+        if (data) {
+          if (data.role === "premium") base = { ...base, role: "premium" as const };
+          // Row present → the flag is authoritative (both values, not just true).
+          base = { ...base, hasOnboarded: data.has_onboarded === true };
+        }
+        // No row (rare: pre-trigger signup) → treated as a brand-new user.
+      } catch (err) {
+        // Table/column missing (migrations not applied) or RLS misconfig.
+        // Loud so setup issues surface; OnboardingContext additionally uses a
+        // same-device marker so the tour never replays on every login.
+        console.error("[auth] profile read failed — hasOnboarded unknown:", err);
+      }
+      return base;
+    },
+    [mode, supabase],
+  );
 
   /* --------------------------- session bootstrap -------------------------- */
   useEffect(() => {
@@ -242,7 +257,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await supabase!.from("profiles").update({ has_onboarded: true }).eq("id", user.id);
       setUser({ ...user, hasOnboarded: true });
-    } catch {
+    } catch (err) {
+      console.error("[auth] could not persist has_onboarded — relying on same-device marker:", err);
       /* keeps the flag in-memory if the write fails */
       setUser({ ...user, hasOnboarded: true });
     }

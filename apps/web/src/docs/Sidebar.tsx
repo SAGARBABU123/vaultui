@@ -90,7 +90,7 @@ export function Sidebar({ groups, dashboards, guidelineGroups, activeId, onSelec
           never collide with kit entries (tabs, modals, overview…). */}
       {guidelineGroups && guidelineGroups.length > 0 && (
         <div className="border-b border-surface-200/70 pb-3 pt-2">
-          <div className="mb-1 flex items-center gap-1.5 px-3 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-600">
+          <div className="mb-1 flex items-center gap-1.5 px-3 text-xs font-bold uppercase tracking-[0.18em] text-brand-700">
             <BookOpen className="size-3.5" />
             Guidelines
           </div>
@@ -104,7 +104,7 @@ export function Sidebar({ groups, dashboards, guidelineGroups, activeId, onSelec
                   aria-expanded={!groupCollapsed}
                   className="mb-0.5 flex w-full items-center justify-between rounded-lg px-2 py-1 text-left transition-colors hover:bg-surface-100"
                 >
-                  <span className="flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-surface-400">
+                  <span className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-surface-500">
                     <ChevronDown
                       className={cn("size-3.5 text-surface-400 transition-transform duration-200", groupCollapsed && "-rotate-90")}
                     />
@@ -153,7 +153,7 @@ export function Sidebar({ groups, dashboards, guidelineGroups, activeId, onSelec
               aria-expanded={!dashCollapsed}
               className="mb-1.5 flex w-full items-center justify-between rounded-lg px-2 py-1 text-left transition-colors hover:bg-surface-100"
             >
-              <span className="flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-surface-400">
+              <span className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-surface-500">
                 <ChevronDown
                   className={cn("size-3.5 text-surface-400 transition-transform duration-200", dashCollapsed && "-rotate-90")}
                 />
@@ -217,7 +217,7 @@ export function Sidebar({ groups, dashboards, guidelineGroups, activeId, onSelec
                 aria-expanded={!groupCollapsed}
                 className="mb-1.5 flex w-full items-center justify-between rounded-lg px-2 py-1 text-left transition-colors hover:bg-surface-100"
               >
-                <span className="flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-surface-400">
+                <span className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-surface-500">
                   <ChevronDown
                     className={cn("size-3.5 text-surface-400 transition-transform duration-200", groupCollapsed && "-rotate-90")}
                   />

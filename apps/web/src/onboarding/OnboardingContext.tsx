@@ -20,6 +20,9 @@ import { useProjects } from "../projects/ProjectContext";
  *    never shows it again).
  *  - The flag is marked consumed the moment the tour auto-starts, so even an
  *    interrupted first visit won't re-trigger it.
+ *  - A same-device localStorage marker mirrors the flag as a fallback, so a
+ *    broken/un-applied server flag (migration 0003) can't replay the tour on
+ *    every login. The server flag stays the source of truth on healthy backends.
  *  - Steps with a target id silently skip themselves when the target isn't
  *    on the current page (e.g. the sidebar step on a project page).
  *  - The spotlight + tooltip overlay is pointer-transparent except for the
@@ -66,6 +69,35 @@ const STEPS: Step[] = [
   },
 ];
 
+/* --------------------- same-device fallback marker --------------------- *
+ * Source of truth is the per-user server flag (profiles.has_onboarded / demo
+ * registry). This localStorage marker is belt-and-suspenders: if the server
+ * flag can't be read or written (e.g. migration 0003 not yet applied), it
+ * still stops the tour from replaying on *this* device every login. It never
+ * blocks a genuine first-time user on a healthy backend.
+ */
+const ONBOARDED_MARKER_KEY = "vault-ui-onboarded";
+
+function onboardedMarkerKey(ownerId: string): string {
+  return `${ONBOARDED_MARKER_KEY}:${ownerId}`;
+}
+
+function readOnboardedMarker(ownerId: string): boolean {
+  try {
+    return localStorage.getItem(onboardedMarkerKey(ownerId)) === "1";
+  } catch {
+    return false; // storage unavailable (private mode) — server flag still guards
+  }
+}
+
+function writeOnboardedMarker(ownerId: string) {
+  try {
+    localStorage.setItem(onboardedMarkerKey(ownerId), "1");
+  } catch {
+    /* storage unavailable — server flag remains the guard */
+  }
+}
+
 interface OnboardingContextValue {
   startTour: () => void;
   isActive: boolean;
@@ -99,14 +131,21 @@ export function OnboardingProvider({ children }: { children: ReactNode }) {
       location.pathname.startsWith("/docs") || location.pathname.startsWith("/projects");
     if (!appPage || autoStarted.current) return;
     if (user.hasOnboarded) return;
+    // Same-device fallback: stops the tour replaying every login when the
+    // server flag can't be read or written (e.g. migration 0003 not applied).
+    if (readOnboardedMarker(user.id)) return;
     autoStarted.current = true;
-    // Defer render-side state so the compiler lint is satisfied (setState
-    // happens after commit, not synchronously inside the effect).
-    const t = window.setTimeout(() => startTour(), 0);
-    // Consume the flag immediately: this is the user's first-time visit; a
-    // later logout → login must never replay it.
-    void markOnboarded();
-    return () => window.clearTimeout(t);
+    // Start on a microtask, not a timer: any state update from markOnboarded()
+    // (or React StrictMode's double-invoke) used to cancel the timeout before
+    // it fired, silently killing the auto-start. Microtasks can't be cancelled.
+    queueMicrotask(() => {
+      startTour();
+      // Consume immediately: this is the user's first-time visit; a later
+      // logout → login must never replay it. Server flag is the source of
+      // truth; the marker is the same-device fallback while the DB is fixed.
+      writeOnboardedMarker(user.id);
+      void markOnboarded();
+    });
   }, [isSignedIn, user, location.pathname, startTour, markOnboarded]);
 
   /* Skip steps whose target isn't on the current page (auto-advance). */

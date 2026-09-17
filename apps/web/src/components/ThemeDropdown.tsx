@@ -56,7 +56,7 @@ export function ThemeDropdown() {
           aria-label="Themes"
           className="absolute right-0 top-full z-50 mt-2 w-60 rounded-2xl border border-surface-200 bg-surface-0 p-1.5 shadow-popover animate-rise"
         >
-          <p className="px-2.5 pb-1 pt-1.5 text-[11px] font-semibold uppercase tracking-wider text-surface-400">
+          <p className="px-2.5 pb-1 pt-1.5 text-xs font-semibold uppercase tracking-wider text-surface-500">
             Theme
           </p>
           {themes.map((t) => {
