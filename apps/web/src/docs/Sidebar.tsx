@@ -102,11 +102,11 @@ export function Sidebar({ groups, dashboards, guidelineGroups, activeId, onSelec
                   type="button"
                   onClick={() => toggleSection(group.title)}
                   aria-expanded={!groupCollapsed}
-                  className="mb-0.5 flex w-full items-center justify-between rounded-lg px-2 py-1 text-left transition-colors hover:bg-surface-100"
+                  className="mb-1 flex w-full items-center justify-between rounded-lg px-2 py-1 text-left transition-colors hover:bg-surface-100"
                 >
-                  <span className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-surface-500">
+                  <span className="flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-surface-500">
                     <ChevronDown
-                      className={cn("size-3.5 text-surface-400 transition-transform duration-200", groupCollapsed && "-rotate-90")}
+                      className={cn("size-3.5 text-surface-500 transition-transform duration-200", groupCollapsed && "-rotate-90")}
                     />
                     {group.title}
                   </span>
@@ -125,7 +125,7 @@ export function Sidebar({ groups, dashboards, guidelineGroups, activeId, onSelec
                               "flex w-full items-center rounded-lg px-2.5 py-1.5 text-left text-sm transition-colors",
                               active
                                 ? "bg-brand-50 font-medium text-brand-700"
-                                : "text-surface-600 hover:bg-surface-100 hover:text-surface-900",
+                                : "text-surface-700 hover:bg-surface-100 hover:text-surface-900",
                             )}
                           >
                             <span className="truncate">{item.label}</span>
@@ -151,15 +151,15 @@ export function Sidebar({ groups, dashboards, guidelineGroups, activeId, onSelec
               type="button"
               onClick={() => toggleSection("Dashboard Templates")}
               aria-expanded={!dashCollapsed}
-              className="mb-1.5 flex w-full items-center justify-between rounded-lg px-2 py-1 text-left transition-colors hover:bg-surface-100"
+              className="mb-2 flex w-full items-center justify-between rounded-lg px-2 py-1 text-left transition-colors hover:bg-surface-100"
             >
-              <span className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-surface-500">
+              <span className="flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-surface-500">
                 <ChevronDown
-                  className={cn("size-3.5 text-surface-400 transition-transform duration-200", dashCollapsed && "-rotate-90")}
+                  className={cn("size-3.5 text-surface-500 transition-transform duration-200", dashCollapsed && "-rotate-90")}
                 />
                 Dashboard Templates
               </span>
-              <span className="font-mono text-[11px] text-surface-400">{dashCount}</span>
+              <span className="font-mono text-[11px] text-surface-500">{dashCount}</span>
             </button>
             {!dashCollapsed && (
               dashCount > 0 ? (
@@ -177,7 +177,7 @@ export function Sidebar({ groups, dashboards, guidelineGroups, activeId, onSelec
                               "flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-left text-sm transition-colors",
                               active
                                 ? "bg-gradient-to-r from-brand-50 to-brand-100/60 font-medium text-brand-700"
-                                : "text-surface-600 hover:bg-surface-100 hover:text-surface-900",
+                                : "text-surface-700 hover:bg-surface-100 hover:text-surface-900",
                             )}
                           >
                             <span className="truncate">{item.name}</span>
@@ -215,15 +215,15 @@ export function Sidebar({ groups, dashboards, guidelineGroups, activeId, onSelec
                 type="button"
                 onClick={() => toggleSection(group.group)}
                 aria-expanded={!groupCollapsed}
-                className="mb-1.5 flex w-full items-center justify-between rounded-lg px-2 py-1 text-left transition-colors hover:bg-surface-100"
+                className="mb-2 flex w-full items-center justify-between rounded-lg px-2 py-1 text-left transition-colors hover:bg-surface-100"
               >
-                <span className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-surface-500">
+                <span className="flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-surface-500">
                   <ChevronDown
-                    className={cn("size-3.5 text-surface-400 transition-transform duration-200", groupCollapsed && "-rotate-90")}
+                    className={cn("size-3.5 text-surface-500 transition-transform duration-200", groupCollapsed && "-rotate-90")}
                   />
                   {group.group}
                 </span>
-                <span className="font-mono text-[11px] text-surface-400">{group.items.length}</span>
+                <span className="font-mono text-[11px] text-surface-500">{group.items.length}</span>
               </button>
               {!groupCollapsed && (
                 <ul className="space-y-0.5">
@@ -239,7 +239,7 @@ export function Sidebar({ groups, dashboards, guidelineGroups, activeId, onSelec
                             "flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-left text-sm transition-colors",
                             active
                               ? "bg-gradient-to-r from-brand-50 to-brand-100/60 font-medium text-brand-700"
-                              : "text-surface-600 hover:bg-surface-100 hover:text-surface-900",
+                              : "text-surface-700 hover:bg-surface-100 hover:text-surface-900",
                           )}
                         >
                           <span className="truncate">{item.name}</span>
