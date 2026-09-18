@@ -30,6 +30,71 @@ jobs:
       - name: Build
         run: pnpm build
 
+  # Proves the bun install/build path on every push. Uses LOCAL packed
+  # tarballs (not the repo-root symlinks — bun cannot resolve css subpath
+  # exports through workspace symlinks) so it works pre-publish and is
+  # version-bump-proof. Mirrors what publish.yml runs post-publish from npm.
+  bun-consumer:
+    runs-on: ubuntu-latest
+    needs: verify
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install + build (shared artifacts)
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm --filter @vaultui/tokens build
+          pnpm --filter @vaultui/utils build
+          pnpm --filter @vaultui/ui build
+
+      - name: Pack local tarballs
+        run: |
+          for p in tokens utils ui; do (cd "packages/$p" && bun pm pack); done
+          ls packages/*/*.tgz
+
+      - name: Consumer smoke test with bun (local tarballs)
+        run: |
+          UI_TGZ=$(ls "$GITHUB_WORKSPACE"/packages/ui/vaultui-ui-*.tgz | head -1)
+          TOKENS_TGZ=$(ls "$GITHUB_WORKSPACE"/packages/tokens/vaultui-tokens-*.tgz | head -1)
+          UTILS_TGZ=$(ls "$GITHUB_WORKSPACE"/packages/utils/vaultui-utils-*.tgz | head -1)
+          tmp=$(mktemp -d)
+          cd "$tmp"
+          cat > package.json <<EOF
+          {
+            "name": "smoke",
+            "private": true,
+            "version": "0.0.0",
+            "dependencies": {
+              "@vaultui/ui": "file:${UI_TGZ}",
+              "@vaultui/tokens": "file:${TOKENS_TGZ}",
+              "@vaultui/utils": "file:${UTILS_TGZ}",
+              "react": "^18.3.1",
+              "react-dom": "^18.3.1"
+            }
+          }
+          EOF
+          cat > index.tsx <<'EOF2'
+          import { Button } from "@vaultui/ui";
+          import "@vaultui/ui/button.css";
+          import "@vaultui/tokens/tokens.css";
+          const el = <Button variant="primary">Hello</Button>;
+          console.log(el.type, "OK");
+          EOF2
+          bun install
+          bun build ./index.tsx --outdir out
+          node -e "require('fs').accessSync('out/index.js')" && echo "bun consumer smoke test passed ✅"
+
   # Auto-deploy to Vercel (production) on main pushes. Sealed into this
   # workflow so deploys share the same verified pipeline + workspace setup.
   deploy-vercel:

@@ -1,0 +1,113 @@
+name: Publish — npm + smoke tests
+
+# Manual release for the free-tier @vaultui packages (industry-standard
+# distribution: ONE publication to the npm registry; every package manager —
+# npm, yarn, pnpm, bun — installs the same tarball).
+#
+# After publishing it smoke-tests all four consumer paths with a scratch
+# project (install from npm + build a real <Button> import):
+#   npm i / yarn add / pnpm add / bun add  @vaultui/ui
+#
+# Secret:
+#   NPM_TOKEN — npm publish token (required for the publish step)
+#
+# Versioning: bump versions in the three package.json files first, commit,
+# then run this workflow with `workflow_dispatch` (choose "release").
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: "Type 'release' to confirm the version bump is committed"
+        required: true
+        type: choice
+        options:
+          - release
+          - abort
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Build (shared tsup artifacts)
+        run: |
+          pnpm --filter @vaultui/tokens build
+          pnpm --filter @vaultui/utils build
+          pnpm --filter @vaultui/ui build
+
+      - name: Publish to npm registry
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "$NPM_TOKEN" ]; then
+            echo "::warning::NPM_TOKEN not set — skipping npm publish"
+            exit 0
+          fi
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
+          # npm CLI (not pnpm): blob-first upload (avoid ghost versions) and
+          # versions must be concrete (npm does not rewrite workspace:*).
+          (cd packages/tokens && npm publish --access public --registry https://registry.npmjs.org/)
+          (cd packages/utils && npm publish --access public --registry https://registry.npmjs.org/)
+          (cd packages/ui && npm publish --access public --registry https://registry.npmjs.org/)
+
+  smoke-test:
+    runs-on: ubuntu-latest
+    needs: publish
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Enable yarn via corepack
+        run: corepack enable
+
+      - name: Consumer smoke tests (npm / yarn / pnpm / bun)
+        run: |
+          set -euo pipefail
+          cat > smoke.tsx <<'EOF'
+          import { Button } from "@vaultui/ui";
+          import "@vaultui/ui/button.css";
+          const el = <Button variant="primary">Hello</Button>;
+          console.log(el.type, "OK");
+          EOF
+
+          for mgr in npm yarn pnpm bun; do
+            echo "== $mgr =="
+            tmp=$(mktemp -d)
+            cp "$GITHUB_WORKSPACE/smoke.tsx" "$tmp/smoke.tsx"
+            cd "$tmp"
+            printf '{"name":"smoke-%s","private":true,"version":"0.0.0"}\n' "$mgr" > package.json
+            case "$mgr" in
+              npm)  npm install @vaultui/ui @vaultui/tokens react react-dom typescript >/dev/null 2>&1
+                    npx tsc --jsx react-jsx --noEmit --moduleResolution bundler --module esnext --target es2020 --skipLibCheck smoke.tsx ;;
+              yarn) yarn add @vaultui/ui @vaultui/tokens react react-dom typescript >/dev/null 2>&1
+                    yarn tsc --jsx react-jsx --noEmit --moduleResolution bundler --module esnext --target es2020 --skipLibCheck smoke.tsx ;;
+              pnpm) pnpm add @vaultui/ui @vaultui/tokens react react-dom typescript >/dev/null 2>&1
+                    pnpm exec tsc --jsx react-jsx --noEmit --moduleResolution bundler --module esnext --target es2020 --skipLibCheck smoke.tsx ;;
+              bun)  bun add @vaultui/ui @vaultui/tokens react react-dom >/dev/null 2>&1
+                    bun build ./smoke.tsx --outdir out ;;
+            esac
+            echo "  $mgr consumer install + build: OK ✅"
+            cd "$GITHUB_WORKSPACE"
+          done

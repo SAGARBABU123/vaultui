@@ -1,6 +1,7 @@
 # Release & Publish Guide
 
-How to ship Vault UI packages to npm.
+How to ship Vault UI packages — **one publication on npm**, consumed by every
+package manager (npm, yarn, pnpm, bun).
 
 ## Package map
 
@@ -15,6 +16,22 @@ How to ship Vault UI packages to npm.
 | `@vaultui/dev-tools` | Commercial | Paid kit |
 | `@vaultui/project` | Commercial | Paid kit |
 
+## Distribution model (industry standard)
+
+One tarball on `registry.npmjs.org`, four install commands. This is exactly
+how daisyUI / shadcn / Mantine work — there is **no separate bun/yarn/pnpm
+registry**; bun (and every other manager) installs the same npm tarball.
+
+| Consumer | Command |
+| --- | --- |
+| npm | `npm i @vaultui/ui @vaultui/tokens` |
+| yarn | `yarn add @vaultui/ui @vaultui/tokens` |
+| pnpm | `pnpm add @vaultui/ui @vaultui/tokens` |
+| bun | `bun add @vaultui/ui @vaultui/tokens` |
+
+CI (`.github/workflows/publish.yml`) smoke-tests **all four** paths after a
+publish — including a real `bun add` + `bun build` consumer project.
+
 ## How publishing works
 
 Every publishable package:
@@ -28,23 +45,35 @@ Every publishable package:
 ```bash
 pnpm login --scope @vault
 # enable 2FA — required for npm publish
+# (npm token also covers bun: bun installs npm packages with npm auth)
 ```
 
 ### Publish the free tier first (order matters)
 
 ```bash
-pnpm --filter @vaultui/tokens publish
-pnpm --filter @vaultui/utils publish
-pnpm --filter @vaultui/ui publish
+# ⚠ Use `npm publish`, NOT `pnpm publish`:
+#   - `npm publish` uploads the tarball blob BEFORE the registry metadata
+#     (npm's current atomic-publish order). pnpm reverses it, which recent
+#     npmjs builds accept as metadata-only → broken "ghost" versions.
+#   - npm CLI does NOT rewrite `workspace:*` — runtimes deps must already be
+#     concrete versions (ui's deps point at @vaultui/tokens@0.1.1 / utils@0.1.1).
+cd packages/tokens && npm publish --access public
+cd ../../packages/utils && npm publish --access public
+cd ../../packages/ui && npm publish --access public
+# or: pnpm publish:free  (safe for tokens/utils — no workspace:* runtime deps;
+#     avoid for ui unless its deps are concrete + you verify the tarball)
 ```
+
+> CI alternative: run the `Publish — npm` workflow
+> (`.github/workflows/publish.yml`) with `workflow_dispatch`. Secret:
+> `NPM_TOKEN` (GitHub → Settings → Secrets). It publishes via pnpm, then
+> smoke-tests npm / yarn / pnpm / bun consumers.
 
 ### Preview a paid kit (dry run)
 
 ```bash
 pnpm --filter @vaultui/ai-chat pack --dry-run   # inspect tarball contents
-```
-
-### Publish a paid kit
+```### Publish a paid kit
 
 ```bash
 pnpm --filter @vaultui/ai-chat publish --access public
@@ -76,8 +105,14 @@ pnpm --filter @vaultui/web run build       # sanity check consumers
 ## Smoke test a consumer
 
 ```bash
-# in a fresh project:
+# in a fresh project (npm):
 npm i @vaultui/tokens @vaultui/ui
-echo '@import "@vaultui/tokens/tokens.css";' > src/index.css
 # render <Button> in React — themed by tokens
+
+# in a fresh project (bun) — bun installs the same npm tarball:
+bun add @vaultui/ui
+bun build ./index.tsx --outdir out   # resolves ./button.css + ./primitives.css + ./tokens.css
+
+# verify the published tarball is complete + has concrete deps (no workspace:*):
+curl -sSL $(npm view @vaultui/ui@latest dist.tarball) | tar -xzO package/package.json | head -40
 ```

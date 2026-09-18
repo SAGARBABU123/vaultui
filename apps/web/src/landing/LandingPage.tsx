@@ -7,7 +7,7 @@ import { ArrowRight, BarChart3, Bot, Check, Copy, Download, Kanban, Lock, Megaph
 import { AuthControl } from "../auth/AuthControl";
 // Registry-dependent helpers (downloadKit) are lazy-imported at call time —
 // statically importing them would pull the whole kit registry into this chunk.
-import { COMPONENT_COUNT, DASHBOARD_COUNT, INSTALL_COMMAND } from "../projects/counts";
+import { COMPONENT_COUNT, DASHBOARD_COUNT, PACKAGE_MANAGERS, type PackageManagerId } from "../projects/counts";
 import { VaultLogo } from "../brand/VaultLogo";
 import { useAuth } from "../auth/AuthContext";
 import { useTheme } from "../theme/ThemeContext";
@@ -883,12 +883,15 @@ function Licensing() {
 function InstallSection({ onBrowse }: { onBrowse: () => void }) {
   const [copied, setCopied] = useState(false);
   const [downloading, setDownloading] = useState(false);
+  const [manager, setManager] = useState<PackageManagerId>("npm");
   const { isSignedIn } = useAuth();
   const navigate = useNavigate();
 
+  const activeCommand = PACKAGE_MANAGERS.find((m) => m.id === manager)!.command;
+
   const copyInstall = async () => {
     try {
-      await navigator.clipboard.writeText(INSTALL_COMMAND);
+      await navigator.clipboard.writeText(activeCommand);
       setCopied(true);
       window.setTimeout(() => setCopied(false), 1800);
     } catch {
@@ -925,7 +928,29 @@ function InstallSection({ onBrowse }: { onBrowse: () => void }) {
             <span className="size-2.5 rounded-full bg-warning-500" />
             <span className="size-2.5 rounded-full bg-success-500" />
           </div>
-          <span className="font-mono text-[11px] text-surface-400">terminal — vault ui</span>
+          <div
+            role="tablist"
+            aria-label="Package manager"
+            className="flex items-center gap-0.5 rounded-lg bg-surface-800/70 p-0.5 font-mono text-[11px]"
+          >
+            {PACKAGE_MANAGERS.map((m) => (
+              <button
+                key={m.id}
+                type="button"
+                role="tab"
+                aria-selected={manager === m.id}
+                onClick={() => setManager(m.id)}
+                className={cn(
+                  "rounded-md px-2 py-1 transition-colors",
+                  manager === m.id
+                    ? "bg-surface-700 text-surface-100"
+                    : "text-surface-500 hover:text-surface-300",
+                )}
+              >
+                {m.label}
+              </button>
+            ))}
+          </div>
           <button
             type="button"
             onClick={copyInstall}
@@ -941,7 +966,7 @@ function InstallSection({ onBrowse }: { onBrowse: () => void }) {
         </div>
         <div className="flex items-start gap-3 p-5">
           <span aria-hidden="true" className="mt-1 font-mono text-sm text-success-500">$</span>
-          <code className="font-mono text-[13px] leading-relaxed text-surface-100">{INSTALL_COMMAND}</code>
+          <code className="font-mono text-[13px] leading-relaxed text-surface-100">{activeCommand}</code>
         </div>
         <p className="mt-3 font-mono text-[11px] text-surface-400">
           …or a single component: <code className="text-brand-400">npx vault-ui add switch modal</code>

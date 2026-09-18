@@ -22,3 +22,10 @@ storybook-static/
 .vercel
 .env*
 supabase/.temp/
+
+# Bun (pnpm is canonical — bun.lock is regenerable, never committed)
+bun.lock
+.bun-tag
+
+# Packed tarballs (bun pm pack / pnpm pack outputs)
+*.tgz

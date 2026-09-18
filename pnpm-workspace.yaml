@@ -5,6 +5,10 @@ packages:
 allowBuilds:
   esbuild: true
 
+minimumReleaseAgeExclude:
+  - '@vaultui/tokens@0.1.2'
+  - '@vaultui/utils@0.1.2'
+
 onlyBuiltDependencies:
   - esbuild
   - "@parcel/watcher"
