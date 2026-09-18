@@ -279,7 +279,7 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
         tier: "free",
         description: "Vault UI: 100+ premium React + Tailwind components across seven kits + 5 dashboard templates, plus a 24-component free core (buttons, forms, overlays, tables, feedback). Every component is responsive-first, token-driven and dependency-light — install via the vault-ui CLI or npm. Free tier is MIT; kits are commercial.",
         importName: "—",
-        usage: "pnpm add @vaultui/tokens @vaultui/ui\n# then, in your CSS:\n@import \"@vaultui/tokens/tokens.css\";",
+        usage: "pnpm add @vaultui/tokens @vaultui/ui   # npm i | yarn add | pnpm add | bun add\n# then, in your CSS:\n@import \"@vaultui/tokens/tokens.css\";",
         props: [],
         demo: (
           <div className="grid gap-3 sm:grid-cols-3">

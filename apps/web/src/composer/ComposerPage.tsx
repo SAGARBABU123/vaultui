@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Avatar, Badge, Button, Card, Input, Progress, Slider, Switch } from "@vaultui/ui";
 import { ArrowLeft, Check, Copy } from "lucide-react";
 import { DocsHeader } from "../layout/DocsHeader";
+import { InstallTabs } from "../components/InstallTabs";
 import { ALL_COMPONENTS, ALL_DASHBOARDS } from "../projects/entries";
 
 /**
@@ -106,7 +107,7 @@ export function ComposerPage() {
 
   const selected = LIBRARY.filter((l) => picked.includes(l.id));
   const code = buildApp(selected);
-  const install = `pnpm add ${[...new Set(selected.map((s) => s.pkg))].join(" ")}`;
+  const installPackages = [...new Set(selected.map((s) => s.pkg))];
 
   const toggle = (id: string) =>
     setPicked((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
@@ -148,10 +149,8 @@ export function ComposerPage() {
               Pick primitives, preview them together on the canvas, then copy a runnable App.tsx — or the install command for exactly what you used.
             </p>
           </div>
-          <div className="flex items-center gap-2">
-            <Button size="sm" variant="secondary" onClick={() => void navigator.clipboard.writeText(install)}>
-              Copy install
-            </Button>
+          <div className="flex flex-wrap items-center gap-3">
+            <InstallTabs packages={installPackages} compact />
             <Button size="sm" onClick={copy} leadingIcon={copied ? <Check className="size-4 text-success-500" /> : <Copy className="size-4" />}>
               {copied ? "Copied!" : "Copy App.tsx"}
             </Button>

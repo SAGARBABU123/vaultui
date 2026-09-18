@@ -4,6 +4,7 @@ import { ArrowRight, Check, Copy, Download, FolderPlus, Grab, Package, Plus, Ter
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { INSTALL_COMMAND } from "../projects/counts";
+import { InstallTabs } from "../components/InstallTabs";
 import { downloadKit } from "./downloadKit";
 import { Playground, PLAYGROUNDS, type PlaygroundBuilder } from "./Playground";
 import { ThemeCompare } from "./ThemeCompare";
@@ -335,11 +336,8 @@ function OverviewHero({ componentTotal }: { componentTotal: number }) {
           </Button>
         </div>
 
-        <div className="mt-6 flex flex-wrap items-center gap-2">
-          <Copy className="size-3.5 text-surface-400" />
-          <code className="rounded-lg bg-surface-100 px-2.5 py-1 font-mono text-xs text-surface-600 shadow-inset">
-            {INSTALL_COMMAND}
-          </code>
+        <div className="mt-6">
+          <InstallTabs packages={["@vaultui/tokens", "@vaultui/utils", "@vaultui/ui"]} compact />
         </div>
 
         <p className="mt-3 flex items-center gap-2 font-mono text-[11px] text-surface-400">
@@ -434,7 +432,7 @@ function DemoViewChips({
 
 /** Install snippet — CLI first (adds the exact component), npm as fallback. */
 function installSnippet(entry: ComponentEntry): string {
-  return `# quick start — add the component with the CLI\nnpx vault-ui add ${entry.id}\n\n# or install from npm\npnpm add ${entry.package}`;
+  return `# quick start — add the component with the CLI\nnpx vault-ui add ${entry.id}\n\n# or install from npm — npm i / yarn add / pnpm add / bun add\nnpm i ${entry.package}`;
 }
 
 /**

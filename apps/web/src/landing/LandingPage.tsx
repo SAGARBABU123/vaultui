@@ -5,6 +5,7 @@ import { Sparkline } from "@vaultui/data-viz";
 import { cn } from "@vaultui/utils";
 import { ArrowRight, BarChart3, Bot, Check, Copy, Download, Kanban, Lock, Megaphone, Package, ShoppingCart, Terminal, UserPlus, Users, Wrench } from "lucide-react";
 import { AuthControl } from "../auth/AuthControl";
+import { InstallTabs } from "../components/InstallTabs";
 // Registry-dependent helpers (downloadKit) are lazy-imported at call time —
 // statically importing them would pull the whole kit registry into this chunk.
 import { COMPONENT_COUNT, DASHBOARD_COUNT, PACKAGE_MANAGERS, type PackageManagerId } from "../projects/counts";
@@ -478,10 +479,7 @@ function Hero({ onBrowse }: { onBrowse: () => void }) {
                   </div>
                 </div>
                 <div className="rounded-xl bg-surface-100 p-3 shadow-inset">
-                  <div className="flex items-center gap-1.5 font-mono text-[11px] text-surface-500">
-                    $ <span className="animate-caret text-brand-600">▌</span>
-                    <span>pnpm add @vaultui/ui</span>
-                  </div>
+                  <InstallTabs packages={["@vaultui/ui"]} compact prompt />
                 </div>
               </div>
             </div>
@@ -659,10 +657,8 @@ function SystemLab() {
                 </p>
               </div>
               <div className="rounded-xl border border-surface-200/70 bg-surface-0 p-4">
-                <p className="font-mono text-[13px] text-surface-600">
-                  <span className="text-brand-600">pnpm add</span> @vaultui/tokens @vaultui/ui
-                </p>
-                <p className="mt-1 text-[11px] text-surface-400">
+                <InstallTabs packages={["@vaultui/tokens", "@vaultui/ui"]} compact />
+                <p className="mt-2 text-[11px] text-surface-400">
                   mono = JetBrains Mono · labels, code, metadata — <em>never</em> paragraphs
                 </p>
               </div>

@@ -37,10 +37,10 @@ export function buildInstallCommand(entries: ComponentEntry[]): string {
     packages.add(e.package);
   }
   const core = packages.has("@vaultui/ui") || packages.size === 0;
-  const lines: string[] = core ? [INSTALL_COMMAND] : [`pnpm add ${KIT_PACKAGES[0]} ${KIT_PACKAGES[1]}`];
+  const lines: string[] = core ? [INSTALL_COMMAND, "# or: npm i / yarn add / bun add — same npm packages"] : [`npm i ${KIT_PACKAGES[0]} ${KIT_PACKAGES[1]}  # or: yarn add / pnpm add / bun add`];
   for (const pkg of packages) {
     if (KIT_PACKAGES.includes(pkg)) continue;
-    lines.push(`pnpm add ${pkg}  # commercial kit — ships with the purchase license`);
+    lines.push(`npm i ${pkg}  # commercial kit — ships with the purchase license`);
   }
   const theme = "@import \"@vaultui/tokens/tokens.css\";";
   return [...lines, "", "/* in your CSS entry:", `   ${theme} */`].join("\n");
@@ -60,7 +60,7 @@ function buildReadme(entries: ComponentEntry[], projectName?: string, dashboards
     "The full soft-UI theme lives in `tokens/theme.css` (design tokens for",
     "Tailwind v4: palette, radii, neumorphic shadows, motion, Inter Variable).",
     "",
-    "For npm consumers: `pnpm add @vaultui/tokens` then import in your CSS entry:",
+    "For npm consumers: `npm i @vaultui/tokens` (or `yarn add` / `pnpm add` / `bun add`) then import in your CSS entry:",
     "",
     "```css",
     "@import \"@vaultui/tokens/tokens.css\";",

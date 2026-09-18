@@ -29,6 +29,7 @@ import {
   ToastProvider,
   useToast,
 } from "@vaultui/ui";
+import { InstallTabs } from "../components/InstallTabs";
 import type { ComponentGroup } from "./types";
 
 /* ============================== demo helpers ============================== */
@@ -405,9 +406,9 @@ function KbdDemo() {
 
 function CopyButtonDemo() {
   return (
-    <div className="flex flex-wrap items-center gap-3">
-      <CopyButton value="pnpm add @vaultui/ui" label="Copy install command" />
+    <div className="flex flex-wrap items-center gap-4">
       <CopyButton value="const answer = 42;" size="md" />
+      <InstallTabs packages={["@vaultui/ui"]} compact />
     </div>
   );
 }
@@ -673,7 +674,7 @@ const entries = [
     name: "CopyButton",
     description: "Clipboard button with a copied state — install it anywhere you show snippets.",
     importName: "{ CopyButton }",
-    usage: "<CopyButton value=\"pnpm add @vaultui/ui\" />",
+    usage: "<CopyButton value=\"npm i @vaultui/ui\" label=\"npm\" />  // also yarn add / pnpm add / bun add",
     props: [{ name: "value", type: "string", description: "Text to copy." }],
   },
 ].map((e) => ({ ...e, package: "@vaultui/ui", tier: "free" as const, demo: demos[e.id] }));

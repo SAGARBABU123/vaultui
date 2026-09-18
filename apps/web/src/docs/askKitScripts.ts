@@ -58,7 +58,7 @@ export function scriptedAnswer(raw: string): ScriptHit | null {
   if (/\b(install|setup|get started|get\s?started|download|package|npm|pnpm)\b/.test(q)) {
     return {
       body: "Add a component with the CLI, or install the package:",
-      code: "npx vault-ui add switch modal toast\n\n# or via your package manager\npnpm add @vaultui/ui @vaultui/tokens",
+      code: "npx vault-ui add switch modal toast\n\n# or via any manager — npm i / yarn add / pnpm add / bun add\nnpm i @vaultui/ui @vaultui/tokens",
     };
   }
   if (/\b(cli|command line)\b/.test(q)) {

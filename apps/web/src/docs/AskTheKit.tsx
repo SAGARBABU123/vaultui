@@ -27,7 +27,7 @@ const FAQ: Array<{ q: string; a: string; code?: string }> = [
   {
     q: "how do i install",
     a: "Add a component with the CLI, or install the package:",
-    code: "npx vault-ui add switch modal toast\n\n# or via npm\npnpm add @vaultui/ui @vaultui/tokens",
+    code: "npx vault-ui add switch modal toast\n\n# or via any manager — npm i / yarn add / pnpm add / bun add\nnpm i @vaultui/ui @vaultui/tokens",
   },
   {
     q: "free tier",
@@ -80,7 +80,7 @@ export function AskTheKit() {
     return [
       `KITS AND COMPONENTS:\n${kits}`,
       `FAQ:\n${faq}`,
-      `THEMES: Neumorphic, Glassmorphism, Dimensional Layering, Vintage Retro Film.\nINSTALL: pnpm add @vaultui/ui @vaultui/tokens (or npx vault-ui init / add).`,
+      `THEMES: Neumorphic, Glassmorphism, Dimensional Layering, Vintage Retro Film.\nINSTALL: npm i / yarn add / pnpm add / bun add @vaultui/ui @vaultui/tokens (or npx vault-ui init / add).`,
     ].join("\n\n");
   }, []);
 
