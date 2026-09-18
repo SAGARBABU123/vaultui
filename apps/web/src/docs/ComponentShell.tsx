@@ -146,7 +146,14 @@ export function ComponentShell({ entry, prev, next, onNavigate, onNavigateGuidel
           <section className="mt-8">
             <SectionLabel>Usage</SectionLabel>
             <div className="grid gap-4 lg:grid-cols-2">
-              <CodeBlock title="Install" code={installSnippet(entry)} />
+              <div className="rounded-2xl border border-surface-200/70 bg-surface-0 p-4">
+                <p className="mb-2 font-mono text-[11px] font-semibold uppercase tracking-wide text-surface-400">Install</p>
+                <InstallTabs packages={[entry.package]} compact />
+                <p className="mt-3 flex items-center gap-1.5 font-mono text-[11px] text-surface-400">
+                  <Terminal className="size-3.5" />
+                  preferred: <code className="text-brand-600">npx vault-ui add {entry.id}</code>
+                </p>
+              </div>
               <CodeBlock
                 title="Import & use"
                 code={`import ${entry.importName} from "${entry.package}";\n\n${entry.usage}`}
@@ -430,10 +437,7 @@ function DemoViewChips({
   );
 }
 
-/** Install snippet — CLI first (adds the exact component), npm as fallback. */
-function installSnippet(entry: ComponentEntry): string {
-  return `# quick start — add the component with the CLI\nnpx vault-ui add ${entry.id}\n\n# or install from npm — npm i / yarn add / pnpm add / bun add\nnpm i ${entry.package}`;
-}
+/** Install tabs are rendered in the Usage section (InstallTabs per manager). */
 
 /**
  * Per-entry cart control: add to the active project, or view/remove it once
