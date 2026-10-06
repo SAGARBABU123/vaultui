@@ -96,7 +96,10 @@ jobs:
 
       - name: Pack local tarballs
         run: |
-          for p in tokens utils ui; do (cd "packages/$p" && bun pm pack); done
+          # Use `pnpm pack` (not `bun pm pack`): pnpm rewrites the
+          # `workspace:*` devDependencies to concrete versions, whereas bun
+          # cannot resolve the workspace protocol at pack time.
+          for p in tokens utils ui; do (cd "packages/$p" && pnpm pack); done
           ls packages/*/*.tgz
 
       - name: Consumer smoke test with bun (local tarballs)
