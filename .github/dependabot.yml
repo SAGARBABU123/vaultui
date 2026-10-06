@@ -1,0 +1,30 @@
+version: 2
+updates:
+  # Keeps the SHA-pinned third-party actions current: Dependabot opens a PR
+  # that bumps the commit SHA whenever a pinned action publishes a new
+  # release on the same major — this is the safe companion to SHA pinning.
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    labels:
+      - ci
+      - dependencies
+    groups:
+      github-actions:
+        patterns: ["*"]
+
+  # Root package.json + pnpm-lock.yaml. pnpm workspaces resolve all packages
+  # through the root lockfile, so this covers every app and kit.
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+    groups:
+      minor-and-patch:
+        applies-to: version-updates
+        update-types: [minor, patch]

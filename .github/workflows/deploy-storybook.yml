@@ -9,27 +9,39 @@ name: Deploy — Storybook
 # project's framework/build settings, so this can never accidentally build
 # the web app (which is what the root vercel.json would otherwise do).
 #
-# Secrets (same ones the web deploy already uses):
-#   VERCEL_TOKEN   — required
-#   VERCEL_ORG_ID  — required
+# Secrets (same ones the web deploy uses; keep under `production-storybook`
+# environment for auditability, falls back to repo secrets):
+#   VERCEL_TOKEN  — required
+#   VERCEL_ORG_ID — required
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-storybook-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   storybook:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production-storybook
     env:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 22
           cache: pnpm
@@ -56,7 +68,8 @@ jobs:
             echo "::warning::VERCEL_TOKEN not set — skipping Storybook deploy"
             exit 0
           fi
-          npx vercel deploy --prebuilt --prod --yes \
+          # Pin the CLI major so a breaking vercel CLI release can't break deploys
+          npx --yes vercel@59 deploy --prebuilt --prod --yes \
             --project vault-ui-storybook \
             --token="$VERCEL_TOKEN" \
             --scope "$VERCEL_ORG_ID" \

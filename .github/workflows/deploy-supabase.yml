@@ -3,6 +3,15 @@ name: Deploy — Supabase
 # Auto-apply database migrations whenever they change on main.
 # Uses the Supabase Management API (access token only — no DB password).
 # A `vault_migrations_applied` tracking table makes re-runs safe/idempotent.
+#
+# Secrets (keep under the `supabase` environment for auditability, falls
+# back to repo secrets):
+#   SUPABASE_ACCESS_TOKEN — dashboard → Account → Access tokens
+#   SUPABASE_PROJECT_ID  — the <ref> in https://<ref>.supabase.co
+#
+# Hardening note: this workflow executes arbitrary SQL from repo files via
+# the Management API, so the guard below is a hard fail (not a warning) if
+# the token is unset — it must never run with an empty Authorization header.
 
 on:
   push:
@@ -13,19 +22,32 @@ on:
       - ".github/workflows/deploy-supabase.yml"
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-supabase-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   db-push:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: supabase
     env:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
       SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
 
       - name: Apply migrations (Management API)
         shell: bash
         run: |
           set -euo pipefail
+          : "${SUPABASE_ACCESS_TOKEN:?SUPABASE_ACCESS_TOKEN is not set — refusing to run}"
+
           API="https://api.supabase.com/v1/projects/${SUPABASE_PROJECT_ID}/database/query"
           q() { curl -fsS -X POST \
                   -H "Authorization: Bearer ${SUPABASE_ACCESS_TOKEN}" \
