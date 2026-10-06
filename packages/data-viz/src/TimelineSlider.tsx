@@ -105,7 +105,7 @@ export function TimelineSlider({
         />
       </div>
 
-      <div className="mt-1 flex justify-between text-[11px] text-surface-400">
+      <div className="mt-1 flex justify-between text-xs text-surface-400">
         <span>{points[0]!.time}</span>
         <span className="font-mono">
           {index + 1} / {points.length}

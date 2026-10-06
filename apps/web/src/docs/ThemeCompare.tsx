@@ -47,14 +47,14 @@ export function ThemeCompare({ demo, className }: { demo: ReactNode; className?:
             }
           >
             <div className="flex items-center justify-between gap-2 px-4 py-2.5">
-              <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-surface-400">
+              <span className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-surface-400">
                 {id}
               </span>
               <select
                 value={id}
                 onChange={(e) => set(e.target.value)}
                 aria-label={`${key} theme`}
-                className="h-7 cursor-pointer rounded-md border border-surface-200 bg-surface-0 px-2 font-mono text-[11px] text-surface-600 shadow-inset outline-none focus:ring-2 focus:ring-brand-500/20"
+                className="h-7 cursor-pointer rounded-md border border-surface-200 bg-surface-0 px-2 font-mono text-xs text-surface-600 shadow-inset outline-none focus:ring-2 focus:ring-brand-500/20"
               >
                 {themes.map((t) => (
                   <option key={t.id} value={t.id}>
@@ -68,7 +68,7 @@ export function ThemeCompare({ demo, className }: { demo: ReactNode; className?:
         ))}
       </div>
       <div className="flex items-center justify-between border-t border-surface-200 bg-surface-0 px-4 py-2">
-        <span className="font-mono text-[11px] text-surface-400">
+        <span className="font-mono text-xs text-surface-400">
           Same component · two themes — live, no reload
         </span>
         <Button size="sm" variant="ghost" onClick={swap} title="Swap the themes">

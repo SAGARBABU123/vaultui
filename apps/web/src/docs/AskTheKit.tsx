@@ -168,16 +168,16 @@ export function AskTheKit() {
 
           <div className="max-h-72 space-y-3 overflow-y-auto p-4">
             {chat.length === 0 && !thinking && (
-              <p className="text-[13px] leading-relaxed text-surface-400">
+              <p className="text-sm leading-relaxed text-surface-400">
                 Ask me about any component, install, licensing, theming or pricing — local answers first, and
                 Gemini (grounded on this vault) tries the rest.
               </p>
             )}
             {chat.map((m, i) => (
-              <div key={i} className={cn("text-[13px] leading-relaxed", m.role === "user" ? "text-right text-surface-400" : "text-surface-700")}>
+              <div key={i} className={cn("text-sm leading-relaxed", m.role === "user" ? "text-right text-surface-400" : "text-surface-700")}>
                 <p style={{ whiteSpace: "pre-line" }}>
                   {m.ai && (
-                    <span className="mr-1.5 inline-block rounded bg-brand-100 px-1 py-0.5 align-middle text-[9px] font-bold uppercase tracking-wide text-brand-700">
+                    <span className="mr-1.5 inline-block rounded bg-brand-100 px-1 py-0.5 align-middle text-xs font-bold uppercase tracking-wide text-brand-700">
                       AI
                     </span>
                   )}
@@ -186,16 +186,16 @@ export function AskTheKit() {
                 {m.code && (
                   <div className="mt-2 overflow-hidden rounded-lg border border-surface-800 bg-surface-950 text-left">
                     <div className="flex items-center justify-between border-b border-surface-800 px-2.5 py-1.5">
-                      <span className="font-mono text-[10px] text-surface-400">snippet</span>
+                      <span className="font-mono text-xs text-surface-400">snippet</span>
                       <CopyButton value={m.code} label="Copy snippet" />
                     </div>
-                    <pre className="overflow-x-auto p-2.5 font-mono text-[11px] leading-relaxed text-surface-200">{m.code}</pre>
+                    <pre className="overflow-x-auto p-2.5 font-mono text-xs leading-relaxed text-surface-200">{m.code}</pre>
                   </div>
                 )}
               </div>
             ))}
             {thinking && (
-              <div className="flex items-center gap-2 text-[13px] text-surface-400">
+              <div className="flex items-center gap-2 text-sm text-surface-400">
                 <span className="inline-block size-3 animate-spin rounded-full border-2 border-surface-300 border-t-brand-600" />
                 Asking Gemini…
               </div>
@@ -208,7 +208,7 @@ export function AskTheKit() {
                 key={s}
                 type="button"
                 onClick={() => ask(s)}
-                className="rounded-full border border-surface-200 bg-surface-50 px-2.5 py-1 text-[11px] text-surface-500 transition-colors hover:bg-surface-100 hover:text-surface-800"
+                className="rounded-full border border-surface-200 bg-surface-50 px-2.5 py-1 text-xs text-surface-500 transition-colors hover:bg-surface-100 hover:text-surface-800"
               >
                 {s}
               </button>

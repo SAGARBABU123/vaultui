@@ -45,16 +45,16 @@ export function ComponentInsights({ entry }: { entry: ComponentEntry }) {
   return (
     <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
       <div className="flex flex-wrap items-center gap-1.5">
-        <span className="font-mono text-[10px] font-semibold uppercase tracking-widest text-surface-400">Footprint</span>
+        <span className="font-mono text-xs font-semibold uppercase tracking-widest text-surface-400">Footprint</span>
         <Chip tone="brand">{pkg}</Chip>
         <Chip>{tone.deps} deps</Chip>
         <Chip>~{tone.weight}</Chip>
         <Chip>{tone.files} file{tone.files === 1 ? "" : "s"}</Chip>
       </div>
       <div className="flex flex-wrap items-center gap-1.5">
-        <span className="font-mono text-[10px] font-semibold uppercase tracking-widest text-surface-400">A11y</span>
+        <span className="font-mono text-xs font-semibold uppercase tracking-widest text-surface-400">A11y</span>
         {tone.checks.map((c, i) => (
-          <span key={i} className="inline-flex items-center gap-1 rounded-full bg-success-500/10 px-2 py-0.5 text-[10px] font-medium text-success-600">
+          <span key={i} className="inline-flex items-center gap-1 rounded-full bg-success-500/10 px-2 py-0.5 text-xs font-medium text-success-600">
             <CheckIcon /> {c}
           </span>
         ))}
@@ -67,7 +67,7 @@ function Chip({ children, tone }: { children: React.ReactNode; tone?: "brand" })
   return (
     <span
       className={cn(
-        "rounded-md px-1.5 py-0.5 font-mono text-[10px]",
+        "rounded-md px-1.5 py-0.5 font-mono text-xs",
         tone === "brand" ? "bg-brand-100 font-semibold text-brand-700" : "bg-surface-100 text-surface-500",
       )}
     >

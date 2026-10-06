@@ -114,7 +114,7 @@ export function ProjectsPage() {
 
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-600">Workspace</p>
+            <p className="font-mono text-xs font-semibold uppercase tracking-[0.22em] text-brand-600">Workspace</p>
             <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">Your projects</h1>
             <p className="mt-2 max-w-xl text-sm leading-relaxed text-surface-500">
               A project is your curated kit — add components from the vault, then download the exact

@@ -1,6 +1,29 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ComponentType } from "react";
 import { Link } from "react-router-dom";
-import { BookOpen, ChevronDown, Lock } from "lucide-react";
+import {
+  BarChart3,
+  BookOpen,
+  Bot,
+  Boxes,
+  ChevronDown,
+  ClipboardCheck,
+  FolderKanban,
+  LayoutDashboard,
+  LayoutGrid,
+  Layers,
+  ListChecks,
+  Lock,
+  Megaphone,
+  Package,
+  Palette,
+  Puzzle,
+  Rocket,
+  ShoppingCart,
+  Sparkles,
+  Terminal,
+  Type,
+  Users,
+} from "lucide-react";
 import { cn } from "@vaultui/utils";
 import { useAuth } from "../auth/AuthContext";
 import { VaultLogo } from "../brand/VaultLogo";
@@ -11,6 +34,88 @@ import type { ComponentEntry, ComponentGroup, DashboardEntry, DashboardGroup } f
 function entryTo(item: ComponentEntry | DashboardEntry): string {
   if (item.id === "overview") return "/docs";
   return item.kind === "dashboard" ? `/docs/dashboards/${item.id}` : `/docs/components/${item.id}`;
+}
+
+type IconType = ComponentType<{ className?: string }>;
+
+/** One lucide glyph per kit/group so each sidebar section reads at a glance. */
+const GROUP_ICONS: Record<string, IconType> = {
+  Start: Rocket,
+  "Free tier": Package,
+  "AI Agent Kit": Bot,
+  "Collab Kit": Users,
+  "Commerce Kit": ShoppingCart,
+  "Data Viz Pro": BarChart3,
+  "Dev Tools Kit": Terminal,
+  "Marketing Kit": Megaphone,
+  "Project Kit": FolderKanban,
+  "Project Mgmt Kit": ListChecks,
+};
+
+/** Matching icons for the UI-Guidelines groups. */
+const GUIDELINE_ICONS: Record<string, IconType> = {
+  Introduction: BookOpen,
+  "Layout & Hierarchy": LayoutGrid,
+  Typography: Type,
+  "Color & Depth": Palette,
+  Components: Boxes,
+  "Advanced Components": Layers,
+  "Specialized Patterns": Puzzle,
+  "Polish & Feedback": Sparkles,
+  "Review & Tools": ClipboardCheck,
+};
+
+/**
+ * One collapsible sidebar section header: [icon] label … count [chevron].
+ * Icons sit in a fixed-width box and the label owns the flexible middle, so
+ * every section lines up on the same left edge (no text hugging the corners).
+ */
+function SectionHeader({
+  icon: Icon,
+  label,
+  count,
+  collapsed,
+  onToggle,
+  accent = false,
+}: {
+  icon: IconType;
+  label: string;
+  count?: number;
+  collapsed: boolean;
+  onToggle: () => void;
+  accent?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-expanded={!collapsed}
+      className="group mb-1.5 flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-colors hover:bg-surface-100"
+    >
+      <Icon
+        aria-hidden="true"
+        className={cn("size-4 shrink-0", accent ? "text-brand-600" : "text-surface-500")}
+      />
+      <span
+        className={cn(
+          "min-w-0 flex-1 truncate text-xs font-bold uppercase tracking-wider",
+          accent ? "text-brand-700" : "text-surface-600",
+        )}
+      >
+        {label}
+      </span>
+      {count !== undefined && (
+        <span className="shrink-0 font-mono text-xs tabular-nums text-surface-500">{count}</span>
+      )}
+      <ChevronDown
+        aria-hidden="true"
+        className={cn(
+          "size-3.5 shrink-0 text-surface-400 transition-transform duration-200",
+          collapsed && "-rotate-90",
+        )}
+      />
+    </button>
+  );
 }
 
 export interface SidebarProps {
@@ -79,7 +184,7 @@ export function Sidebar({ groups, dashboards, guidelineGroups, activeId, onSelec
       >
         <VaultLogo size={32} />
         <span className="min-w-0">
-          <span className="block text-[15px] font-semibold leading-tight tracking-tight text-surface-900">
+          <span className="block text-base font-semibold leading-tight tracking-tight text-surface-900">
             Vault&nbsp;UI
           </span>
           <NpmMetaPill />
@@ -98,19 +203,12 @@ export function Sidebar({ groups, dashboards, guidelineGroups, activeId, onSelec
             const groupCollapsed = isCollapsed(group.title);
             return (
               <div key={group.title} className="mt-0.5">
-                <button
-                  type="button"
-                  onClick={() => toggleSection(group.title)}
-                  aria-expanded={!groupCollapsed}
-                  className="mb-1 flex w-full items-center justify-between rounded-lg px-2 py-1 text-left transition-colors hover:bg-surface-100"
-                >
-                  <span className="flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-surface-500">
-                    <ChevronDown
-                      className={cn("size-3.5 text-surface-500 transition-transform duration-200", groupCollapsed && "-rotate-90")}
-                    />
-                    {group.title}
-                  </span>
-                </button>
+                <SectionHeader
+                  icon={GUIDELINE_ICONS[group.title] ?? BookOpen}
+                  label={group.title}
+                  collapsed={groupCollapsed}
+                  onToggle={() => toggleSection(group.title)}
+                />
                 {!groupCollapsed && (
                   <ul className="space-y-0.5">
                     {group.items.map((item) => {
@@ -147,20 +245,13 @@ export function Sidebar({ groups, dashboards, guidelineGroups, activeId, onSelec
         const dashCollapsed = isCollapsed("Dashboard Templates");
         return dashCount > 0 || q === "" ? (
           <div>
-            <button
-              type="button"
-              onClick={() => toggleSection("Dashboard Templates")}
-              aria-expanded={!dashCollapsed}
-              className="mb-2 flex w-full items-center justify-between rounded-lg px-2 py-1 text-left transition-colors hover:bg-surface-100"
-            >
-              <span className="flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-surface-500">
-                <ChevronDown
-                  className={cn("size-3.5 text-surface-500 transition-transform duration-200", dashCollapsed && "-rotate-90")}
-                />
-                Dashboard Templates
-              </span>
-              <span className="font-mono text-[11px] text-surface-500">{dashCount}</span>
-            </button>
+            <SectionHeader
+              icon={LayoutDashboard}
+              label="Dashboard Templates"
+              count={dashCount}
+              collapsed={dashCollapsed}
+              onToggle={() => toggleSection("Dashboard Templates")}
+            />
             {!dashCollapsed && (
               dashCount > 0 ? (
                 <ul className="space-y-0.5">
@@ -183,7 +274,7 @@ export function Sidebar({ groups, dashboards, guidelineGroups, activeId, onSelec
                             <span className="truncate">{item.name}</span>
                             <span
                               className={cn(
-                                "shrink-0 rounded px-1 py-0.5 font-mono text-[10px]",
+                                "shrink-0 rounded px-1 py-0.5 font-mono text-xs",
                                 active ? "bg-brand-100 text-brand-700" : "bg-surface-100 text-surface-400",
                               )}
                             >
@@ -211,20 +302,13 @@ export function Sidebar({ groups, dashboards, guidelineGroups, activeId, onSelec
           const groupCollapsed = isCollapsed(group.group);
           return (
             <div key={group.group}>
-              <button
-                type="button"
-                onClick={() => toggleSection(group.group)}
-                aria-expanded={!groupCollapsed}
-                className="mb-2 flex w-full items-center justify-between rounded-lg px-2 py-1 text-left transition-colors hover:bg-surface-100"
-              >
-                <span className="flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-surface-500">
-                  <ChevronDown
-                    className={cn("size-3.5 text-surface-500 transition-transform duration-200", groupCollapsed && "-rotate-90")}
-                  />
-                  {group.group}
-                </span>
-                <span className="font-mono text-[11px] text-surface-500">{group.items.length}</span>
-              </button>
+              <SectionHeader
+                icon={GROUP_ICONS[group.group] ?? Package}
+                label={group.group}
+                count={group.items.length}
+                collapsed={groupCollapsed}
+                onToggle={() => toggleSection(group.group)}
+              />
               {!groupCollapsed && (
                 <ul className="space-y-0.5">
                   {group.items.map((item) => {
@@ -245,7 +329,7 @@ export function Sidebar({ groups, dashboards, guidelineGroups, activeId, onSelec
                           <span className="truncate">{item.name}</span>
                           <span
                             className={cn(
-                              "shrink-0 rounded px-1 py-0.5 font-mono text-[10px]",
+                              "shrink-0 rounded px-1 py-0.5 font-mono text-xs",
                               item.tier === "free"
                                 ? active
                                   ? "bg-brand-100 text-brand-700"
@@ -299,7 +383,7 @@ function NpmMetaPill() {
   }, []);
 
   return (
-    <span className="mt-0.5 inline-block rounded-full bg-brand-100 px-1.5 py-0.5 font-mono text-[10px] font-medium text-brand-700">
+    <span className="mt-0.5 inline-block rounded-full bg-brand-100 px-1.5 py-0.5 font-mono text-xs font-medium text-brand-700">
       v{meta.version ?? "0.1.1"}
       {meta.downloads ? ` · ${meta.downloads} dls/mo` : ""}
     </span>

@@ -144,7 +144,7 @@ export function GiftCardBuilder({ onAddToCart, currency = "$", className }: Gift
               {amount}
             </p>
             <p className="mt-2 line-clamp-2 text-xs opacity-90">{message}</p>
-            <p className="mt-2 text-[10px] opacity-70">
+            <p className="mt-2 text-xs opacity-70">
               {recipient ? `To: ${recipient}` : "To: a smart teammate"} · from Vault UI
             </p>
           </div>

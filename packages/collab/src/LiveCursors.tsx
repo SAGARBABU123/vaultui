@@ -79,7 +79,7 @@ export function LiveCursors({
             <path d="M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 01.35-.15h6.87a.5.5 0 00.35-.85L6.35 2.86a.5.5 0 00-.85.35z" fill={c.color} stroke="white" strokeWidth="1.5" />
           </svg>
           <span
-            className="absolute left-4 top-0 whitespace-nowrap rounded-md px-1.5 py-0.5 text-[11px] font-semibold text-white shadow-soft"
+            className="absolute left-4 top-0 whitespace-nowrap rounded-md px-1.5 py-0.5 text-xs font-semibold text-white shadow-soft"
             style={{ backgroundColor: c.color }}
           >
             {c.name}
@@ -88,7 +88,7 @@ export function LiveCursors({
       ))}
 
       {autoPilot && (
-        <span className="absolute bottom-2 right-2 flex items-center gap-1.5 rounded-full bg-surface-0/90 border border-surface-200 px-2.5 py-1 text-[11px] text-surface-500 shadow-soft">
+        <span className="absolute bottom-2 right-2 flex items-center gap-1.5 rounded-full bg-surface-0/90 border border-surface-200 px-2.5 py-1 text-xs text-surface-500 shadow-soft">
           <span className="size-1.5 rounded-full bg-brand-500 animate-pulse-ring" />
           Real-time demo
         </span>

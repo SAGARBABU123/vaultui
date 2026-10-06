@@ -208,14 +208,14 @@ export function ProjectOverviewPage() {
             <section key={group}>
               <div className="mb-2 flex items-center justify-between">
                 <h2 className="text-xs font-semibold uppercase tracking-wider text-surface-400">{group}</h2>
-                <span className="font-mono text-[11px] text-surface-400">{items.length}</span>
+                <span className="font-mono text-xs text-surface-400">{items.length}</span>
               </div>
               <ul className="divide-y divide-surface-100 overflow-hidden rounded-2xl border border-surface-200 bg-surface-0 shadow-soft">
                 {items.map((item) => (
                   <li key={item.id} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-brand-50/30">
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-semibold text-surface-900">{item.name}</p>
-                      <p className="truncate font-mono text-[11px] text-surface-400">
+                      <p className="truncate font-mono text-xs text-surface-400">
                         {item.kind === "dashboard"
                           ? `template · ${item.pkgList.join(", ")}`
                           : item.pkg === "—"

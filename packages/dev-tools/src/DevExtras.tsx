@@ -44,7 +44,7 @@ export function PerformanceMonitor({ interval = 500, className }: PerformanceMon
   return (
     <div className={cn("rounded-xl border border-surface-200 bg-surface-0 p-4 shadow-soft", className)}>
       <div className="flex items-center justify-between">
-        <span className="font-mono text-[10px] uppercase tracking-widest text-surface-400">Performance</span>
+        <span className="font-mono text-xs uppercase tracking-widest text-surface-400">Performance</span>
         <span className="flex items-center gap-1.5 text-xs">
           <span className="size-1.5 animate-pulse rounded-full bg-success-500" />
           <span className="font-mono font-semibold text-surface-700">{fps.at(-1) ?? "--"} FPS</span>
@@ -99,10 +99,10 @@ export function EnvVarsTable({ vars, className }: EnvVarsTableProps) {
         <tbody>
           {vars.map((v) => (
             <tr key={v.key}>
-              <td className="font-mono text-[13px] text-brand-700">{v.key}</td>
-              <td className="font-mono text-[13px]">{v.secret ? "••••••••••••" : v.value}</td>
+              <td className="font-mono text-sm text-brand-700">{v.key}</td>
+              <td className="font-mono text-sm">{v.secret ? "••••••••••••" : v.value}</td>
               <td style={{ textAlign: "right" }}>
-                <span className={cn("font-mono text-[10px]", v.secret ? "text-danger-500" : "text-success-500")}>
+                <span className={cn("font-mono text-xs", v.secret ? "text-danger-500" : "text-success-500")}>
                   {v.secret ? "secret" : "public"}
                 </span>
               </td>
@@ -172,9 +172,9 @@ function JsonCard({ title, color, obj, keyColor }: { title: string; color: strin
     <div className="overflow-hidden rounded-lg border border-surface-200 bg-surface-950">
       <div className="flex items-center gap-2 border-b border-surface-800 px-3 py-2">
         <span className="size-2 rounded-full" style={{ background: color }} />
-        <span className="font-mono text-[11px] text-surface-400">{title}</span>
+        <span className="font-mono text-xs text-surface-400">{title}</span>
       </div>
-      <pre className="p-3 font-mono text-[11px] leading-relaxed text-surface-200">
+      <pre className="p-3 font-mono text-xs leading-relaxed text-surface-200">
         {Object.entries(obj).map(([k, v], i) => (
           <div key={k}>
             <span className={keyColor}>"{k}"</span>

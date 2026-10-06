@@ -170,15 +170,15 @@ export function ExecutiveDashboardDemo() {
           <div className="mt-4 grid grid-cols-3 gap-2 border-t border-surface-100 pt-4 text-center">
             <div>
               <p className="font-mono text-lg font-bold text-surface-900">$2.49M</p>
-              <p className="text-[11px] text-surface-400">this quarter</p>
+              <p className="text-xs text-surface-400">this quarter</p>
             </div>
             <div>
               <p className="font-mono text-lg font-bold text-brand-600">78%</p>
-              <p className="text-[11px] text-surface-400">of $3.0M target</p>
+              <p className="text-xs text-surface-400">of $3.0M target</p>
             </div>
             <div>
               <p className="font-mono text-lg font-bold text-surface-900">$2.87M</p>
-              <p className="text-[11px] text-surface-400">forecast · 30d</p>
+              <p className="text-xs text-surface-400">forecast · 30d</p>
             </div>
           </div>
         </Card>
@@ -225,7 +225,7 @@ export function ExecutiveDashboardDemo() {
           <div className="mt-4">
             <HeatmapCalendar values={ACTIVITY} max={5} weeks={10} monthEvery={5} />
           </div>
-          <div className="mt-3 flex items-center justify-end gap-1.5 text-[11px] text-surface-400">
+          <div className="mt-3 flex items-center justify-end gap-1.5 text-xs text-surface-400">
             Less
             {["bg-surface-100", "bg-brand-200", "bg-brand-400", "bg-brand-600", "bg-brand-800"].map((c) => (
               <span key={c} className={cn("size-2.5 rounded-[3px]", c)} />
@@ -245,7 +245,7 @@ export function ExecutiveDashboardDemo() {
           <div className="mt-5">
             <RoadmapTimeline items={ROADMAP_Q4} now={0} months={QUARTER_MONTHS} />
           </div>
-          <p className="mt-3 text-[11px] leading-relaxed text-surface-400">
+          <p className="mt-3 text-xs leading-relaxed text-surface-400">
             Board priorities through the quarter — statuses and milestones are token-driven.
           </p>
         </Card>

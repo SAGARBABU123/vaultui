@@ -114,7 +114,7 @@ export function CommandPalette({
                 )}
               >
                 <span className="truncate text-sm font-medium text-surface-800">{e.name}</span>
-                <span className="shrink-0 font-mono text-[10px] text-surface-400">
+                <span className="shrink-0 font-mono text-xs text-surface-400">
                   {e.kind === "dashboard" ? "template" : "tier" in e ? e.tier : ""}
                 </span>
               </button>

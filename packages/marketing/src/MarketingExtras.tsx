@@ -34,7 +34,7 @@ export function PricingSection({ plans, className }: PricingSectionProps) {
           style={p.highlighted ? { background: "linear-gradient(180deg, var(--color-brand-50), var(--color-surface-0))" } : undefined}
         >
           {p.highlighted && (
-            <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 rounded-full bg-brand-600 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
+            <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 rounded-full bg-brand-600 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide text-white">
               Popular
             </span>
           )}
@@ -43,10 +43,10 @@ export function PricingSection({ plans, className }: PricingSectionProps) {
             <span className="text-3xl font-bold tracking-tight text-surface-900">{p.price}</span>
             {p.period && <span className="text-xs text-surface-400">/{p.period}</span>}
           </div>
-          {p.description && <p className="mt-2 text-[13px] leading-relaxed text-surface-500">{p.description}</p>}
+          {p.description && <p className="mt-2 text-sm leading-relaxed text-surface-500">{p.description}</p>}
           <ul className="mt-4 flex-1 space-y-2 border-t border-surface-100 pt-4">
             {p.features.map((f, i) => (
-              <li key={i} className="flex items-start gap-2 text-[13px] text-surface-600">
+              <li key={i} className="flex items-start gap-2 text-sm text-surface-600">
                 <CheckIcon className="mt-0.5 size-3.5 shrink-0 text-success-500" />
                 <span>{f}</span>
               </li>
@@ -129,9 +129,9 @@ export function IntegrationsGrid({ integrations, className }: IntegrationsGridPr
           <div className="min-w-0">
             <div className="flex items-center gap-2">
               <p className="truncate text-sm font-semibold text-surface-800">{it.name}</p>
-              {it.tag && <span className="rounded bg-surface-100 px-1.5 py-0.5 font-mono text-[10px] text-surface-400">{it.tag}</span>}
+              {it.tag && <span className="rounded bg-surface-100 px-1.5 py-0.5 font-mono text-xs text-surface-400">{it.tag}</span>}
             </div>
-            <p className="mt-0.5 text-[13px] leading-relaxed text-surface-500">{it.description}</p>
+            <p className="mt-0.5 text-sm leading-relaxed text-surface-500">{it.description}</p>
           </div>
         </div>
       ))}
@@ -186,7 +186,7 @@ export function ComparisonSection({ features, columns, className }: ComparisonSe
                         {v ? <CheckIcon className="size-3" /> : <MinusIcon className="size-3" />}
                       </span>
                     ) : (
-                      <span className="text-[13px] text-surface-700">{v}</span>
+                      <span className="text-sm text-surface-700">{v}</span>
                     )}
                   </td>
                 );

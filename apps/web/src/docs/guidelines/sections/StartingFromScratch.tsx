@@ -88,7 +88,7 @@ export function StartingFromScratch({ agentMode }: { agentMode: boolean }) {
             {[100, 300, 500, 700, 900].map((weight) => (
               <div key={weight} className="flex flex-col items-center gap-2">
                 <div className="w-8 h-8 rounded" style={{ backgroundColor: "var(--color-brand-" + weight + ")" }}></div>
-                <span className="text-[10px] text-surface-400">{weight}</span>
+                <span className="text-xs text-surface-400">{weight}</span>
               </div>
             ))}
           </div>

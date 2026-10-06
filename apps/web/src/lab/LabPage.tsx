@@ -154,7 +154,7 @@ export function LabPage() {
 
 <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-600">Rebrand lab</p>
+            <p className="font-mono text-xs font-semibold uppercase tracking-[0.22em] text-brand-600">Rebrand lab</p>
             <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
               Drag it. <span className="text-gradient-brand">Feel it.</span>
             </h1>
@@ -249,8 +249,8 @@ export function LabPage() {
               </div>
 
               <div className="rounded-xl bg-surface-100 p-3 shadow-inset">
-                <p className="font-mono text-[10px] uppercase tracking-widest text-surface-400">Generated override</p>
-                <pre className="mt-2 max-h-40 overflow-auto font-mono text-[10px] leading-relaxed text-surface-600">
+                <p className="font-mono text-xs uppercase tracking-widest text-surface-400">Generated override</p>
+                <pre className="mt-2 max-h-40 overflow-auto font-mono text-xs leading-relaxed text-surface-600">
                   {Object.entries(overrides)
                     .map(([k, v]) => `${k}: ${v};`)
                     .join("\n")}
@@ -325,7 +325,7 @@ export function LabPage() {
               </div>
             </div>
 
-            <p className="mt-3 text-center font-mono text-[11px] text-surface-400">
+            <p className="mt-3 text-center font-mono text-xs text-surface-400">
               live preview — real components · hue / radius / elevation write CSS variables, no reload
             </p>
           </div>

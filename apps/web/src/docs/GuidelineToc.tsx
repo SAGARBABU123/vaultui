@@ -94,7 +94,7 @@ export function GuidelineToc({
   return (
     <nav aria-label="On this page" className="hidden xl:block">
       <div className="sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto scrollbar-hidden pb-8">
-        <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-surface-400">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-surface-400">
           On this page
         </p>
         <ul ref={listRef} className="space-y-0.5">
@@ -108,7 +108,7 @@ export function GuidelineToc({
                 }}
                 aria-current={active === it.id ? "true" : undefined}
                 className={cn(
-                  "block rounded-md px-2.5 py-1.5 text-[13px] leading-snug transition-colors",
+                  "block rounded-md px-2.5 py-1.5 text-sm leading-snug transition-colors",
                   it.level === 2
                     ? "font-medium text-surface-700"
                     : "text-surface-400",

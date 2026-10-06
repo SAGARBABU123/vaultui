@@ -152,7 +152,7 @@ export function SqlBuilder({ columns, table = "users", onQueryChange, className 
               <Copy className="size-3.5" />
             </button>
           </div>
-          <pre className="flex-1 overflow-auto whitespace-pre-wrap font-mono text-[13px] leading-relaxed text-surface-200">
+          <pre className="flex-1 overflow-auto whitespace-pre-wrap font-mono text-sm leading-relaxed text-surface-200">
             <code>{sql}</code>
           </pre>
         </div>

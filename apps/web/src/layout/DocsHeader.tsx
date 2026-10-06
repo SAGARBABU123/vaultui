@@ -64,7 +64,7 @@ export function DocsHeader({
               <Folder className="size-4 shrink-0 text-brand-600" />
               <span className="truncate">{activeProject ? activeProject.name : "Select a project"}</span>
               {activeProject && (
-                <span className="shrink-0 rounded-full bg-brand-100 px-1.5 py-0.5 font-mono text-[10px] font-semibold text-brand-700">
+                <span className="shrink-0 rounded-full bg-brand-100 px-1.5 py-0.5 font-mono text-xs font-semibold text-brand-700">
                   {activeProject.items.length}
                 </span>
               )}
@@ -88,7 +88,7 @@ export function DocsHeader({
                 type="button"
                 onClick={onOpenPalette}
                 aria-label="Command palette"
-                className="absolute inset-y-0 right-2 my-auto flex h-6 items-center rounded-md border border-surface-200 bg-surface-0 px-1.5 font-mono text-[10px] text-surface-400 shadow-soft transition-colors hover:text-surface-700"
+                className="absolute inset-y-0 right-2 my-auto flex h-6 items-center rounded-md border border-surface-200 bg-surface-0 px-1.5 font-mono text-xs text-surface-400 shadow-soft transition-colors hover:text-surface-700"
               >
                 ⌘K
               </button>

@@ -69,13 +69,13 @@ export function GeoMap({ regions, landmasses = DEFAULT_LAND, className }: GeoMap
             style={{ left: `${r.x}%`, top: `${r.y}%`, width: size, height: size }}
             title={`${r.label} — ${r.value}`}
           >
-            {size >= 14 && <span className="text-[10px] font-bold">{r.label[0]}</span>}
+            {size >= 14 && <span className="text-xs font-bold">{r.label[0]}</span>}
           </div>
         );
       })}
 
       {/* legend */}
-      <div className="absolute bottom-2 right-2 flex items-center gap-1 rounded-full border border-surface-200 bg-surface-0/90 px-2.5 py-1 text-[11px] text-surface-500 shadow-soft">
+      <div className="absolute bottom-2 right-2 flex items-center gap-1 rounded-full border border-surface-200 bg-surface-0/90 px-2.5 py-1 text-xs text-surface-500 shadow-soft">
         <span className="size-2 rounded-full bg-brand-600/50" style={{ width: 6, height: 6 }} />
         Min
         <span className="mx-0.5 inline-block h-1.5 w-8 rounded-full bg-gradient-to-r from-brand-600/40 to-brand-700" />

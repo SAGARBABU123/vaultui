@@ -102,7 +102,7 @@ export function PresenceList({ users, mode = "auto", className }: PresenceListPr
           {users.map((u) => (
             <li key={u.id} className="flex items-center gap-2.5 rounded-lg px-1.5 py-1.5 transition-colors hover:bg-surface-50">
               <span className="relative">
-                <span className={cn("flex size-8 items-center justify-center rounded-full text-[11px] font-bold text-white", u.color)}>
+                <span className={cn("flex size-8 items-center justify-center rounded-full text-xs font-bold text-white", u.color)}>
                   {initials(u.name)}
                 </span>
                 <span className={cn("absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full border-2 border-surface-0", statusDot[u.status])} />
@@ -111,7 +111,7 @@ export function PresenceList({ users, mode = "auto", className }: PresenceListPr
                 <span className="block truncate text-sm font-medium text-surface-800">{u.name}</span>
                 {u.activity && <span className="block truncate text-xs text-surface-400">{u.activity}</span>}
               </span>
-              <span className={cn("text-[11px] font-medium", u.status === "online" ? "text-success-500" : u.status === "idle" ? "text-warning-500" : "text-surface-400")}>
+              <span className={cn("text-xs font-medium", u.status === "online" ? "text-success-500" : u.status === "idle" ? "text-warning-500" : "text-surface-400")}>
                 {statusLabel[u.status]}
               </span>
             </li>
