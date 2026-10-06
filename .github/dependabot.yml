@@ -21,10 +21,19 @@ updates:
     directory: "/"
     schedule:
       interval: weekly
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 3
     labels:
       - dependencies
     groups:
       minor-and-patch:
         applies-to: version-updates
         update-types: [minor, patch]
+    # Majors are deliberately NOT auto-opened. They previously landed as ~10
+    # surprise PRs at once (vite 5→8, storybook 8→10, typescript 5→6,
+    # react-router 6→7 …), each needing manual migration work and each queuing
+    # a Vercel build. We upgrade majors on purpose. Security advisories are
+    # unaffected — they are handled by the separate Dependabot security-updates
+    # setting, not version updates.
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
