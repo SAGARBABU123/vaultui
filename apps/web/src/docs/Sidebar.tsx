@@ -195,10 +195,6 @@ export function Sidebar({ groups, dashboards, guidelineGroups, activeId, onSelec
           never collide with kit entries (tabs, modals, overview…). */}
       {guidelineGroups && guidelineGroups.length > 0 && (
         <div className="border-b border-surface-200/70 pb-3 pt-2">
-          <div className="mb-1 flex items-center gap-1.5 px-3 text-xs font-bold uppercase tracking-[0.18em] text-brand-700">
-            <BookOpen className="size-3.5" />
-            Guidelines
-          </div>
           {guidelineGroups.map((group) => {
             const groupCollapsed = isCollapsed(group.title);
             return (
@@ -220,7 +216,7 @@ export function Sidebar({ groups, dashboards, guidelineGroups, activeId, onSelec
                             onClick={() => onSelectGuideline?.(item.id)}
                             aria-current={active ? "page" : undefined}
                             className={cn(
-                              "flex w-full items-center rounded-lg px-2.5 py-1.5 text-left text-sm transition-colors",
+                              "flex w-full items-center rounded-lg py-1.5 pl-9 pr-2.5 text-left text-sm transition-colors",
                               active
                                 ? "bg-brand-50 font-medium text-brand-700"
                                 : "text-surface-700 hover:bg-surface-100 hover:text-surface-900",
@@ -265,7 +261,7 @@ export function Sidebar({ groups, dashboards, guidelineGroups, activeId, onSelec
                             onClick={() => onSelect(item.id)}
                             aria-current={active ? "page" : undefined}
                             className={cn(
-                              "flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-left text-sm transition-colors",
+                              "flex w-full items-center justify-between gap-2 rounded-lg py-2 pl-9 pr-2.5 text-left text-sm transition-colors",
                               active
                                 ? "bg-gradient-to-r from-brand-50 to-brand-100/60 font-medium text-brand-700"
                                 : "text-surface-700 hover:bg-surface-100 hover:text-surface-900",
@@ -287,7 +283,7 @@ export function Sidebar({ groups, dashboards, guidelineGroups, activeId, onSelec
                   )}
                 </ul>
               ) : (
-                <p className="px-2.5 pb-1 text-xs italic leading-relaxed text-surface-400">
+                <p className="pb-1 pl-9 pr-2.5 text-xs italic leading-relaxed text-surface-400">
                   Coming soon — each template ships token-driven, so all 4 themes apply.
                 </p>
               )
@@ -320,7 +316,7 @@ export function Sidebar({ groups, dashboards, guidelineGroups, activeId, onSelec
                           onClick={() => onSelect(item.id)}
                           aria-current={active ? "page" : undefined}
                           className={cn(
-                            "flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-left text-sm transition-colors",
+                            "flex w-full items-center justify-between gap-2 rounded-lg py-2 pl-9 pr-2.5 text-left text-sm transition-colors",
                             active
                               ? "bg-gradient-to-r from-brand-50 to-brand-100/60 font-medium text-brand-700"
                               : "text-surface-700 hover:bg-surface-100 hover:text-surface-900",
