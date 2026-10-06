@@ -1,0 +1,51 @@
+name: CodeQL
+
+# GitHub's semantic code scanning for the JavaScript/TypeScript surface.
+# Results appear under GitHub → Security → Code scanning.
+# `build-mode: none` covers interpreted JS/TS without needing a pnpm build,
+# so it can't be held hostage by Webpack/Vite toolchain churn.
+#
+# Permissions are the exact minimum CodeQL needs:
+#   contents: read (checkout) · security-events: write (upload results) ·
+#   actions: read (view the workflow to build a SARIF model)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "0 3 * * 1" # weekly, Monday 03:00 UTC
+
+permissions:
+  contents: read
+
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [javascript-typescript]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+
+      - uses: github/codeql-action/init@3ea06614dafe36dec890db3446326e0d40ce53d4 # v3.38.1
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: none
+
+      - uses: github/codeql-action/analyze@3ea06614dafe36dec890db3446326e0d40ce53d4 # v3.38.1
+        with:
+          category: "/language:${{ matrix.language }}"
