@@ -56,7 +56,7 @@ export function VaultLogo({ size = 32, mono = false, wordmark = false, className
         />
       </svg>
       {wordmark && (
-        <span className="whitespace-nowrap text-[15px] font-semibold leading-none tracking-tight text-surface-900">
+        <span className="whitespace-nowrap text-base font-semibold leading-none tracking-tight text-surface-900">
           Vault&nbsp;UI
         </span>
       )}

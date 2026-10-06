@@ -112,7 +112,7 @@ export function FinancialDashboardDemo() {
               <span className="text-xs font-medium text-surface-500">{k.label}</span>
               <span
                 className={cn(
-                  "rounded px-1.5 py-0.5 font-mono text-[10px] font-semibold",
+                  "rounded px-1.5 py-0.5 font-mono text-xs font-semibold",
                   k.fav ? "bg-success-500/10 text-success-500" : "bg-danger-500/10 text-danger-500",
                 )}
               >
@@ -120,7 +120,7 @@ export function FinancialDashboardDemo() {
               </span>
             </div>
             <p className="mt-1 font-mono text-2xl font-bold tabular-nums text-surface-900">{k.value}</p>
-            <p className="mt-0.5 text-[11px] text-surface-400">{k.note}</p>
+            <p className="mt-0.5 text-xs text-surface-400">{k.note}</p>
           </div>
         ))}
       </div>
@@ -135,13 +135,13 @@ export function FinancialDashboardDemo() {
               <p className="text-sm font-semibold text-surface-800">Profit &amp; loss</p>
               <Badge variant="neutral" size="sm">YTD actual vs budget</Badge>
             </div>
-            <span className="hidden font-mono text-[11px] text-surface-400 sm:block">
+            <span className="hidden font-mono text-xs text-surface-400 sm:block">
               click a line to drill through
             </span>
           </div>
 
           {/* Table head */}
-          <div className="mt-3 grid grid-cols-12 gap-2 border-b border-surface-200 pb-2 text-[10px] font-semibold uppercase tracking-wider text-surface-400">
+          <div className="mt-3 grid grid-cols-12 gap-2 border-b border-surface-200 pb-2 text-xs font-semibold uppercase tracking-wider text-surface-400">
             <span className="col-span-5">Line item</span>
             <span className="col-span-2 text-right">Actual</span>
             <span className="col-span-2 text-right">Budget</span>
@@ -173,7 +173,7 @@ export function FinancialDashboardDemo() {
             ))}
           </div>
 
-          <p className="mt-3 rounded-xl bg-brand-50 px-3 py-2.5 text-[11px] leading-relaxed text-brand-700">
+          <p className="mt-3 rounded-xl bg-brand-50 px-3 py-2.5 text-xs leading-relaxed text-brand-700">
             Accounting convention: unfavourable variances print red, favourable print green.
             Negative figures use the finance minus (−). Expand any line item to drill through
             to its components.
@@ -190,7 +190,7 @@ export function FinancialDashboardDemo() {
             <div className="mt-3">
               <WaterfallChart steps={BRIDGE} format={(n) => `$${(n / 10).toFixed(1)}M`} className="h-44" />
             </div>
-            <p className="mt-2 text-[11px] leading-relaxed text-surface-400">
+            <p className="mt-2 text-xs leading-relaxed text-surface-400">
               Revenue → cost of revenue → operating expenses → tax &amp; interest → net income.
               Total bars anchor at zero; deltas float on the running profit.
             </p>
@@ -213,14 +213,14 @@ export function FinancialDashboardDemo() {
                 { label: "Financing", value: "−$0.34M", tone: "text-danger-500" },
               ].map((c) => (
                 <div key={c.label} className="rounded-xl bg-surface-50 px-2 py-2.5">
-                  <p className="text-[10px] uppercase tracking-wide text-surface-400">{c.label}</p>
+                  <p className="text-xs uppercase tracking-wide text-surface-400">{c.label}</p>
                   <p className={cn("mt-0.5 font-mono text-sm font-bold tabular-nums", c.tone)}>{c.value}</p>
                 </div>
               ))}
             </div>
 
             <div className="mt-4">
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-surface-400">
+              <p className="text-xs font-semibold uppercase tracking-wider text-surface-400">
                 Cash position · 12 months
               </p>
               <Sparkline data={CASH_POSITION} colorClass="text-success-500" fill className="mt-1 h-12 w-full" />
@@ -303,7 +303,7 @@ function PnlLine({
         )}
         <span
           className={cn(
-            "truncate text-[13px]",
+            "truncate text-sm",
             depth > 0 ? "text-surface-500" : "text-surface-800",
             strong && "font-semibold",
             row.kind === "net" && "font-bold text-surface-900",
@@ -321,7 +321,7 @@ function PnlLine({
         <span className={cn("font-mono text-xs font-semibold tabular-nums", fav ? "text-success-500" : "text-danger-500")}>
           {diff > 0 ? "+" : ""}{usd(diff)}
         </span>
-        <span className={cn("rounded px-1 py-0.5 font-mono text-[10px]", fav ? "bg-success-500/10 text-success-500" : "bg-danger-500/10 text-danger-500")}>
+        <span className={cn("rounded px-1 py-0.5 font-mono text-xs", fav ? "bg-success-500/10 text-success-500" : "bg-danger-500/10 text-danger-500")}>
           {pct > 0 ? "+" : ""}{pct.toFixed(1)}%
         </span>
       </span>

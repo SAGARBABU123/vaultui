@@ -150,17 +150,17 @@ export function OkrTree({ objectives, className }: OkrTreeProps) {
           <div key={i} className="rounded-xl border border-surface-200 bg-surface-0 p-3.5 shadow-soft">
             <div className="flex items-center justify-between gap-3">
               <p className="text-sm font-semibold text-surface-800">{o.objective}</p>
-              <span className="shrink-0 rounded-full bg-brand-100 px-2 py-0.5 font-mono text-[11px] font-semibold text-brand-700">{avg}%</span>
+              <span className="shrink-0 rounded-full bg-brand-100 px-2 py-0.5 font-mono text-xs font-semibold text-brand-700">{avg}%</span>
             </div>
             <ul className="mt-2.5 space-y-2">
               {o.keyResults.map((k, j) => (
                 <li key={j} className="grid grid-cols-2 items-center gap-2 sm:grid-cols-[1fr_auto]">
-                  <span className="truncate text-[13px] text-surface-500">{k.label}</span>
+                  <span className="truncate text-sm text-surface-500">{k.label}</span>
                   <span className="col-span-2 flex items-center gap-2 sm:col-span-1">
                     <span className="h-1.5 w-full overflow-hidden rounded-full bg-surface-100">
                       <span className="block h-full rounded-full bg-brand-600" style={{ width: `${k.progress}%` }} />
                     </span>
-                    <span className="w-8 text-right font-mono text-[10px] text-surface-400">{k.progress}%</span>
+                    <span className="w-8 text-right font-mono text-xs text-surface-400">{k.progress}%</span>
                   </span>
                 </li>
               ))}

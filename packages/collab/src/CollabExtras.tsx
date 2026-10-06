@@ -50,18 +50,18 @@ export function CommentsThread({ comments, placeholder = "Add a comment…", onP
               <img src={c.src} alt="" className="size-7 shrink-0 rounded-full object-cover" />
             ) : (
               <span
-                className="flex size-7 shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-white"
+                className="flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
                 style={{ background: AVATAR_COLORS[i % AVATAR_COLORS.length] }}
               >
                 {initials(c.author)}
               </span>
             )}
             <div className="min-w-0 flex-1">
-              <p className="text-[13px] text-surface-700">
+              <p className="text-sm text-surface-700">
                 <span className="font-semibold text-surface-900">{c.author}</span>
                 {c.time && <span className="ml-2 text-xs text-surface-400">{c.time}</span>}
               </p>
-              <p className="mt-0.5 text-[13px] leading-relaxed text-surface-500">{c.body}</p>
+              <p className="mt-0.5 text-sm leading-relaxed text-surface-500">{c.body}</p>
             </div>
           </li>
         ))}
@@ -205,7 +205,7 @@ export function Mentions({ people, placeholder = "At-mention a teammate…", cla
           ) : (
             matches.map((p, i) => (
               <button key={p.id} type="button" data-focused={i === idx} onMouseEnter={() => setIdx(i)} onClick={() => insert(p)} className="vault-combobox__option">
-                <span className="flex size-6 items-center justify-center rounded-full bg-brand-100 text-[10px] font-bold text-brand-700">{initials(p.name)}</span>
+                <span className="flex size-6 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">{initials(p.name)}</span>
                 <span className="text-sm">{p.name}</span>
               </button>
             ))

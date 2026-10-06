@@ -48,15 +48,15 @@ export function Badges({ agentMode }: { agentMode: boolean }) {
           <div className="p-6 bg-white border border-surface-200 rounded-lg shadow-sm w-full max-w-md mx-auto space-y-4">
             <div className="flex justify-between items-center pb-4 border-b border-surface-100">
               <span className="font-medium text-surface-900">Invoice #1024</span>
-              <span className="bg-success-50 text-success-700 border border-success-200/50 text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded">Paid</span>
+              <span className="bg-success-50 text-success-700 border border-success-200/50 text-xs uppercase tracking-wider font-bold px-2 py-0.5 rounded">Paid</span>
             </div>
             <div className="flex justify-between items-center pb-4 border-b border-surface-100">
               <span className="font-medium text-surface-900">Invoice #1025</span>
-              <span className="bg-yellow-50 text-yellow-800 border border-yellow-200/50 text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded">Pending</span>
+              <span className="bg-yellow-50 text-yellow-800 border border-yellow-200/50 text-xs uppercase tracking-wider font-bold px-2 py-0.5 rounded">Pending</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="font-medium text-surface-900">Invoice #1026</span>
-              <span className="bg-danger-50 text-danger-700 border border-danger-200/50 text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded">Failed</span>
+              <span className="bg-danger-50 text-danger-700 border border-danger-200/50 text-xs uppercase tracking-wider font-bold px-2 py-0.5 rounded">Failed</span>
             </div>
           </div>
         }

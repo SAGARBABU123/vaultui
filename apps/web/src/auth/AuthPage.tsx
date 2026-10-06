@@ -57,7 +57,7 @@ function PasswordField({
           {visible ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
         </button>
       </div>
-      {hint && <span className="mt-1 block text-[11px] text-surface-400">{hint}</span>}
+      {hint && <span className="mt-1 block text-xs text-surface-400">{hint}</span>}
     </label>
   );
 }
@@ -273,7 +273,7 @@ export function AuthPage({ mode: reqMode }: { mode: "sign-in" | "sign-up" }) {
           )}
         </p>
 
-        <p className="mt-4 flex items-center justify-center gap-2 text-center text-[11px] text-surface-400">
+        <p className="mt-4 flex items-center justify-center gap-2 text-center text-xs text-surface-400">
           <Badge variant={mode === "supabase" ? "success" : "warning"} size="sm">
             <ShieldCheck className="mr-1 size-3" /> {mode === "supabase" ? "Supabase auth" : "demo mode"}
           </Badge>

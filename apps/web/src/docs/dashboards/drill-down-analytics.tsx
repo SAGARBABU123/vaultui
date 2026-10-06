@@ -198,7 +198,7 @@ export function DrillDownAnalyticsDemo() {
             )}
           </span>
         ))}
-        <span className="ml-auto hidden font-mono text-[11px] text-surface-400 sm:block">
+        <span className="ml-auto hidden font-mono text-xs text-surface-400 sm:block">
           level {level + 1} of 2
         </span>
       </div>
@@ -276,7 +276,7 @@ export function DrillDownAnalyticsDemo() {
             <p className="mt-2 font-mono text-2xl font-bold tabular-nums text-brand-600">
               $<AnimatedCounter value={selectedRow.revenue * scale} format={(n) => `${Math.round(n).toLocaleString()}k`} />
             </p>
-            <p className="text-[11px] text-surface-400">revenue · {region} region</p>
+            <p className="text-xs text-surface-400">revenue · {region} region</p>
 
             <div className="mt-4">
               <Sparkline data={selectedRow.trend} colorClass="text-brand-600" fill className="h-16 w-full" />
@@ -296,7 +296,7 @@ export function DrillDownAnalyticsDemo() {
             </dl>
 
             {/* Channel split — linked bars */}
-            <p className="mt-4 text-[11px] font-semibold uppercase tracking-wider text-surface-400">Channel split</p>
+            <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-surface-400">Channel split</p>
             <div className="mt-2 space-y-2">
               {[
                 { label: "Direct", pct: 42, cls: "bg-brand-600" },
@@ -308,7 +308,7 @@ export function DrillDownAnalyticsDemo() {
                   <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-surface-200">
                     <div className={cn("h-full rounded-full", ch.cls)} style={{ width: `${ch.pct}%` }} />
                   </div>
-                  <span className="w-8 shrink-0 text-right font-mono text-[11px] text-surface-600">{ch.pct}%</span>
+                  <span className="w-8 shrink-0 text-right font-mono text-xs text-surface-600">{ch.pct}%</span>
                 </div>
               ))}
             </div>
@@ -325,7 +325,7 @@ export function DrillDownAnalyticsDemo() {
               <p className="text-sm font-semibold text-surface-800">Revenue bridge</p>
               <Badge variant="neutral" size="sm">{crumbs[crumbs.length - 1]!.label}</Badge>
             </div>
-            <span className="font-mono text-[11px] text-surface-400">follows the drilled level</span>
+            <span className="font-mono text-xs text-surface-400">follows the drilled level</span>
           </div>
           <div className="mt-3">
             <WaterfallChart
@@ -334,7 +334,7 @@ export function DrillDownAnalyticsDemo() {
               className="h-52"
             />
           </div>
-          <p className="mt-2 text-[11px] text-surface-400">
+          <p className="mt-2 text-xs text-surface-400">
             Deltas ladder the current level's rows; the total bar anchors at zero. Selecting a row and
             drilling keeps the breadcrumb, trail and bridge in sync.
           </p>
@@ -350,12 +350,12 @@ export function DrillDownAnalyticsDemo() {
             {trail.map((t) => (
               <li key={t.id} className="flex items-center gap-2 rounded-lg bg-surface-50 px-2.5 py-2">
                 <ArrowRight className="size-3.5 shrink-0 text-brand-600" />
-                <span className="min-w-0 flex-1 truncate text-[13px] text-surface-700">{t.action}</span>
-                <code className="font-mono text-[10px] text-surface-400">{t.time}</code>
+                <span className="min-w-0 flex-1 truncate text-sm text-surface-700">{t.action}</span>
+                <code className="font-mono text-xs text-surface-400">{t.time}</code>
               </li>
             ))}
           </ol>
-          <p className="mt-3 text-[11px] leading-relaxed text-surface-400">
+          <p className="mt-3 text-xs leading-relaxed text-surface-400">
             Every zoom, filter and reset is recorded here — trace exactly how you got to the detail.
           </p>
         </div>
@@ -425,11 +425,11 @@ function TreeRow({
         <ChevronDown className={cn("size-4 transition-transform", (expanded || !hasChildren) && "-rotate-90")} />
       </button>
 
-      <span className={cn("min-w-0 flex-1 truncate text-[13px] font-medium", depth > 0 ? "text-surface-500" : "text-surface-800")}>
+      <span className={cn("min-w-0 flex-1 truncate text-sm font-medium", depth > 0 ? "text-surface-500" : "text-surface-800")}>
         {row.name}
       </span>
       {depth === 0 && (
-        <span className={cn("hidden font-mono text-[11px] sm:block", row.delta >= 0 ? "text-success-500" : "text-danger-500")}>
+        <span className={cn("hidden font-mono text-xs sm:block", row.delta >= 0 ? "text-success-500" : "text-danger-500")}>
           {row.delta >= 0 ? "▲" : "▼"} {Math.abs(row.delta).toFixed(1)}%
         </span>
       )}
@@ -446,7 +446,7 @@ function TreeRow({
             e.stopPropagation();
             onDrill?.();
           }}
-          className="inline-flex shrink-0 items-center gap-1 rounded-md bg-surface-100 px-1.5 py-1 text-[11px] font-medium text-surface-600 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-brand-50 hover:text-brand-700"
+          className="inline-flex shrink-0 items-center gap-1 rounded-md bg-surface-100 px-1.5 py-1 text-xs font-medium text-surface-600 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-brand-50 hover:text-brand-700"
         >
           explore <ZoomIn className="size-3" />
         </button>

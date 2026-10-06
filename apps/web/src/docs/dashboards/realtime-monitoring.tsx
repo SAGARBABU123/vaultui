@@ -143,7 +143,7 @@ export function RealtimeMonitoringDemo() {
           >
             <span className={cn("size-2 animate-pulse rounded-full", s.cls)} />
             {s.name}
-            <span className="font-mono text-[10px] uppercase text-surface-400">{s.state}</span>
+            <span className="font-mono text-xs uppercase text-surface-400">{s.state}</span>
           </span>
         ))}
       </div>
@@ -192,7 +192,7 @@ export function RealtimeMonitoringDemo() {
               <span className="text-xs font-medium text-surface-500">{m.label}</span>
               <span
                 className={cn(
-                  "font-mono text-[10px]",
+                  "font-mono text-xs",
                   m.up ? "text-success-500" : "text-danger-500",
                 )}
               >
@@ -223,7 +223,7 @@ export function RealtimeMonitoringDemo() {
               <p className="text-sm font-semibold text-surface-800">Request traffic</p>
               <Badge variant="success" size="sm">LIVE</Badge>
             </div>
-            <div className="flex items-center gap-3 font-mono text-[11px] text-surface-400">
+            <div className="flex items-center gap-3 font-mono text-xs text-surface-400">
               <span>
                 cur <span className="text-success-500">{traffic[traffic.length - 1]}</span>
               </span>
@@ -241,7 +241,7 @@ export function RealtimeMonitoringDemo() {
           <div className="mt-4">
             <Sparkline data={traffic} colorClass="text-success-500" fill className="h-44 w-full" />
           </div>
-          <p className="mt-3 text-[11px] text-surface-400">
+          <p className="mt-3 text-xs text-surface-400">
             websocket stream · 1 sample / 2.5s · green = inside budget, spikes = load events
           </p>
         </div>
@@ -285,13 +285,13 @@ export function RealtimeMonitoringDemo() {
               >
                 <Badge variant={a.severity} size="sm" dot className="mt-0.5 shrink-0" />
                 <div className="min-w-0">
-                  <p className="text-[13px] leading-snug text-surface-700">{a.title}</p>
-                  <p className="mt-0.5 font-mono text-[10px] text-surface-400">{a.time} ago</p>
+                  <p className="text-sm leading-snug text-surface-700">{a.title}</p>
+                  <p className="mt-0.5 font-mono text-xs text-surface-400">{a.time} ago</p>
                 </div>
               </li>
             ))}
           </ul>
-          <p className="mt-3 text-[11px] leading-relaxed text-surface-400">
+          <p className="mt-3 text-xs leading-relaxed text-surface-400">
             Auto-refresh streams metrics, the chart and the console — every card follows the
             active theme.
           </p>

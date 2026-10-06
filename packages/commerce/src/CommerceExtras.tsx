@@ -69,10 +69,10 @@ export function Invoice({ number, issued, due, client, lines, currency = "$", cl
     <div className={cn("rounded-xl border border-surface-200 bg-surface-0 p-5 shadow-soft", className)}>
       <div className="flex flex-wrap items-start justify-between gap-3 border-b border-surface-100 pb-4">
         <div>
-          <p className="font-mono text-[10px] uppercase tracking-widest text-surface-400">Invoice</p>
+          <p className="font-mono text-xs uppercase tracking-widest text-surface-400">Invoice</p>
           <p className="mt-1 text-lg font-bold text-surface-900">#{number}</p>
         </div>
-        <div className="text-right text-[13px] text-surface-500">
+        <div className="text-right text-sm text-surface-500">
           <p>Issued {issued}</p>
           {due && <p>Due {due}</p>}
           {client}
@@ -212,7 +212,7 @@ export function CouponPicker({ coupons, onApplied, className }: CouponPickerProp
       )}
       <div className="flex flex-wrap gap-2">
         {coupons.map((c) => (
-          <button key={c.code} type="button" onClick={() => { setCode(c.code); onApplied?.(c); }} className="rounded-full border border-brand-200 bg-brand-50 px-2.5 py-1 font-mono text-[11px] text-brand-700 hover:bg-brand-100">
+          <button key={c.code} type="button" onClick={() => { setCode(c.code); onApplied?.(c); }} className="rounded-full border border-brand-200 bg-brand-50 px-2.5 py-1 font-mono text-xs text-brand-700 hover:bg-brand-100">
             {c.code} · {c.discount}
           </button>
         ))}

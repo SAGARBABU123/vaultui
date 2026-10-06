@@ -60,7 +60,7 @@ export function GanttChart({ tasks, weeks = 16, className }: GanttChartProps) {
               className="grid border-b border-surface-100 last:border-b-0"
               style={{ gridTemplateColumns: `180px repeat(${weeks}, minmax(0,1fr))`, gridTemplateRows: "auto" }}
             >
-              <div className="truncate px-4 py-2.5 text-[13px] font-medium text-surface-700">{task.name}</div>
+              <div className="truncate px-4 py-2.5 text-sm font-medium text-surface-700">{task.name}</div>
               <div className="relative col-span-16 h-9">
                 {axis.map((_, i) => (
                   <div key={i} className="absolute inset-y-0 w-[6.25%] border-l border-surface-50 first:border-l-0" style={{ left: `${i * 6.25}%` }} />

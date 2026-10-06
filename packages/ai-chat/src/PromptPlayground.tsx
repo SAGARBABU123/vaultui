@@ -214,7 +214,7 @@ function PromptPane({
         rows={6}
         onChange={(e) => onChange(e.target.value)}
         spellCheck={false}
-        className="h-full min-h-[7rem] w-full resize-none bg-transparent p-3 font-mono text-[13px] leading-relaxed text-surface-700 outline-none read-only:cursor-default"
+        className="h-full min-h-[7rem] w-full resize-none bg-transparent p-3 font-mono text-sm leading-relaxed text-surface-700 outline-none read-only:cursor-default"
       />
     </div>
   );

@@ -232,9 +232,9 @@ function Nav() {
       <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <a href="#top" className="flex items-center gap-2.5 font-semibold tracking-tight">
           <VaultLogo size={32} />
-          <span className="text-[15px]">
+          <span className="text-base">
             Vault&nbsp;UI
-            <span className="ml-2 hidden rounded-full bg-brand-100 px-2 py-0.5 text-[11px] font-medium text-brand-700 sm:inline-block">
+            <span className="ml-2 hidden rounded-full bg-brand-100 px-2 py-0.5 text-xs font-medium text-brand-700 sm:inline-block">
               soft ui · v0.1.1
             </span>
           </span>
@@ -345,7 +345,7 @@ function Hero({ onBrowse }: { onBrowse: () => void }) {
               The details are not the details. They make the design.
               <span aria-hidden="true" className="select-none text-brand-400">”</span>
             </blockquote>
-            <figcaption className="mt-3 font-mono text-[11px] uppercase tracking-[0.2em] text-surface-400">
+            <figcaption className="mt-3 font-mono text-xs uppercase tracking-[0.2em] text-surface-400">
               — Charles Eames
             </figcaption>
           </figure>
@@ -424,7 +424,7 @@ function Hero({ onBrowse }: { onBrowse: () => void }) {
                 <span className="size-2.5 rounded-full bg-warning-500" />
                 <span className="size-2.5 rounded-full bg-info-500" />
               </div>
-              <code className="font-mono text-[11px] text-surface-400">@vaultui/tokens · tokens.css</code>
+              <code className="font-mono text-xs text-surface-400">@vaultui/tokens · tokens.css</code>
               <Badge variant="success" size="sm">live theme</Badge>
             </div>
             <div className="grid gap-px bg-surface-200/70 sm:grid-cols-2">
@@ -434,7 +434,7 @@ function Hero({ onBrowse }: { onBrowse: () => void }) {
                   <span className="text-5xl font-bold leading-none">Aa</span>
                   <div>
                     <p className="text-sm font-semibold">Inter Variable</p>
-                    <p className="font-mono text-[11px] text-surface-400">display · body · mono</p>
+                    <p className="font-mono text-xs text-surface-400">display · body · mono</p>
                   </div>
                 </div>
                 <div>
@@ -468,7 +468,7 @@ function Hero({ onBrowse }: { onBrowse: () => void }) {
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <Card padding="sm" hover className="rounded-xl transition-transform duration-300 hover:-translate-y-0.5">
-                    <p className="text-[11px] font-semibold uppercase tracking-wide text-surface-400">Sparkline</p>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-surface-400">Sparkline</p>
                     <p className="mt-1 text-lg font-bold tracking-tight text-brand-600">+12.4%</p>
                     <Sparkline data={[8, 11, 9, 13, 12, 15, 14, 18]} colorClass="text-brand-600" className="mt-2 aspect-[100/28]" />
                   </Card>
@@ -485,7 +485,7 @@ function Hero({ onBrowse }: { onBrowse: () => void }) {
             </div>
 
             {/* inside the vault — the component inventory, one scrolling row */}
-            <div className="flex items-center gap-x-3 gap-y-1.5 overflow-x-auto border-t border-surface-200/70 bg-surface-0 px-5 py-3 font-mono text-[11px] text-surface-400 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex items-center gap-x-3 gap-y-1.5 overflow-x-auto border-t border-surface-200/70 bg-surface-0 px-5 py-3 font-mono text-xs text-surface-400 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               <span className="shrink-0 font-semibold uppercase tracking-wider text-surface-500">Inside the vault</span>
               {["ChatCanvas", "KpiCard", "SankeyDiagram", "PricingTable", "LogStream", "KanbanBoard", "LiveCursors", "CronBuilder", "GiftCardBuilder", "GeoMap"].map((n) => (
                 <span key={n} className="flex shrink-0 items-center gap-3">
@@ -551,7 +551,7 @@ function Philosophy() {
       <div className="mt-12 grid gap-4 md:grid-cols-3">
         {PILLARS.map((p, i) => (
           <Card key={p.title} padding="lg" hover className="group relative flex flex-col overflow-hidden transition-all duration-300 hover:-translate-y-1">
-            <span className="pointer-events-none absolute right-4 top-4 font-mono text-[11px] font-semibold text-surface-300 transition-colors duration-300 group-hover:text-brand-400">
+            <span className="pointer-events-none absolute right-4 top-4 font-mono text-xs font-semibold text-surface-300 transition-colors duration-300 group-hover:text-brand-400">
               {String(i + 1).padStart(2, "0")}
             </span>
             <div className="flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-brand-100 to-brand-200 text-brand-700 shadow-inset transition-all duration-300 group-hover:from-brand-500 group-hover:to-brand-600 group-hover:text-white">
@@ -559,7 +559,7 @@ function Philosophy() {
             </div>
             <h3 className="mt-5 text-base font-semibold tracking-tight">{p.title}</h3>
             <p className="mt-2 flex-1 text-sm leading-relaxed text-surface-500">{p.body}</p>
-            <code className="mt-5 self-start rounded-md bg-surface-100 px-2 py-0.5 font-mono text-[11px] text-surface-500">
+            <code className="mt-5 self-start rounded-md bg-surface-100 px-2 py-0.5 font-mono text-xs text-surface-500">
               {p.tag}
             </code>
           </Card>
@@ -603,7 +603,7 @@ function SystemLab() {
                   {scales.brand.map((c) => (
                     <li
                       key={c.name}
-                      className="flex items-center justify-between px-3 py-[7px] text-[11px]"
+                      className="flex items-center justify-between px-3 py-[7px] text-xs"
                       style={{ backgroundColor: c.hex, color: swatchText(c.hex) }}
                     >
                       <span className="font-mono font-semibold">brand-{c.name}</span>
@@ -619,7 +619,7 @@ function SystemLab() {
                     {scales.surface.map((c) => (
                       <li
                         key={c.name}
-                        className="flex items-center justify-between px-3 py-[5px] font-mono text-[10px]"
+                        className="flex items-center justify-between px-3 py-[5px] font-mono text-xs"
                         style={{ backgroundColor: c.hex, color: swatchText(c.hex) }}
                       >
                         <span className="font-semibold">{c.name}</span>
@@ -637,7 +637,7 @@ function SystemLab() {
                           <span className="size-3 rounded-full" style={{ backgroundColor: c.hex }} />
                           {c.name}
                         </span>
-                        <code className="font-mono text-[10px] uppercase text-surface-400">{c.hex}</code>
+                        <code className="font-mono text-xs uppercase text-surface-400">{c.hex}</code>
                       </li>
                     ))}
                   </ul>
@@ -658,7 +658,7 @@ function SystemLab() {
               </div>
               <div className="rounded-xl border border-surface-200/70 bg-surface-0 p-4">
                 <InstallTabs packages={["@vaultui/tokens", "@vaultui/ui"]} compact />
-                <p className="mt-2 text-[11px] text-surface-400">
+                <p className="mt-2 text-xs text-surface-400">
                   mono = JetBrains Mono · labels, code, metadata — <em>never</em> paragraphs
                 </p>
               </div>
@@ -675,8 +675,8 @@ function SystemLab() {
                     className="w-full border border-surface-300 bg-gradient-to-br from-brand-100 to-brand-600"
                     style={{ height: 22 + i * 12, borderRadius: r.px }}
                   />
-                  <span className="font-mono text-[10px] text-surface-500">{r.token}</span>
-                  <span className="font-mono text-[10px] text-surface-400">{r.px}</span>
+                  <span className="font-mono text-xs text-surface-500">{r.token}</span>
+                  <span className="font-mono text-xs text-surface-400">{r.px}</span>
                 </div>
               ))}
             </div>
@@ -703,7 +703,7 @@ function SystemLab() {
                   className={cn("flex items-center justify-between rounded-xl bg-surface-0 px-4 py-3", s.cls)}
                 >
                   <code className="font-mono text-xs font-semibold text-surface-700">{s.name}</code>
-                  <span className="text-[11px] text-surface-400">{s.note}</span>
+                  <span className="text-xs text-surface-400">{s.note}</span>
                 </div>
               ))}
             </div>
@@ -734,7 +734,7 @@ function SystemLab() {
             </div>
             <p className="mt-4 text-xs leading-relaxed text-surface-400">
               Cursors, dots, pulse rings and rise transitions — snappy in, quiet out. Respects{" "}
-              <code className="font-mono text-[10px]">prefers-reduced-motion</code>.
+              <code className="font-mono text-xs">prefers-reduced-motion</code>.
             </p>
           </Card>
         </div>
@@ -766,7 +766,7 @@ function KitsSection({ onBrowse }: { onBrowse: () => void }) {
             </div>
             <h3 className="mt-5 text-base font-semibold tracking-tight">{k.name}</h3>
             <p className="mt-2 flex-1 text-sm leading-relaxed text-surface-500">{k.blurb}</p>
-            <code className="mt-5 self-start rounded-md bg-surface-100 px-2 py-0.5 font-mono text-[11px] text-brand-700">
+            <code className="mt-5 self-start rounded-md bg-surface-100 px-2 py-0.5 font-mono text-xs text-brand-700">
               {k.pkg}
             </code>
           </Card>
@@ -838,7 +838,7 @@ function Licensing() {
                 <li key={pkg} className="flex items-start gap-3 text-sm">
                   <Check className="mt-0.5 size-4 shrink-0 text-success-500" />
                   <span>
-                    <code className="font-mono text-[13px] font-semibold text-surface-700">{pkg}</code>
+                    <code className="font-mono text-sm font-semibold text-surface-700">{pkg}</code>
                     <span className="text-surface-400"> — {desc}</span>
                   </span>
                 </li>
@@ -863,7 +863,7 @@ function Licensing() {
                     <k.icon className="mr-2 inline size-4 align-[-2px] text-surface-500" />
                     {k.name}
                   </span>
-                  <code className="font-mono text-[11px] text-surface-400">{k.count} components</code>
+                  <code className="font-mono text-xs text-surface-400">{k.count} components</code>
                 </li>
               ))}
             </ul>
@@ -927,7 +927,7 @@ function InstallSection({ onBrowse }: { onBrowse: () => void }) {
           <div
             role="tablist"
             aria-label="Package manager"
-            className="flex items-center gap-0.5 rounded-lg bg-surface-800/70 p-0.5 font-mono text-[11px]"
+            className="flex items-center gap-0.5 rounded-lg bg-surface-800/70 p-0.5 font-mono text-xs"
           >
             {PACKAGE_MANAGERS.map((m) => (
               <button
@@ -952,7 +952,7 @@ function InstallSection({ onBrowse }: { onBrowse: () => void }) {
             onClick={copyInstall}
             aria-label="Copy install command"
             className={cn(
-              "inline-flex items-center gap-1.5 rounded-md px-2 py-1 font-mono text-[11px] transition-colors",
+              "inline-flex items-center gap-1.5 rounded-md px-2 py-1 font-mono text-xs transition-colors",
               copied ? "bg-success-500/20 text-success-500" : "text-surface-400 hover:bg-surface-800 hover:text-surface-200",
             )}
           >
@@ -962,9 +962,9 @@ function InstallSection({ onBrowse }: { onBrowse: () => void }) {
         </div>
         <div className="flex items-start gap-3 p-5">
           <span aria-hidden="true" className="mt-1 font-mono text-sm text-success-500">$</span>
-          <code className="font-mono text-[13px] leading-relaxed text-surface-100">{activeCommand}</code>
+          <code className="font-mono text-sm leading-relaxed text-surface-100">{activeCommand}</code>
         </div>
-        <p className="mt-3 font-mono text-[11px] text-surface-400">
+        <p className="mt-3 font-mono text-xs text-surface-400">
           …or a single component: <code className="text-brand-400">npx vault-ui add switch modal</code>
         </p>
       </div>
@@ -1007,7 +1007,7 @@ function FinalCta({ onBrowse }: { onBrowse: () => void }) {
           <blockquote className="text-lg font-light italic leading-relaxed text-surface-600">
             “A product feels designed when the details never have to be explained.”
           </blockquote>
-          <figcaption className="mt-2 font-mono text-[11px] uppercase tracking-[0.2em] text-surface-400">— the principle this library is built around</figcaption>
+          <figcaption className="mt-2 font-mono text-xs uppercase tracking-[0.2em] text-surface-400">— the principle this library is built around</figcaption>
         </figure>
         <h2 className="mt-8 text-3xl font-bold tracking-tight sm:text-5xl">
           Now build something that
@@ -1057,7 +1057,7 @@ function Footer() {
             </a>
           </nav>
         </div>
-        <p className="mt-8 text-center font-mono text-[11px] text-surface-400 sm:text-left">
+        <p className="mt-8 text-center font-mono text-xs text-surface-400 sm:text-left">
           MIT + Commercial · {TOTAL_COMPONENTS} components · token-driven · the details are not the details
         </p>
       </div>
@@ -1070,7 +1070,7 @@ function Footer() {
 function SectionHeading({ kicker, title, body }: { kicker: string; title: React.ReactNode; body: string }) {
   return (
     <div className="mx-auto max-w-2xl text-center">
-      <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-600">{kicker}</p>
+      <p className="font-mono text-xs font-semibold uppercase tracking-[0.22em] text-brand-600">{kicker}</p>
       <h2 className="mt-3 text-3xl font-bold leading-tight tracking-tight text-surface-900 sm:text-4xl">
         {title}
       </h2>
@@ -1081,7 +1081,7 @@ function SectionHeading({ kicker, title, body }: { kicker: string; title: React.
 
 function LabLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="mb-2 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-surface-400">{children}</p>
+    <p className="mb-2 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-surface-400">{children}</p>
   );
 }
 
@@ -1093,7 +1093,7 @@ function PanelHeader({ icon, title, caption }: { icon: React.ReactNode; title: s
       </div>
       <div>
         <h3 className="text-sm font-semibold tracking-tight">{title}</h3>
-        <p className="mt-0.5 font-mono text-[11px] text-surface-400">{caption}</p>
+        <p className="mt-0.5 font-mono text-xs text-surface-400">{caption}</p>
       </div>
     </div>
   );

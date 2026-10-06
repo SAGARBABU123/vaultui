@@ -100,10 +100,10 @@ export function AdvancedOverlays({ agentMode }: { agentMode: boolean }) {
             </div>
             <div className="p-2 space-y-4">
               <div>
-                <div className="text-[10px] font-bold uppercase tracking-wider text-surface-400 px-2 mb-1">Navigation</div>
+                <div className="text-xs font-bold uppercase tracking-wider text-surface-400 px-2 mb-1">Navigation</div>
                 <div className="px-2 py-1.5 bg-brand-50 text-brand-700 rounded-md text-sm font-medium flex items-center justify-between">
                   General Settings
-                  <span className="text-[10px] bg-white border border-brand-200 px-1 rounded shadow-sm">↵</span>
+                  <span className="text-xs bg-white border border-brand-200 px-1 rounded shadow-sm">↵</span>
                 </div>
                 <div className="px-2 py-1.5 text-surface-600 rounded-md text-sm hover:bg-surface-50 flex items-center justify-between">
                   Billing Settings

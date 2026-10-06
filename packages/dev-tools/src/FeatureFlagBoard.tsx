@@ -56,7 +56,7 @@ export function FeatureFlagBoard({ flags: initial, onChange, className }: Featur
               className="flex flex-col gap-3 border-b border-surface-100 px-4 py-3 last:border-b-0 sm:flex-row sm:items-center"
             >
               <div className="min-w-0 sm:w-52">
-                <code className="font-mono text-[13px] font-semibold text-surface-800">{f.id}</code>
+                <code className="font-mono text-sm font-semibold text-surface-800">{f.id}</code>
                 <p className="truncate text-xs text-surface-400">{f.description}</p>
               </div>
 

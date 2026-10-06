@@ -82,9 +82,9 @@ export function FunnelChart({ stages, showConversion = true, className }: Funnel
             >
               {s.value}
             </div>
-            <span className="font-mono text-[10px] text-surface-400">{s.label}</span>
+            <span className="font-mono text-xs text-surface-400">{s.label}</span>
             {showConversion && prev !== null && (
-              <span className="font-mono text-[9px] text-success-500">{Math.round((s.value / prev) * 100)}%</span>
+              <span className="font-mono text-xs text-success-500">{Math.round((s.value / prev) * 100)}%</span>
             )}
           </div>
         );
@@ -159,14 +159,14 @@ export function BulletChart({ value, target, max, label, q1 = 0.6 * max, q2 = 0.
   const pct = (n: number) => `${Math.max(0, Math.min(100, (n / Math.max(1, max)) * 100))}%`;
   return (
     <div className={cn("space-y-1", className)} role="img" aria-label={`Bullet chart: ${value} of ${max}, target ${target}`}>
-      {label && <div className="font-mono text-[10px] text-surface-400">{label}</div>}
+      {label && <div className="font-mono text-xs text-surface-400">{label}</div>}
       <div className="relative h-3.5 rounded-full bg-surface-100 shadow-inset">
         <div className="absolute inset-y-0 left-0 rounded-full" style={{ width: pct(q1), background: "var(--color-surface-200)" }} />
         <div className="absolute inset-y-0 left-0 rounded-full" style={{ width: pct(q2), background: "var(--color-surface-300)" }} />
         <div className="absolute inset-y-0 left-0 rounded-full" style={{ width: pct(value), background: "var(--color-brand-600)" }} />
         <div className="absolute -top-0.5 bottom-0.5 w-1 rounded-full bg-surface-900" style={{ left: pct(target) }} title={`target ${target}`} />
       </div>
-      <div className="flex justify-between font-mono text-[10px] text-surface-400">
+      <div className="flex justify-between font-mono text-xs text-surface-400">
         <span>{value}</span>
         <span>target {target}</span>
         <span>{max}</span>

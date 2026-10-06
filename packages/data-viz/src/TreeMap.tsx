@@ -90,7 +90,7 @@ export function TreeMap({ items, heightClass = "h-[320px]", className }: TreeMap
           style={{ left: `${r.x}%`, top: `${r.y}%`, width: `${r.w}%`, height: `${r.h}%` }}
           title={`${r.item.label}: ${r.item.value}`}
         >
-          <span className="truncate text-[13px] font-semibold leading-tight">{r.item.label}</span>
+          <span className="truncate text-sm font-semibold leading-tight">{r.item.label}</span>
           {(r.w > 12 || r.h > 12) && (
             <span className="truncate text-xs opacity-70">
               {Math.round((r.item.value / maxValue) * 100)}%

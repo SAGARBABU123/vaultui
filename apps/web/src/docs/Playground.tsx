@@ -51,7 +51,7 @@ export function Playground({ def }: { def: PlaygroundBuilder }) {
     <div className="grid gap-4 lg:grid-cols-5">
       {/* Controls */}
       <div className="space-y-4 rounded-2xl border border-surface-200 bg-surface-0 p-4 shadow-soft lg:col-span-2">
-        <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-600">Playground</p>
+        <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-brand-600">Playground</p>
         <div className="space-y-4">
           {def.controls.map((c) => (
             <ControlRow key={c.key} control={c} value={values[c.key] ?? c.default} onChange={(v) => setValue(c.key, v)} />
@@ -66,7 +66,7 @@ export function Playground({ def }: { def: PlaygroundBuilder }) {
         </div>
         <div className="overflow-hidden rounded-2xl border border-surface-800 bg-surface-950 shadow-soft">
           <div className="flex items-center justify-between border-b border-surface-800 bg-surface-900 px-3 py-2">
-            <span className="font-mono text-[11px] text-surface-400">generated jsx</span>
+            <span className="font-mono text-xs text-surface-400">generated jsx</span>
             <button
               type="button"
               onClick={copy}
@@ -79,7 +79,7 @@ export function Playground({ def }: { def: PlaygroundBuilder }) {
               {copied ? "Copied" : "Copy"}
             </button>
           </div>
-          <pre className="overflow-x-auto p-4 font-mono text-[13px] leading-relaxed text-surface-200">
+          <pre className="overflow-x-auto p-4 font-mono text-sm leading-relaxed text-surface-200">
             <code>{code}</code>
           </pre>
         </div>
@@ -99,14 +99,14 @@ function ControlRow({
 }) {
   return (
     <div className="flex items-center justify-between gap-3">
-      <span className="text-[13px] font-medium text-surface-700">{control.label}</span>
+      <span className="text-sm font-medium text-surface-700">{control.label}</span>
       {control.type === "toggle" ? (
         <Switch checked={Boolean(value)} onCheckedChange={(v) => onChange(v)} size="sm" />
       ) : control.type === "select" ? (
         <select
           value={String(value)}
           onChange={(e) => onChange(e.target.value)}
-          className="h-8 cursor-pointer rounded-lg border border-surface-200 bg-surface-0 px-2 text-[13px] text-surface-700 shadow-inset outline-none focus:ring-2 focus:ring-brand-500/20"
+          className="h-8 cursor-pointer rounded-lg border border-surface-200 bg-surface-0 px-2 text-sm text-surface-700 shadow-inset outline-none focus:ring-2 focus:ring-brand-500/20"
         >
           {(control.options ?? []).map((o) => (
             <option key={o} value={o}>
@@ -127,7 +127,7 @@ function ControlRow({
         <input
           value={String(value)}
           onChange={(e) => onChange(e.target.value)}
-          className="h-8 w-36 rounded-lg border border-surface-200 bg-surface-0 px-2 text-[13px] text-surface-700 shadow-inset outline-none focus:ring-2 focus:ring-brand-500/20"
+          className="h-8 w-36 rounded-lg border border-surface-200 bg-surface-0 px-2 text-sm text-surface-700 shadow-inset outline-none focus:ring-2 focus:ring-brand-500/20"
         />
       )}
     </div>

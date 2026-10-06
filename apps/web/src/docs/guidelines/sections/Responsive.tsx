@@ -32,13 +32,13 @@ export function Responsive({ agentMode }: { agentMode: boolean }) {
           <div className="p-4 w-64 mx-auto border-x border-dashed border-danger-300 bg-white relative overflow-hidden">
             <div className="text-xs text-danger-500 absolute top-0 right-0 bg-danger-100 px-1 rounded-bl">Mobile View</div>
             <div className="w-full overflow-x-auto pb-2">
-              <div className="w-96 flex border-b border-surface-200 pb-2 mb-2 text-[10px] font-bold text-surface-500">
+              <div className="w-96 flex border-b border-surface-200 pb-2 mb-2 text-xs font-bold text-surface-500">
                 <div className="w-24">Customer</div>
                 <div className="w-24">Plan</div>
                 <div className="w-24">Status</div>
                 <div className="w-24">Amount</div>
               </div>
-              <div className="w-96 flex text-[10px]">
+              <div className="w-96 flex text-xs">
                 <div className="w-24 font-medium">Acme Corp</div>
                 <div className="w-24">Enterprise</div>
                 <div className="w-24 text-success-600">Active</div>
@@ -56,7 +56,7 @@ export function Responsive({ agentMode }: { agentMode: boolean }) {
                   <div className="font-bold text-sm text-surface-900">Acme Corp</div>
                   <div className="text-xs text-surface-500">Enterprise Plan</div>
                 </div>
-                <span className="bg-success-100 text-success-800 text-[10px] font-bold px-1.5 py-0.5 rounded">Active</span>
+                <span className="bg-success-100 text-success-800 text-xs font-bold px-1.5 py-0.5 rounded">Active</span>
               </div>
               <div className="text-sm font-medium text-surface-900 mt-2">$4,000</div>
             </div>

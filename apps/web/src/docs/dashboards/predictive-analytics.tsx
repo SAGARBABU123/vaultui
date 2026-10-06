@@ -191,7 +191,7 @@ export function PredictiveAnalyticsDemo() {
           </div>
 
           {/* Legend */}
-          <div className="mt-2 flex flex-wrap items-center gap-3 text-[11px] text-surface-500">
+          <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-surface-500">
             <span className="flex items-center gap-1.5">
               <span className="h-0.5 w-4 rounded bg-brand-600" /> historical
             </span>
@@ -211,7 +211,7 @@ export function PredictiveAnalyticsDemo() {
           <div className="rounded-2xl border border-surface-200 bg-surface-0 p-5 shadow-soft">
             <p className="text-sm font-semibold text-surface-800">Q4 revenue outlook</p>
             <p className="mt-2 font-mono text-3xl font-bold tabular-nums text-brand-600">{outlook}</p>
-            <p className="mt-0.5 text-[11px] text-surface-400">
+            <p className="mt-0.5 text-xs text-surface-400">
               {scenario.label} scenario · ± $0.14M · P10–P90
             </p>
             <div className="mt-4 flex items-center gap-4">
@@ -242,7 +242,7 @@ export function PredictiveAnalyticsDemo() {
             <ul className="mt-3 space-y-1.5">
               {SIGNALS.map((s) => (
                 <li key={s.label} className="flex items-center justify-between gap-2 rounded-lg bg-surface-50 px-2.5 py-2">
-                  <span className="text-[13px] text-surface-700">{s.label}</span>
+                  <span className="text-sm text-surface-700">{s.label}</span>
                   <Badge variant={s.tone} size="sm" dot>{s.note}</Badge>
                 </li>
               ))}
@@ -262,8 +262,8 @@ export function PredictiveAnalyticsDemo() {
           <ul className="mt-3 space-y-1.5">
             {SEGMENTS.map((s) => (
               <li key={s.name} className="flex items-center gap-3 rounded-xl border border-surface-100 bg-surface-50 px-3 py-2.5">
-                <span className="w-36 shrink-0 truncate text-[13px] font-medium text-surface-800 sm:w-40">{s.name}</span>
-                <span className="hidden w-14 shrink-0 font-mono text-[11px] text-success-500 md:block">▲ {s.up}%</span>
+                <span className="w-36 shrink-0 truncate text-sm font-medium text-surface-800 sm:w-40">{s.name}</span>
+                <span className="hidden w-14 shrink-0 font-mono text-xs text-success-500 md:block">▲ {s.up}%</span>
                 <span className="hidden w-20 shrink-0 sm:block">
                   <Sparkline data={s.run} colorClass="text-brand-500" fill={false} className="h-5 w-full" />
                 </span>
@@ -272,7 +272,7 @@ export function PredictiveAnalyticsDemo() {
               </li>
             ))}
           </ul>
-          <p className="mt-3 text-[11px] leading-relaxed text-surface-400">
+          <p className="mt-3 text-xs leading-relaxed text-surface-400">
             Each segment shows its trailing run-rate, direction, predicted Q4 revenue and the model's
             prediction confidence — the deeper the history, the tighter the band.
           </p>
@@ -281,7 +281,7 @@ export function PredictiveAnalyticsDemo() {
         {/* Scenario impact — risk assessment */}
         <div className="rounded-2xl border border-surface-200 bg-surface-0 p-5 shadow-soft">
           <p className="text-sm font-semibold text-surface-800">Scenario impact</p>
-          <p className="mt-0.5 text-[11px] text-surface-400">vs base · Q4 demand</p>
+          <p className="mt-0.5 text-xs text-surface-400">vs base · Q4 demand</p>
           <div className="mt-4 space-y-3">
             {SCENARIO_IMPACT.map((s) => (
               <div key={s.id}>
@@ -303,7 +303,7 @@ export function PredictiveAnalyticsDemo() {
               </div>
             ))}
           </div>
-          <p className="mt-4 rounded-xl bg-brand-50 px-3 py-2.5 text-[11px] leading-relaxed text-brand-700">
+          <p className="mt-4 rounded-xl bg-brand-50 px-3 py-2.5 text-xs leading-relaxed text-brand-700">
             What-if: the optimistic path adds ≈ $0.42M to Q4; the conservative band risks −$0.21M.
             Capacity plan against the P50 with P80 headroom.
           </p>

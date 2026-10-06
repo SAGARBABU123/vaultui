@@ -111,7 +111,7 @@ export function CronBuilder({ defaultValue = "*/15 * * * *", onChange, className
       <div className="mt-4 grid grid-cols-5 gap-1.5">
         {FIELDS.map((f, i) => (
           <label key={f.key} className="block">
-            <span className="mb-1 block text-center text-[11px] font-medium text-surface-400">{f.label}</span>
+            <span className="mb-1 block text-center text-xs font-medium text-surface-400">{f.label}</span>
             <select
               value={fields[i] ?? "*"}
               onChange={(e) => patchField(i, e.target.value)}

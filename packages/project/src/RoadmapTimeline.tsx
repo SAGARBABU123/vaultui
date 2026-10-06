@@ -83,7 +83,7 @@ export function RoadmapTimeline({
               style={{ gridTemplateRows: "auto" }}
             >
               <div className="flex min-w-0 items-center gap-2 px-4 py-3">
-                <span className="truncate text-[13px] font-medium text-surface-800">{item.name}</span>
+                <span className="truncate text-sm font-medium text-surface-800">{item.name}</span>
                 {label && <Badge variant={label.variant} size="sm" className="hidden lg:inline-flex">{label.label}</Badge>}
               </div>
 

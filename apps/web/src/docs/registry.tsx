@@ -300,9 +300,9 @@ export const COMPONENT_GROUPS: ComponentGroup[] = [
               </div>
             ))}
             <div className="col-span-full flex flex-wrap items-center gap-3 rounded-xl bg-surface-50 p-3 text-xs text-surface-500">
-              <span className="font-mono text-[11px]">+ 5 dashboard templates</span>
-              <span className="font-mono text-[11px]">+ vault-ui CLI (npx vault-ui add &lt;component&gt;)</span>
-              <span className="font-mono text-[11px]">+ 4 live themes</span>
+              <span className="font-mono text-xs">+ 5 dashboard templates</span>
+              <span className="font-mono text-xs">+ vault-ui CLI (npx vault-ui add &lt;component&gt;)</span>
+              <span className="font-mono text-xs">+ 4 live themes</span>
             </div>
           </div>
         ),

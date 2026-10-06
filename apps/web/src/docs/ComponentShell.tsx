@@ -147,9 +147,9 @@ export function ComponentShell({ entry, prev, next, onNavigate, onNavigateGuidel
             <SectionLabel>Usage</SectionLabel>
             <div className="grid gap-4 lg:grid-cols-2">
               <div className="rounded-2xl border border-surface-200/70 bg-surface-0 p-4">
-                <p className="mb-2 font-mono text-[11px] font-semibold uppercase tracking-wide text-surface-400">Install</p>
+                <p className="mb-2 font-mono text-xs font-semibold uppercase tracking-wide text-surface-400">Install</p>
                 <InstallTabs packages={[entry.package]} compact />
-                <p className="mt-3 flex items-center gap-1.5 font-mono text-[11px] text-surface-400">
+                <p className="mt-3 flex items-center gap-1.5 font-mono text-xs text-surface-400">
                   <Terminal className="size-3.5" />
                   preferred: <code className="text-brand-600">npx vault-ui add {entry.id}</code>
                 </p>
@@ -180,7 +180,7 @@ export function ComponentShell({ entry, prev, next, onNavigate, onNavigateGuidel
               <tbody>
                 {entry.props.map((p, i) => (
                   <tr key={p.name} className={cn("border-b border-surface-100 last:border-b-0", i % 2 === 1 && "bg-surface-50/50")}>
-                    <td className="px-4 py-2.5 align-top font-mono text-[13px] font-semibold text-brand-700">{p.name}</td>
+                    <td className="px-4 py-2.5 align-top font-mono text-sm font-semibold text-brand-700">{p.name}</td>
                     <td className="px-4 py-2.5 align-top font-mono text-xs text-surface-500">{p.type}</td>
                     <td className="px-4 py-2.5 align-top font-mono text-xs text-surface-400">{p.default ?? "—"}</td>
                     <td className="px-4 py-2.5 align-top text-sm text-surface-600">{p.description}</td>
@@ -233,7 +233,7 @@ function PrevNext({
           onClick={() => onNavigate(prev.id)}
           className="group flex max-w-full flex-col items-start gap-0.5 rounded-lg px-3 py-2 text-left transition-colors hover:bg-surface-100"
         >
-          <span className="flex items-center gap-1 text-[11px] font-semibold uppercase tracking-widest text-surface-400">
+          <span className="flex items-center gap-1 text-xs font-semibold uppercase tracking-widest text-surface-400">
             <ArrowL /> Previous
           </span>
           <span className="truncate text-sm font-semibold text-surface-800 group-hover:text-brand-700">
@@ -249,7 +249,7 @@ function PrevNext({
           onClick={() => onNavigate(next.id)}
           className="group flex max-w-full flex-col items-end gap-0.5 rounded-lg px-3 py-2 text-right transition-colors hover:bg-surface-100"
         >
-          <span className="flex items-center gap-1 text-[11px] font-semibold uppercase tracking-widest text-surface-400">
+          <span className="flex items-center gap-1 text-xs font-semibold uppercase tracking-widest text-surface-400">
             Next <ArrowR />
           </span>
           <span className="truncate text-sm font-semibold text-surface-800 group-hover:text-brand-700">
@@ -347,7 +347,7 @@ function OverviewHero({ componentTotal }: { componentTotal: number }) {
           <InstallTabs packages={["@vaultui/tokens", "@vaultui/utils", "@vaultui/ui"]} compact />
         </div>
 
-        <p className="mt-3 flex items-center gap-2 font-mono text-[11px] text-surface-400">
+        <p className="mt-3 flex items-center gap-2 font-mono text-xs text-surface-400">
           <Terminal className="size-3.5" />
           Prefer the CLI? <code className="text-brand-700">npx vault-ui add &lt;component&gt;</code> —
           adds the exact component source to your project.
@@ -365,7 +365,7 @@ function OverviewHero({ componentTotal }: { componentTotal: number }) {
 
         {/* Getting started — the three-step kit flow */}
         <div className="mt-7 border-t border-surface-200/70 pt-6">
-          <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-600">
+          <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-brand-600">
             Getting started
           </p>
           <h3 className="mt-1 text-base font-semibold tracking-tight text-surface-800">
@@ -381,7 +381,7 @@ function OverviewHero({ componentTotal }: { componentTotal: number }) {
                 <span className="flex size-7 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 text-xs font-bold text-white">
                   {n}
                 </span>
-                <p className="mt-2 flex items-center gap-1.5 text-[13px] font-semibold text-surface-800">
+                <p className="mt-2 flex items-center gap-1.5 text-sm font-semibold text-surface-800">
                   {icon}
                   {t}
                 </p>
@@ -560,12 +560,12 @@ function ReactGrab({ entry }: { entry: ComponentEntry }) {
           rows={entered ? Math.min(entered.split("\n").length, 4) + 1 : 1}
           placeholder="// your comment — it lands on top of the snippet"
           spellCheck={false}
-          className="w-full resize-none bg-transparent px-4 py-2.5 font-mono text-[13px] leading-relaxed text-surface-200 placeholder:text-surface-600 focus:outline-none"
+          className="w-full resize-none bg-transparent px-4 py-2.5 font-mono text-sm leading-relaxed text-surface-200 placeholder:text-surface-600 focus:outline-none"
         />
       </div>
 
       {/* Live preview with the comment attached */}
-      <pre className="max-h-80 overflow-auto p-4 font-mono text-[13px] leading-relaxed text-surface-200">
+      <pre className="max-h-80 overflow-auto p-4 font-mono text-sm leading-relaxed text-surface-200">
         <code>
           {commentBlock.split("\n").map((line, i) => (
             <span key={i} className="block italic text-surface-500">
@@ -608,7 +608,7 @@ function CodeBlock({ title, code }: { title: string; code: string }) {
           {copied ? <Check className="size-4" strokeWidth={2.5} /> : <Copy className="size-4" strokeWidth={2.5} />}
         </button>
       </div>
-      <pre className="overflow-x-auto p-4 font-mono text-[13px] leading-relaxed text-surface-200">
+      <pre className="overflow-x-auto p-4 font-mono text-sm leading-relaxed text-surface-200">
         <code>{code}</code>
       </pre>
     </div>
@@ -688,7 +688,7 @@ function KitGrid({ onNavigate }: { onNavigate: (id: string) => void }) {
                 {items.length} {free ? "free" : ""}
               </Badge>
             </div>
-            <p className="mt-2 truncate text-[13px] text-surface-500">
+            <p className="mt-2 truncate text-sm text-surface-500">
               {items.slice(0, 3).map((i) => i.name).join(" · ")}
             </p>
             <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-brand-600">
@@ -742,7 +742,7 @@ function FeatureLinks({ navigate }: { navigate: (to: string) => void }) {
           <span className="text-xl">{t.emoji}</span>
           <span className="text-sm font-semibold text-surface-800">{t.title}</span>
           <span className="text-xs leading-relaxed text-surface-500">{t.body}</span>
-          <span className="mt-1 font-mono text-[10px] font-medium text-brand-600">{t.action ?? "open →"}</span>
+          <span className="mt-1 font-mono text-xs font-medium text-brand-600">{t.action ?? "open →"}</span>
         </button>
       ))}
     </div>
@@ -779,7 +779,7 @@ function GuidelinesStrip({ onNavigate }: { onNavigate: (id: string) => void }) {
           >
             <span>
               <span className="block text-sm font-semibold text-surface-800 group-hover:text-brand-700">{t.label}</span>
-              <span className="block text-[11px] leading-relaxed text-surface-400">{t.desc}</span>
+              <span className="block text-xs leading-relaxed text-surface-400">{t.desc}</span>
             </span>
             <ArrowRight className="size-4 shrink-0 text-surface-300 transition-transform group-hover:translate-x-0.5 group-hover:text-brand-500" />
           </button>
@@ -795,7 +795,7 @@ function StartCard({ hasProjects, navigate }: { hasProjects: boolean; navigate: 
       <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-24 size-64 rounded-full bg-brand-200/40 blur-3xl" />
       <div className="relative flex flex-wrap items-center justify-between gap-4">
         <div>
-          <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-600">Start building</p>
+          <p className="font-mono text-xs font-semibold uppercase tracking-[0.2em] text-brand-600">Start building</p>
           <h2 className="mt-2 text-xl font-bold tracking-tight sm:text-2xl">Your kit is three taps away</h2>
           <p className="mt-1 max-w-xl text-sm leading-relaxed text-surface-500">
             Create a project, add components from the vault, then download your curated kit — or share it as a public link.

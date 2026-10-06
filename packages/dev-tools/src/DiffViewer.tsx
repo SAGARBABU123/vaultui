@@ -100,7 +100,7 @@ export function DiffViewer({
       </div>
 
       {/* Body — side by side */}
-      <div className="grid max-h-80 grid-cols-2 overflow-auto font-mono text-[13px] leading-5">
+      <div className="grid max-h-80 grid-cols-2 overflow-auto font-mono text-sm leading-5">
         <div className="min-w-0 border-r border-surface-200">
           {rows.map((row, i) => (
             <Line key={i} line={row.left} side="left" />

@@ -91,7 +91,7 @@ lg: Modals, dialogs`}
           <div className="flex h-16 rounded-lg overflow-hidden shadow-sm">
             {[50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950].map((weight) => (
               <div key={weight} className="flex-1 flex items-end justify-center pb-2" style={{ backgroundColor: "var(--color-surface-" + weight + ")" }}>
-                <span className={`text-[10px] font-mono ${weight > 400 ? 'text-white/70' : 'text-black/50'}`}>{weight}</span>
+                <span className={`text-xs font-mono ${weight > 400 ? 'text-white/70' : 'text-black/50'}`}>{weight}</span>
               </div>
             ))}
           </div>
@@ -102,7 +102,7 @@ lg: Modals, dialogs`}
           <div className="flex h-16 rounded-lg overflow-hidden shadow-sm">
             {[50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950].map((weight) => (
               <div key={weight} className="flex-1 flex items-end justify-center pb-2" style={{ backgroundColor: "var(--color-brand-" + weight + ")" }}>
-                <span className={`text-[10px] font-mono ${weight > 400 ? 'text-white/70' : 'text-black/50'}`}>{weight}</span>
+                <span className={`text-xs font-mono ${weight > 400 ? 'text-white/70' : 'text-black/50'}`}>{weight}</span>
               </div>
             ))}
           </div>

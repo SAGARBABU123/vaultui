@@ -141,7 +141,7 @@ export function ComposerPage() {
 
 <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-600">Design canvas</p>
+            <p className="font-mono text-xs font-semibold uppercase tracking-[0.22em] text-brand-600">Design canvas</p>
             <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
               Compose a <span className="text-gradient-brand">screen</span>, export the app.
             </h1>
@@ -178,7 +178,7 @@ export function ComposerPage() {
                     }
                   >
                     <span className="text-sm font-medium text-surface-700">{l.name}</span>
-                    <span className={"font-mono text-[10px] " + (active ? "text-brand-600" : "text-surface-400")}>
+                    <span className={"font-mono text-xs " + (active ? "text-brand-600" : "text-surface-400")}>
                       {active ? "on canvas" : "add"}
                     </span>
                   </button>
@@ -203,7 +203,7 @@ export function ComposerPage() {
 
             <div className="overflow-hidden rounded-2xl border border-surface-800 bg-surface-950 shadow-soft">
               <div className="flex items-center justify-between border-b border-surface-800 bg-surface-900 px-3 py-2">
-                <span className="font-mono text-[11px] text-surface-400">App.tsx · {selected.length} components</span>
+                <span className="font-mono text-xs text-surface-400">App.tsx · {selected.length} components</span>
                 <button
                   type="button"
                   onClick={copy}
@@ -216,7 +216,7 @@ export function ComposerPage() {
                   {copied ? "Copied" : "Copy"}
                 </button>
               </div>
-              <pre className="max-h-72 overflow-auto p-4 font-mono text-[12.5px] leading-relaxed text-surface-200">
+              <pre className="max-h-72 overflow-auto p-4 font-mono text-xs leading-relaxed text-surface-200">
                 <code>{code}</code>
               </pre>
             </div>

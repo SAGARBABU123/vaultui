@@ -127,13 +127,13 @@ export function JsonPathTester({ defaultJson = DEFAULT_JSON, defaultPath = "$.us
         <div className="mb-2 flex items-center justify-between">
           <span className="text-xs font-semibold uppercase tracking-wide text-surface-400">Result</span>
           {ok && (
-            <span className="rounded-full bg-surface-100 px-2 py-0.5 text-[11px] font-medium text-surface-500">
+            <span className="rounded-full bg-surface-100 px-2 py-0.5 text-xs font-medium text-surface-500">
               {typeOf(value)}
             </span>
           )}
         </div>
         {ok ? (
-          <pre className="max-h-80 flex-1 overflow-auto whitespace-pre-wrap break-words rounded-lg bg-surface-50 p-3 font-mono text-[13px] leading-relaxed text-surface-800">
+          <pre className="max-h-80 flex-1 overflow-auto whitespace-pre-wrap break-words rounded-lg bg-surface-50 p-3 font-mono text-sm leading-relaxed text-surface-800">
             {JSON.stringify(value, null, 2)}
           </pre>
         ) : (

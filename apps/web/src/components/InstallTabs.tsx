@@ -61,7 +61,7 @@ export function InstallTabs({
         className={cn(
           "flex w-fit items-center gap-0.5 rounded-lg p-0.5 font-mono",
           dark ? "bg-surface-800/70" : "bg-surface-200/60",
-          compact ? "text-[10px]" : "text-[11px]",
+          compact ? "text-xs" : "text-xs",
         )}
       >
         {INSTALL_MANAGERS.map((m) => (
@@ -93,7 +93,7 @@ export function InstallTabs({
           dark
             ? "rounded-xl bg-surface-950 px-3 py-2 text-surface-100 shadow-raised ring-1 ring-brand-500/20"
             : "rounded-lg bg-surface-100 text-surface-600 shadow-inset",
-          compact ? "px-2 py-1 text-[11px]" : "px-2.5 py-1.5 text-[13px]",
+          compact ? "px-2 py-1 text-xs" : "px-2.5 py-1.5 text-sm",
         )}
       >
         {prompt && <span aria-hidden className={cn("shrink-0", dark ? "text-success-500" : "text-surface-400")}>$</span>}

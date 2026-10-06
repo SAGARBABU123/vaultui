@@ -46,7 +46,7 @@ function CodeBlock({ language, code }: { language?: string; code: string }) {
           {copied ? <Check className="size-3.5" strokeWidth={2.5} /> : <Copy className="size-3.5" strokeWidth={2.5} />}
         </button>
       </div>
-      <pre className="overflow-x-auto px-4 py-3 text-[13px] leading-relaxed text-surface-200">
+      <pre className="overflow-x-auto px-4 py-3 text-sm leading-relaxed text-surface-200">
         <code>{code}</code>
       </pre>
     </div>

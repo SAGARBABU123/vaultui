@@ -49,7 +49,7 @@ export function ActivityFeed({ events: initial, className }: ActivityFeedProps) 
         <div className="flex items-center gap-2">
           <h3 className="text-sm font-semibold">Activity</h3>
           {unread > 0 && (
-            <span className="flex size-5 items-center justify-center rounded-full bg-brand-600 text-[11px] font-bold text-white">
+            <span className="flex size-5 items-center justify-center rounded-full bg-brand-600 text-xs font-bold text-white">
               {unread}
             </span>
           )}

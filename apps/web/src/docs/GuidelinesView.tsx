@@ -31,7 +31,7 @@ export function GuidelinesView({
       <article ref={articleRef} key={item.id} className="min-w-0 animate-rise">
       {/* Eyebrow — which part of the guide this is */}
       <div className="mx-auto mb-2 max-w-4xl pt-2">
-        <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-600">
+        <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-brand-600">
           <span aria-hidden="true" className="h-px w-6 bg-brand-300" />
           UI Guidelines{activeGroup ? ` · ${activeGroup.title}` : ""}
         </p>
@@ -47,7 +47,7 @@ export function GuidelinesView({
             onClick={() => onNavigate(prev.id)}
             className="group flex max-w-[45%] flex-col items-start rounded-xl border border-transparent px-4 py-3 text-left transition-colors hover:border-surface-200 hover:bg-surface-100/70"
           >
-            <span className="mb-1 flex items-center gap-1 text-[11px] font-semibold uppercase tracking-widest text-surface-400">
+            <span className="mb-1 flex items-center gap-1 text-xs font-semibold uppercase tracking-widest text-surface-400">
               <ChevronLeft className="size-3.5 transition-transform group-hover:-translate-x-0.5" />
               Previous
             </span>
@@ -63,7 +63,7 @@ export function GuidelinesView({
             onClick={() => onNavigate(next.id)}
             className="group flex max-w-[45%] flex-col items-end rounded-xl border border-transparent px-4 py-3 text-right transition-colors hover:border-surface-200 hover:bg-surface-100/70"
           >
-            <span className="mb-1 flex items-center gap-1 text-[11px] font-semibold uppercase tracking-widest text-surface-400">
+            <span className="mb-1 flex items-center gap-1 text-xs font-semibold uppercase tracking-widest text-surface-400">
               Next
               <ChevronRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
             </span>

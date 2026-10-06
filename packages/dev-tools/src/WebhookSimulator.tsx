@@ -125,14 +125,14 @@ export function WebhookSimulator({
                     {Object.keys(p.payload).length} keys
                   </Badge>
                 </div>
-                <pre className="mt-1.5 line-clamp-1 text-[11px] text-surface-400">
+                <pre className="mt-1.5 line-clamp-1 text-xs text-surface-400">
                   {JSON.stringify(p.payload)}
                 </pre>
               </button>
             ))}
           </div>
           <div className="mt-3 rounded-lg bg-surface-950 p-3">
-            <pre className="max-h-32 overflow-auto whitespace-pre-wrap font-mono text-[11px] leading-relaxed text-emerald-300">
+            <pre className="max-h-32 overflow-auto whitespace-pre-wrap font-mono text-xs leading-relaxed text-emerald-300">
               {JSON.stringify(active.payload, null, 2)}
             </pre>
           </div>
@@ -167,7 +167,7 @@ export function WebhookSimulator({
                       <RotateCw className="size-3" /> Retry
                     </button>
                   </div>
-                  <p className="mt-1.5 break-all font-mono text-[11px] text-surface-400">{a.eventId}</p>
+                  <p className="mt-1.5 break-all font-mono text-xs text-surface-400">{a.eventId}</p>
                 </li>
               ))}
             </ul>

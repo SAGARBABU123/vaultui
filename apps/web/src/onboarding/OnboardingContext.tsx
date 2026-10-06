@@ -260,7 +260,7 @@ function TourStep({
         style={{ left: pos.left, top: pos.top }}
       >
         <div className="flex items-start justify-between gap-2">
-          <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-600">
+          <span className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-brand-600">
             Tip {index + 1} of {total}
           </span>
           <button
@@ -273,7 +273,7 @@ function TourStep({
           </button>
         </div>
         <h3 className="mt-2 text-sm font-bold tracking-tight text-surface-900">{step.title}</h3>
-        <p className="mt-1.5 text-[13px] leading-relaxed text-surface-500">{step.body}</p>
+        <p className="mt-1.5 text-sm leading-relaxed text-surface-500">{step.body}</p>
 
         <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
           <Button size="sm" variant="ghost" onClick={onSkip}>

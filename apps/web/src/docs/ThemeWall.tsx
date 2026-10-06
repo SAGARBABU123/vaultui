@@ -24,7 +24,7 @@ export function ThemeWall({ demo }: { demo: ReactNode }) {
           style={THEME_BACKDROPS[t.id] ? { backgroundImage: THEME_BACKDROPS[t.id], backgroundAttachment: "fixed" } : undefined}
         >
           <div className="px-4 py-2">
-            <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-surface-400">
+            <span className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-surface-400">
               {t.label}
             </span>
           </div>

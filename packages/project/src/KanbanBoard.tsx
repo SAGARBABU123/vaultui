@@ -93,7 +93,7 @@ export function KanbanBoard({ columns: initial, onChange, className }: KanbanBoa
               <div className="flex-1 space-y-2">
                 {col.cards.map((card) => (
                   <div key={card.id} className="rounded-lg border border-surface-200 bg-surface-0 p-2.5 shadow-soft">
-                    <p className="text-[13px] font-medium leading-snug text-surface-800">{card.title}</p>
+                    <p className="text-sm font-medium leading-snug text-surface-800">{card.title}</p>
                     {card.tag && (
                       <span
                         className={cn(
