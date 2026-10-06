@@ -195,10 +195,6 @@ export function Sidebar({ groups, dashboards, guidelineGroups, activeId, onSelec
           never collide with kit entries (tabs, modals, overview…). */}
       {guidelineGroups && guidelineGroups.length > 0 && (
         <div className="border-b border-surface-200/70 pb-3 pt-2">
-          <div className="mb-1 flex items-center gap-1.5 px-3 text-xs font-bold uppercase tracking-[0.18em] text-brand-700">
-            <BookOpen className="size-3.5" />
-            Guidelines
-          </div>
           {guidelineGroups.map((group) => {
             const groupCollapsed = isCollapsed(group.title);
             return (
