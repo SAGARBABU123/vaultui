@@ -152,11 +152,23 @@ export function DocsView() {
 
   return (
     <div className="min-h-screen text-surface-900">
+      {/* Full-width app bar — the top-nav axis. Astryx `shell-nav` shape:
+          a top menu bar spanning the whole frame, then a left hierarchy rail
+          below it, beside the content. */}
+      <DocsHeader
+        componentTotal={COMPONENT_TOTAL}
+        dashboardTotal={ALL_DASHBOARDS.length}
+        onOpenDrawer={() => setDrawerOpen(true)}
+        searchValue={search}
+        onSearchChange={setSearch}
+        onOpenPalette={() => setPaletteOpen(true)}
+      />
+
       <div className="flex">
-        {/* Desktop sidebar — full-height rail, flush left */}
+        {/* Left rail — sits under the app bar (height = 100vh − 4rem bar) */}
         <aside
           id="onboard-sidebar"
-          className="sticky top-0 hidden h-screen w-72 shrink-0 scrollbar-hidden overflow-y-auto border-r border-surface-200 bg-surface-0/60 lg:block"
+          className="sticky top-16 hidden h-[calc(100vh-4rem)] w-72 shrink-0 scrollbar-hidden overflow-y-auto border-r border-surface-200 bg-surface-0/60 lg:block"
         >
           <Sidebar
             groups={ALL_GROUPS}
@@ -170,17 +182,8 @@ export function DocsView() {
           />
         </aside>
 
-        {/* Right shell — header + content live inside the column, under the rail */}
+        {/* Content column — beside the rail, under the app bar */}
         <div className="min-w-0 flex-1">
-          <DocsHeader
-            componentTotal={COMPONENT_TOTAL}
-            dashboardTotal={ALL_DASHBOARDS.length}
-            onOpenDrawer={() => setDrawerOpen(true)}
-            searchValue={search}
-            onSearchChange={setSearch}
-            onOpenPalette={() => setPaletteOpen(true)}
-          />
-
           <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} onNavigate={navigateEntry} />
           <AskTheKit />
 
