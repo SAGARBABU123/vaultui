@@ -194,7 +194,7 @@ export function Sidebar({ groups, dashboards, guidelineGroups, activeId, onSelec
       {/* UI Guidelines — the do/don't playbook. Distinct namespace so its ids
           never collide with kit entries (tabs, modals, overview…). */}
       {guidelineGroups && guidelineGroups.length > 0 && (
-        <div className="border-b border-surface-200/70 pb-3 pt-2">
+        <div className="border-b border-surface-200/70 px-3 pb-3 pt-2">
           {guidelineGroups.map((group) => {
             const groupCollapsed = isCollapsed(group.title);
             return (
@@ -240,7 +240,7 @@ export function Sidebar({ groups, dashboards, guidelineGroups, activeId, onSelec
         const dashCount = filteredDashboards.reduce((n, g) => n + g.items.length, 0);
         const dashCollapsed = isCollapsed("Dashboard Templates");
         return dashCount > 0 || q === "" ? (
-          <div>
+          <div className="px-3">
             <SectionHeader
               icon={LayoutDashboard}
               label="Dashboard Templates"
