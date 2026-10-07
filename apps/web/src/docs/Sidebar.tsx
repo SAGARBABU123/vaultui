@@ -1,38 +1,12 @@
-import { useEffect, useRef, useState, type ComponentType } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  BarChart3,
-  BookOpen,
-  Bot,
-  Boxes,
-  ChevronDown,
-  ClipboardCheck,
-  FolderKanban,
-  LayoutDashboard,
-  LayoutGrid,
-  Layers,
-  ListChecks,
-  Lock,
-  Megaphone,
-  Package,
-  Palette,
-  PanelLeftClose,
-  PanelLeftOpen,
-  Puzzle,
-  Rocket,
-  Search,
-  ShoppingCart,
-  Sparkles,
-  Terminal,
-  Type,
-  Users,
-  X,
-} from "lucide-react";
+import { BookOpen, ChevronDown, Lock, Package, PanelLeftClose, PanelLeftOpen, Search, X } from "lucide-react";
 import { cn } from "@vaultui/utils";
 import { useAuth } from "../auth/AuthContext";
 import { VaultLogo } from "../brand/VaultLogo";
 import type { GuidelineGroup } from "./guidelines";
 import type { ComponentEntry, ComponentGroup, DashboardEntry, DashboardGroup } from "./types";
+import { GUIDELINE_ICONS, GROUP_ICONS, TABS, TAB_ICONS, type IconType, type RailTab } from "./navigation";
 
 /** Canonical URL for a sidebar entry (mirrors App.entryUrl). */
 function entryTo(item: ComponentEntry | DashboardEntry): string {
@@ -40,54 +14,8 @@ function entryTo(item: ComponentEntry | DashboardEntry): string {
   return item.kind === "dashboard" ? `/docs/dashboards/${item.id}` : `/docs/components/${item.id}`;
 }
 
-type IconType = ComponentType<{ className?: string }>;
-
-/** One lucide glyph per kit/group so each sidebar section reads at a glance. */
-const GROUP_ICONS: Record<string, IconType> = {
-  Start: Rocket,
-  "Free tier": Package,
-  "AI Agent Kit": Bot,
-  "Collab Kit": Users,
-  "Commerce Kit": ShoppingCart,
-  "Data Viz Pro": BarChart3,
-  "Dev Tools Kit": Terminal,
-  "Marketing Kit": Megaphone,
-  "Project Kit": FolderKanban,
-  "Project Mgmt Kit": ListChecks,
-};
-
-/** Matching icons for the UI-Guidelines groups. */
-const GUIDELINE_ICONS: Record<string, IconType> = {
-  Introduction: BookOpen,
-  "Layout & Hierarchy": LayoutGrid,
-  Typography: Type,
-  "Color & Depth": Palette,
-  Components: Boxes,
-  "Advanced Components": Layers,
-  "Specialized Patterns": Puzzle,
-  "Polish & Feedback": Sparkles,
-  "Review & Tools": ClipboardCheck,
-};
-
-/* ------------------------------- rail tabs -------------------------------- */
-
-type RailTab = "components" | "dashboards" | "guidelines";
-
-const TABS: { id: RailTab; label: string }[] = [
-  { id: "components", label: "Components" },
-  { id: "dashboards", label: "Dashboards" },
-  { id: "guidelines", label: "Guidelines" },
-];
-
 const TAB_KEY = "vaultui.rail.tab.v1";
 const COLLAPSE_KEY = "vaultui.rail.collapsed.v1";
-
-/** Icons for the collapsed icon-rail (one per mode). */
-const TAB_ICONS: Record<RailTab, IconType> = {
-  components: Boxes,
-  dashboards: LayoutDashboard,
-  guidelines: BookOpen,
-};
 
 /** Row styling shared by component/dashboard links and guideline buttons. */
 const rowClass = (active: boolean) =>
