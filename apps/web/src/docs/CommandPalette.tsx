@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@vaultui/utils";
 import { Kbd } from "@vaultui/ui";
 import { NAV_ITEMS, GROUP_NAME_BY_ID, isDashboard } from "../projects/entries";
+import { useFocusTrap } from "../components/useFocusTrap";
 import { INSTALL_COMMAND } from "../projects/counts";
 import { useTheme } from "../theme/ThemeContext";
 import { GUIDELINE_GROUPS, GUIDELINE_NAV } from "./guidelines";
@@ -160,6 +161,11 @@ export function CommandPalette({
   }, [open, onOpenChange]);
 
   const listRef = useRef<HTMLUListElement>(null);
+  const dialogRef = useRef<HTMLDivElement | null>(null);
+
+  // Keep keyboard focus inside the palette; restore it when it closes. The
+  // search input autofocuses itself, so skip the trap's initial focus pass.
+  useFocusTrap(dialogRef, open, () => onOpenChange(false), { autoFocus: false });
 
   const query = q.trim();
 
@@ -223,7 +229,7 @@ export function CommandPalette({
         onClick={() => onOpenChange(false)}
         className="absolute inset-0 bg-surface-950/40 backdrop-blur-[2px]"
       />
-      <div className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-surface-200 bg-surface-0 shadow-raised animate-rise">
+      <div ref={dialogRef} className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-surface-200 bg-surface-0 shadow-raised animate-rise">
         <div className="flex items-center gap-2 border-b border-surface-100 px-4 py-3">
           <SearchIcon className="size-4 shrink-0 text-surface-400" />
           <input

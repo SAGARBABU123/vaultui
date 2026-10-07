@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@vaultui/ui";
 import { cn } from "@vaultui/utils";
@@ -16,6 +16,7 @@ import { AskTheKit } from "./AskTheKit";
 import { GuidelinesView } from "./GuidelinesView";
 import { Breadcrumbs, type Crumb } from "./Breadcrumbs";
 import { pushRecent } from "./recents";
+import { useFocusTrap } from "../components/useFocusTrap";
 import {
   GUIDELINE_GROUPS,
   GUIDELINE_NAV,
@@ -114,6 +115,10 @@ export function DocsView() {
       /* storage unavailable — collapse still works for this session */
     }
   }, [railNarrow]);
+
+  // Trap focus in the mobile nav drawer while it's open.
+  const drawerRef = useRef<HTMLDivElement | null>(null);
+  useFocusTrap(drawerRef, drawerOpen, () => setDrawerOpen(false));
 
   // j / k — previous / next entry while browsing docs (skip form fields).
   useEffect(() => {
@@ -258,7 +263,7 @@ export function DocsView() {
                 onClick={() => setDrawerOpen(false)}
                 className="absolute inset-0 w-full bg-surface-950/40 backdrop-blur-[2px]"
               />
-              <div className="absolute inset-y-0 left-0 flex w-[85%] max-w-xs flex-col bg-surface-50 shadow-popover animate-rise">
+              <div ref={drawerRef} className="absolute inset-y-0 left-0 flex w-[85%] max-w-xs flex-col bg-surface-50 shadow-popover animate-rise">
                 <div className="flex items-center justify-between border-b border-surface-200 px-4 py-3">
                   <span className="text-sm font-semibold">Browse docs</span>
                   <Button variant="ghost" size="sm" onClick={() => setDrawerOpen(false)}>
