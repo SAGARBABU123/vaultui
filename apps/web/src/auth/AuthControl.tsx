@@ -3,6 +3,7 @@ import { cn } from "@vaultui/utils";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CircleUserRound, FolderOpen, LogIn, LogOut, UserPlus } from "lucide-react";
 import { useAuth } from "./AuthContext";
+import { AUTH_ENABLED } from "./config";
 
 /**
  * Header auth control — a profile-icon button with a context-aware menu.
@@ -55,6 +56,9 @@ export function AuthControl() {
     setOpen(false);
     await signOut();
   };
+
+  // Auth parked — no account button at all.
+  if (!AUTH_ENABLED) return null;
 
   return (
     <div ref={rootRef} className="relative">

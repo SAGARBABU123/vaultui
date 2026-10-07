@@ -1,8 +1,6 @@
-import { lazy, Suspense, useEffect, type ReactElement } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { LandingPage } from "./landing/LandingPage";
-import { AuthPage } from "./auth/AuthPage";
-import { useAuth } from "./auth/AuthContext";
 import { ProjectProvider } from "./projects/ProjectContext";
 import { OnboardingProvider } from "./onboarding/OnboardingContext";
 
@@ -32,27 +30,14 @@ export default function App() {
             <Routes>
               <Route path="/" element={<LandingView />} />
               <Route path="/docs/*" element={<DocsView />} />
-              <Route
-                path="/projects"
-                element={
-                  <RequireAuth>
-                    <ProjectsPage />
-                  </RequireAuth>
-                }
-              />
-              <Route
-                path="/projects/:id"
-                element={
-                  <RequireAuth>
-                    <ProjectOverviewPage />
-                  </RequireAuth>
-                }
-              />
+              <Route path="/projects" element={<ProjectsPage />} />
+              <Route path="/projects/:id" element={<ProjectOverviewPage />} />
               <Route path="/kit/:id" element={<ShareKitPage />} />
               <Route path="/lab" element={<LabPage />} />
               <Route path="/composer" element={<ComposerPage />} />
-              <Route path="/sign-in" element={<AuthPage mode="sign-in" />} />
-              <Route path="/sign-up" element={<AuthPage mode="sign-up" />} />
+              {/* Auth parked — old sign-in/sign-up links land straight in the app. */}
+              <Route path="/sign-in" element={<Navigate to="/docs" replace />} />
+              <Route path="/sign-up" element={<Navigate to="/docs" replace />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Suspense>
@@ -60,16 +45,6 @@ export default function App() {
       </ProjectProvider>
     </BrowserRouter>
   );
-}
-
-/** Signed-in gate for app pages — returns the visitor to where they were. */
-function RequireAuth({ children }: { children: ReactElement }) {
-  const { isSignedIn } = useAuth();
-  const location = useLocation();
-  if (!isSignedIn) {
-    return <Navigate to="/sign-in" state={{ from: location.pathname }} replace />;
-  }
-  return children;
 }
 
 /** Scroll to top on route change — landing anchor hashes keep working. */
@@ -83,17 +58,9 @@ function ScrollManager() {
 
 function LandingView() {
   const navigate = useNavigate();
-  const { isSignedIn } = useAuth();
 
-  // Every browse/download entry point funnels through here: signed-out
-  // visitors go to sign-in instead of being let into the vault.
-  const handleBrowse = () => {
-    if (!isSignedIn) {
-      navigate("/sign-in", { state: { from: "/docs" } });
-      return;
-    }
-    navigate("/docs");
-  };
+  // Auth parked — browse goes straight into the app, no sign-in detour.
+  const handleBrowse = () => navigate("/docs");
 
   return <LandingPage onBrowse={handleBrowse} />;
 }
