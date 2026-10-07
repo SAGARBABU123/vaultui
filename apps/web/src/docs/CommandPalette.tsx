@@ -1,11 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@vaultui/utils";
 import { Kbd } from "@vaultui/ui";
-import { NAV_ITEMS, GROUP_NAME_BY_ID, isDashboard } from "../projects/entries";
 import { useFocusTrap } from "../components/useFocusTrap";
 import { INSTALL_COMMAND } from "../projects/counts";
 import { useTheme } from "../theme/ThemeContext";
-import { GUIDELINE_GROUPS, GUIDELINE_NAV } from "./guidelines";
+import { buildNavEntries } from "./navigation";
 import { readRecents } from "./recents";
 import { readFavorites } from "./favorites";
 
@@ -85,28 +84,18 @@ export function CommandPalette({
   const pinned = useMemo(() => (open ? readFavorites() : []), [open]);
 
   // Every navigable entry (components + dashboards) and every guideline.
-  const navItems = useMemo<Result[]>(() => {
-    const entries: Result[] = NAV_ITEMS.filter((e) => e.id !== "overview").map((e) => {
-      const dash = isDashboard(e);
-      return {
-        key: `${dash ? "d" : "c"}:${e.id}`,
+  const navItems = useMemo<Result[]>(
+    () =>
+      buildNavEntries().map((e) => ({
+        key: e.key,
         label: e.name,
-        hint: GROUP_NAME_BY_ID.get(e.id) ?? (dash ? "Dashboard" : ""),
-        category: dash ? "dashboards" : "components",
-        navId: e.id,
-        run: () => onNavigate(e.id),
-      };
-    });
-    const guides: Result[] = GUIDELINE_NAV.map((g) => ({
-      key: `g:${g.id}`,
-      label: g.label,
-      hint: GUIDELINE_GROUPS.find((grp) => grp.items.some((i) => i.id === g.id))?.title ?? "Guidelines",
-      category: "guidelines",
-      navId: `guideline:${g.id}`,
-      run: () => onNavigateGuideline?.(g.id),
-    }));
-    return [...entries, ...guides];
-  }, [onNavigate, onNavigateGuideline]);
+        hint: e.group,
+        category: e.category,
+        navId: e.navId,
+        run: () => (e.category === "guidelines" ? onNavigateGuideline?.(e.id) : onNavigate(e.id)),
+      })),
+    [onNavigate, onNavigateGuideline],
+  );
 
   const actionItems = useMemo<Result[]>(() => {
     const i = themes.findIndex((t) => t.id === themeId);
