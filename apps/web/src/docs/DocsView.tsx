@@ -99,6 +99,22 @@ export function DocsView() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
 
+  // Desktop rail can collapse to an icon rail (persisted across visits).
+  const [railNarrow, setRailNarrow] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem("vaultui.rail.narrow.v1") === "1";
+    } catch {
+      return false;
+    }
+  });
+  useEffect(() => {
+    try {
+      localStorage.setItem("vaultui.rail.narrow.v1", railNarrow ? "1" : "0");
+    } catch {
+      /* storage unavailable — collapse still works for this session */
+    }
+  }, [railNarrow]);
+
   // j / k — previous / next entry while browsing docs (skip form fields).
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -202,7 +218,10 @@ export function DocsView() {
         {/* Left rail — sits under the app bar (height = 100vh − 4rem bar) */}
         <aside
           id="onboard-sidebar"
-          className="sticky top-16 hidden h-[calc(100vh-4rem)] w-72 shrink-0 scrollbar-hidden overflow-y-auto border-r border-surface-200 bg-surface-0/60 lg:block"
+          className={cn(
+            "sticky top-16 hidden h-[calc(100vh-4rem)] shrink-0 scrollbar-hidden overflow-y-auto border-r border-surface-200 bg-surface-0/60 transition-[width] duration-200 lg:block",
+            railNarrow ? "w-[4.75rem]" : "w-72",
+          )}
         >
           <Sidebar
             groups={ALL_GROUPS}
@@ -215,6 +234,8 @@ export function DocsView() {
             search={search}
             onSearchChange={setSearch}
             onOpenPalette={() => setPaletteOpen(true)}
+            narrow={railNarrow}
+            onToggleNarrow={() => setRailNarrow((v) => !v)}
           />
         </aside>
 

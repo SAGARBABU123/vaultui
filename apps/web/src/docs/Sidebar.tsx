@@ -8,6 +8,7 @@ import {
   ChevronDown,
   ClipboardCheck,
   FolderKanban,
+  LayoutDashboard,
   LayoutGrid,
   Layers,
   ListChecks,
@@ -15,6 +16,8 @@ import {
   Megaphone,
   Package,
   Palette,
+  PanelLeftClose,
+  PanelLeftOpen,
   Puzzle,
   Rocket,
   Search,
@@ -78,6 +81,13 @@ const TABS: { id: RailTab; label: string }[] = [
 
 const TAB_KEY = "vaultui.rail.tab.v1";
 const COLLAPSE_KEY = "vaultui.rail.collapsed.v1";
+
+/** Icons for the collapsed icon-rail (one per mode). */
+const TAB_ICONS: Record<RailTab, IconType> = {
+  components: Boxes,
+  dashboards: LayoutDashboard,
+  guidelines: BookOpen,
+};
 
 /** Row styling shared by component/dashboard links and guideline buttons. */
 const rowClass = (active: boolean) =>
@@ -163,6 +173,10 @@ export interface SidebarProps {
   onSearchChange: (value: string) => void;
   /** Opens the full ⌘K command palette (cross-category search + actions). */
   onOpenPalette?: () => void;
+  /** Desktop icon-rail (collapsed) mode. */
+  narrow?: boolean;
+  /** Toggles the desktop icon rail. Omitted → no collapse control is shown. */
+  onToggleNarrow?: () => void;
 }
 
 export function Sidebar({
@@ -176,6 +190,8 @@ export function Sidebar({
   search,
   onSearchChange,
   onOpenPalette,
+  narrow = false,
+  onToggleNarrow,
 }: SidebarProps) {
   const { isSignedIn, isPremium } = useAuth();
   const q = search.trim().toLowerCase();
@@ -308,6 +324,82 @@ export function Sidebar({
     filteredDashboards.reduce((n, g) => n + g.items.length, 0) +
     filteredGuidelines.reduce((n, g) => n + g.items.length, 0);
 
+  /* ------------------------------ icon rail ------------------------------- */
+  // Collapsed desktop rail: logo + search + the three modes. Picking a mode
+  // expands the rail and switches to it — no per-item list (that's the point
+  // of collapsing: give the content its width back).
+  if (narrow) {
+    return (
+      <nav aria-label="Documentation" className="flex min-h-full flex-col items-center gap-1 px-2 py-3">
+        <Link
+          to="/"
+          title="Vault UI — home"
+          aria-label="Vault UI home"
+          className="flex size-10 items-center justify-center rounded-xl transition-colors hover:bg-surface-100"
+        >
+          <VaultLogo size={26} />
+        </Link>
+
+        {onOpenPalette && (
+          <button
+            type="button"
+            onClick={onOpenPalette}
+            title="Search (⌘K)"
+            aria-label="Search the docs"
+            className="flex size-10 items-center justify-center rounded-xl text-surface-600 transition-colors hover:bg-surface-100 hover:text-surface-900"
+          >
+            <Search className="size-5" />
+          </button>
+        )}
+
+        <span aria-hidden="true" className="my-1 h-px w-8 bg-surface-200" />
+
+        {TABS.map((t) => {
+          const active = tab === t.id;
+          const Icon = TAB_ICONS[t.id];
+          return (
+            <button
+              key={t.id}
+              type="button"
+              title={t.label}
+              aria-label={t.label}
+              aria-pressed={active}
+              onClick={() => {
+                setTab(t.id);
+                onToggleNarrow?.();
+              }}
+              className={cn(
+                "relative flex size-10 items-center justify-center rounded-xl transition-colors",
+                active
+                  ? "bg-brand-50 text-brand-700"
+                  : "text-surface-600 hover:bg-surface-100 hover:text-surface-900",
+              )}
+            >
+              <Icon className="size-5" />
+              <span className="absolute right-0 top-0 rounded-full bg-surface-100 px-1 font-mono text-[9px] leading-4 tabular-nums text-surface-500">
+                {counts[t.id]}
+              </span>
+            </button>
+          );
+        })}
+
+        <span className="flex-1" />
+
+        {onToggleNarrow && (
+          <button
+            type="button"
+            onClick={onToggleNarrow}
+            title="Expand sidebar"
+            aria-label="Expand sidebar"
+            className="flex size-10 items-center justify-center rounded-xl text-surface-500 transition-colors hover:bg-surface-100 hover:text-surface-900"
+          >
+            <PanelLeftOpen className="size-5" />
+          </button>
+        )}
+      </nav>
+    );
+  }
+
   /* -------------------------------- renderers ----------------------------- */
 
   const componentSections = filtered.map((group) => {
@@ -432,19 +524,32 @@ export function Sidebar({
           while the long hierarchy scrolls beneath it. */}
       <div ref={topRef} className="sticky top-0 z-20 border-b border-surface-200/70 bg-surface-50/95 backdrop-blur">
         {/* Rail brand — click to return to the landing page */}
-        <Link
-          to="/"
-          title="Back to the landing page"
-          className="flex items-center gap-2.5 px-3 pb-2 pt-3 transition-colors hover:bg-surface-100/60"
-        >
-          <VaultLogo size={32} />
-          <span className="min-w-0">
-            <span className="block text-base font-semibold leading-tight tracking-tight text-surface-900">
-              Vault&nbsp;UI
+        <div className="flex items-center gap-1 px-2 pb-2 pt-2">
+          <Link
+            to="/"
+            title="Back to the landing page"
+            className="flex min-w-0 flex-1 items-center gap-2.5 rounded-lg px-1 py-1 transition-colors hover:bg-surface-100/60"
+          >
+            <VaultLogo size={32} />
+            <span className="min-w-0">
+              <span className="block text-base font-semibold leading-tight tracking-tight text-surface-900">
+                Vault&nbsp;UI
+              </span>
+              <NpmMetaPill />
             </span>
-            <NpmMetaPill />
-          </span>
-        </Link>
+          </Link>
+          {onToggleNarrow && (
+            <button
+              type="button"
+              onClick={onToggleNarrow}
+              title="Collapse sidebar"
+              aria-label="Collapse sidebar"
+              className="flex size-8 shrink-0 items-center justify-center rounded-lg text-surface-500 transition-colors hover:bg-surface-100 hover:text-surface-900"
+            >
+              <PanelLeftClose className="size-4" />
+            </button>
+          )}
+        </div>
 
         {/* Search — always reachable without scrolling the tree */}
         <div className="px-3 pb-2">
