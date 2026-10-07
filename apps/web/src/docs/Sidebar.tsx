@@ -1,4 +1,4 @@
-import { useEffect, useState, type ComponentType } from "react";
+import { useEffect, useRef, useState, type ComponentType } from "react";
 import { Link } from "react-router-dom";
 import {
   BarChart3,
@@ -8,7 +8,6 @@ import {
   ChevronDown,
   ClipboardCheck,
   FolderKanban,
-  LayoutDashboard,
   LayoutGrid,
   Layers,
   ListChecks,
@@ -18,11 +17,13 @@ import {
   Palette,
   Puzzle,
   Rocket,
+  Search,
   ShoppingCart,
   Sparkles,
   Terminal,
   Type,
   Users,
+  X,
 } from "lucide-react";
 import { cn } from "@vaultui/utils";
 import { useAuth } from "../auth/AuthContext";
@@ -64,6 +65,28 @@ const GUIDELINE_ICONS: Record<string, IconType> = {
   "Polish & Feedback": Sparkles,
   "Review & Tools": ClipboardCheck,
 };
+
+/* ------------------------------- rail tabs -------------------------------- */
+
+type RailTab = "components" | "dashboards" | "guidelines";
+
+const TABS: { id: RailTab; label: string }[] = [
+  { id: "components", label: "Components" },
+  { id: "dashboards", label: "Dashboards" },
+  { id: "guidelines", label: "Guidelines" },
+];
+
+const TAB_KEY = "vaultui.rail.tab.v1";
+const COLLAPSE_KEY = "vaultui.rail.collapsed.v1";
+
+/** Row styling shared by component/dashboard links and guideline buttons. */
+const rowClass = (active: boolean) =>
+  cn(
+    "flex w-full items-center justify-between gap-2 rounded-lg py-2 pl-9 pr-2.5 text-left text-sm transition-colors",
+    active
+      ? "bg-gradient-to-r from-brand-50 to-brand-100/60 font-medium text-brand-700"
+      : "text-surface-700 hover:bg-surface-100 hover:text-surface-900",
+  );
 
 /**
  * One collapsible sidebar section header: [icon] label … count [chevron].
@@ -133,14 +156,87 @@ export interface SidebarProps {
    *  highlight. */
   activeGuidelineId?: string;
   search: string;
+  onSearchChange: (value: string) => void;
+  /** Opens the full ⌘K command palette (cross-category search + actions). */
+  onOpenPalette?: () => void;
 }
 
-export function Sidebar({ groups, dashboards, guidelineGroups, activeId, onSelect, onSelectGuideline, activeGuidelineId = "", search }: SidebarProps) {
+export function Sidebar({
+  groups,
+  dashboards,
+  guidelineGroups,
+  activeId,
+  onSelect,
+  onSelectGuideline,
+  activeGuidelineId = "",
+  search,
+  onSearchChange,
+  onOpenPalette,
+}: SidebarProps) {
   const { isSignedIn, isPremium } = useAuth();
   const q = search.trim().toLowerCase();
 
-  /** Collapsed section names; search always expands everything. */
-  const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
+  /* ------------------------------- rail state ----------------------------- */
+
+  // Which of the three top-level modes the rail shows. Deep links win; a
+  // manual tab choice survives until the next navigation.
+  const [tab, setTab] = useState<RailTab>(() => {
+    try {
+      const saved = localStorage.getItem(TAB_KEY);
+      if (saved === "components" || saved === "dashboards" || saved === "guidelines") return saved;
+    } catch {
+      /* storage unavailable */
+    }
+    return "components";
+  });
+
+  // Collapsed section names, persisted across visits. Search expands everything.
+  const [collapsed, setCollapsed] = useState<Set<string>>(() => {
+    try {
+      const raw = localStorage.getItem(COLLAPSE_KEY);
+      if (raw) return new Set<string>(JSON.parse(raw) as string[]);
+    } catch {
+      /* storage unavailable */
+    }
+    return new Set<string>();
+  });
+
+  const activeIsDashboard = dashboards.some((g) => g.items.some((i) => i.id === activeId));
+
+  // Follow the route: land on the tab that owns the current entry. This is a
+  // deliberate sync to router state (not an external store), so the
+  // set-state-in-effect guard doesn't apply here.
+  useEffect(() => {
+    /* eslint-disable react-hooks/set-state-in-effect */
+    if (activeGuidelineId) setTab("guidelines");
+    else if (activeIsDashboard) setTab("dashboards");
+    else if (activeId) setTab("components");
+    /* eslint-enable react-hooks/set-state-in-effect */
+  }, [activeId, activeGuidelineId, activeIsDashboard]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(TAB_KEY, tab);
+    } catch {
+      /* storage unavailable */
+    }
+  }, [tab]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(COLLAPSE_KEY, JSON.stringify([...collapsed]));
+    } catch {
+      /* storage unavailable */
+    }
+  }, [collapsed]);
+
+  // Keep the active row visible when arriving via a deep link or the palette.
+  const activeLinkRef = useRef<HTMLAnchorElement | null>(null);
+  const activeBtnRef = useRef<HTMLButtonElement | null>(null);
+  useEffect(() => {
+    (activeLinkRef.current ?? activeBtnRef.current)?.scrollIntoView({ block: "nearest" });
+  }, [activeId, activeGuidelineId, tab, q]);
+
   const toggleSection = (name: string) => {
     setCollapsed((prev) => {
       const next = new Set(prev);
@@ -150,6 +246,8 @@ export function Sidebar({ groups, dashboards, guidelineGroups, activeId, onSelec
     });
   };
   const isCollapsed = (name: string) => (q !== "" ? false : collapsed.has(name));
+
+  /* ------------------------------- filtering ------------------------------ */
 
   const filtered = q
     ? groups
@@ -162,7 +260,6 @@ export function Sidebar({ groups, dashboards, guidelineGroups, activeId, onSelec
         .filter((g) => g.items.length > 0)
     : groups;
 
-  // Dashboard templates get the same search behaviour.
   const filteredDashboards = q
     ? dashboards
         .map((g) => ({
@@ -174,183 +271,282 @@ export function Sidebar({ groups, dashboards, guidelineGroups, activeId, onSelec
         .filter((g) => g.items.length > 0)
     : dashboards;
 
-  return (
-    <nav aria-label="Components">
-      {/* Rail brand — click to return to the landing page */}
-      <Link
-        to="/"
-        title="Back to the landing page"
-        className="flex items-center gap-2.5 border-b border-surface-200/70 px-3 pb-3 pt-4 transition-colors hover:bg-surface-100/60"
-      >
-        <VaultLogo size={32} />
-        <span className="min-w-0">
-          <span className="block text-base font-semibold leading-tight tracking-tight text-surface-900">
-            Vault&nbsp;UI
-          </span>
-          <NpmMetaPill />
-        </span>
-      </Link>
+  const allGuidelineGroups = guidelineGroups ?? [];
+  const filteredGuidelines = q
+    ? allGuidelineGroups
+        .map((g) => ({ ...g, items: g.items.filter((i) => i.label.toLowerCase().includes(q)) }))
+        .filter((g) => g.items.length > 0)
+    : allGuidelineGroups;
 
-      {/* UI Guidelines — the do/don't playbook. Distinct namespace so its ids
-          never collide with kit entries (tabs, modals, overview…). */}
-      {guidelineGroups && guidelineGroups.length > 0 && (
-        <div className="border-b border-surface-200/70 px-3 pb-3 pt-2">
-          {guidelineGroups.map((group) => {
-            const groupCollapsed = isCollapsed(group.title);
-            return (
-              <div key={group.title} className="mt-0.5">
-                <SectionHeader
-                  icon={GUIDELINE_ICONS[group.title] ?? BookOpen}
-                  label={group.title}
-                  collapsed={groupCollapsed}
-                  onToggle={() => toggleSection(group.title)}
-                />
-                {!groupCollapsed && (
-                  <ul className="space-y-0.5">
-                    {group.items.map((item) => {
-                      const active = item.id === activeGuidelineId;
-                      return (
-                        <li key={item.id}>
-                          <button
-                            type="button"
-                            onClick={() => onSelectGuideline?.(item.id)}
-                            aria-current={active ? "page" : undefined}
-                            className={cn(
-                              "flex w-full items-center rounded-lg py-1.5 pl-9 pr-2.5 text-left text-sm transition-colors",
-                              active
-                                ? "bg-brand-50 font-medium text-brand-700"
-                                : "text-surface-700 hover:bg-surface-100 hover:text-surface-900",
-                            )}
-                          >
-                            <span className="truncate">{item.label}</span>
-                          </button>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
+  const counts = {
+    components: groups.reduce((n, g) => n + g.items.length, 0),
+    dashboards: dashboards.reduce((n, g) => n + g.items.length, 0),
+    guidelines: allGuidelineGroups.reduce((n, g) => n + g.items.length, 0),
+  };
+  const resultCount =
+    filtered.reduce((n, g) => n + g.items.length, 0) +
+    filteredDashboards.reduce((n, g) => n + g.items.length, 0) +
+    filteredGuidelines.reduce((n, g) => n + g.items.length, 0);
 
-      {/* Dashboard templates section */}
-      {(() => {
-        const dashCount = filteredDashboards.reduce((n, g) => n + g.items.length, 0);
-        const dashCollapsed = isCollapsed("Dashboard Templates");
-        return dashCount > 0 || q === "" ? (
-          <div className="px-3">
-            <SectionHeader
-              icon={LayoutDashboard}
-              label="Dashboard Templates"
-              count={dashCount}
-              collapsed={dashCollapsed}
-              onToggle={() => toggleSection("Dashboard Templates")}
-            />
-            {!dashCollapsed && (
-              dashCount > 0 ? (
-                <ul className="space-y-0.5">
-                  {filteredDashboards.map((group) =>
-                    group.items.map((item) => {
-                      const active = item.id === activeId;
-                      return (
-                        <li key={item.id}>
-                          <Link
-                            to={entryTo(item)}
-                            onClick={() => onSelect(item.id)}
-                            aria-current={active ? "page" : undefined}
-                            className={cn(
-                              "flex w-full items-center justify-between gap-2 rounded-lg py-2 pl-9 pr-2.5 text-left text-sm transition-colors",
-                              active
-                                ? "bg-gradient-to-r from-brand-50 to-brand-100/60 font-medium text-brand-700"
-                                : "text-surface-700 hover:bg-surface-100 hover:text-surface-900",
-                            )}
-                          >
-                            <span className="truncate">{item.name}</span>
-                            <span
-                              className={cn(
-                                "shrink-0 rounded px-1 py-0.5 font-mono text-xs",
-                                active ? "bg-brand-100 text-brand-700" : "bg-surface-100 text-surface-400",
-                              )}
-                            >
-                              {isSignedIn ? "tmpl" : <Lock className="size-3" />}
-                            </span>
-                          </Link>
-                        </li>
-                      );
-                    }),
-                  )}
-                </ul>
-              ) : (
-                <p className="pb-1 pl-9 pr-2.5 text-xs italic leading-relaxed text-surface-400">
-                  Coming soon — each template ships token-driven, so all 4 themes apply.
-                </p>
-              )
-            )}
-          </div>
-        ) : null;
-      })()}
+  /* -------------------------------- renderers ----------------------------- */
 
-      {/* Groups */}
-      <div className="space-y-5 px-3 pb-6 pt-2">
-        {filtered.map((group) => {
-          const groupCollapsed = isCollapsed(group.group);
+  const componentSections = filtered.map((group) => {
+    const groupCollapsed = isCollapsed(group.group);
+    return (
+      <div key={group.group}>
+        <SectionHeader
+          icon={GROUP_ICONS[group.group] ?? Package}
+          label={group.group}
+          count={group.items.length}
+          collapsed={groupCollapsed}
+          onToggle={() => toggleSection(group.group)}
+        />
+        {!groupCollapsed && (
+          <ul className="space-y-0.5">
+            {group.items.map((item) => {
+              const active = item.id === activeId;
+              return (
+                <li key={item.id}>
+                  <Link
+                    to={entryTo(item)}
+                    ref={active ? activeLinkRef : undefined}
+                    onClick={() => onSelect(item.id)}
+                    aria-current={active ? "page" : undefined}
+                    className={rowClass(active)}
+                  >
+                    <span className="truncate">{item.name}</span>
+                    <span
+                      className={cn(
+                        "shrink-0 rounded px-1 py-0.5 font-mono text-xs",
+                        item.tier === "free"
+                          ? active
+                            ? "bg-brand-100 text-brand-700"
+                            : "bg-success-500/10 text-success-500"
+                          : active
+                            ? "bg-brand-100 text-brand-700"
+                            : "bg-surface-100 text-surface-400",
+                      )}
+                    >
+                      {item.tier === "free" ? "free" : isPremium ? "$" : <Lock className="size-3" />}
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
+    );
+  });
+
+  const dashboardList = (
+    <ul className="space-y-0.5">
+      {filteredDashboards.flatMap((group) =>
+        group.items.map((item) => {
+          const active = item.id === activeId;
           return (
-            <div key={group.group}>
-              <SectionHeader
-                icon={GROUP_ICONS[group.group] ?? Package}
-                label={group.group}
-                count={group.items.length}
-                collapsed={groupCollapsed}
-                onToggle={() => toggleSection(group.group)}
-              />
-              {!groupCollapsed && (
-                <ul className="space-y-0.5">
-                  {group.items.map((item) => {
-                    const active = item.id === activeId;
-                    return (
-                      <li key={item.id}>
-                        <Link
-                          to={entryTo(item)}
-                          onClick={() => onSelect(item.id)}
-                          aria-current={active ? "page" : undefined}
-                          className={cn(
-                            "flex w-full items-center justify-between gap-2 rounded-lg py-2 pl-9 pr-2.5 text-left text-sm transition-colors",
-                            active
-                              ? "bg-gradient-to-r from-brand-50 to-brand-100/60 font-medium text-brand-700"
-                              : "text-surface-700 hover:bg-surface-100 hover:text-surface-900",
-                          )}
-                        >
-                          <span className="truncate">{item.name}</span>
-                          <span
-                            className={cn(
-                              "shrink-0 rounded px-1 py-0.5 font-mono text-xs",
-                              item.tier === "free"
-                                ? active
-                                  ? "bg-brand-100 text-brand-700"
-                                  : "bg-success-500/10 text-success-500"
-                                : active
-                                  ? "bg-brand-100 text-brand-700"
-                                  : "bg-surface-100 text-surface-400",
-                            )}
-                          >
-                            {item.tier === "free" ? "free" : isPremium ? "$" : <Lock className="size-3" />}
-                          </span>
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ul>
+            <li key={item.id}>
+              <Link
+                to={entryTo(item)}
+                ref={active ? activeLinkRef : undefined}
+                onClick={() => onSelect(item.id)}
+                aria-current={active ? "page" : undefined}
+                className={rowClass(active)}
+              >
+                <span className="truncate">{item.name}</span>
+                <span
+                  className={cn(
+                    "shrink-0 rounded px-1 py-0.5 font-mono text-xs",
+                    active ? "bg-brand-100 text-brand-700" : "bg-surface-100 text-surface-400",
+                  )}
+                >
+                  {isSignedIn ? "tmpl" : <Lock className="size-3" />}
+                </span>
+              </Link>
+            </li>
+          );
+        }),
+      )}
+    </ul>
+  );
+
+  const guidelineSections = filteredGuidelines.map((group) => {
+    const groupCollapsed = isCollapsed(group.title);
+    return (
+      <div key={group.title} className="mt-0.5">
+        <SectionHeader
+          icon={GUIDELINE_ICONS[group.title] ?? BookOpen}
+          label={group.title}
+          collapsed={groupCollapsed}
+          onToggle={() => toggleSection(group.title)}
+        />
+        {!groupCollapsed && (
+          <ul className="space-y-0.5">
+            {group.items.map((item) => {
+              const active = item.id === activeGuidelineId;
+              return (
+                <li key={item.id}>
+                  <button
+                    type="button"
+                    ref={active ? activeBtnRef : undefined}
+                    onClick={() => onSelectGuideline?.(item.id)}
+                    aria-current={active ? "page" : undefined}
+                    className={rowClass(active)}
+                  >
+                    <span className="truncate">{item.label}</span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
+    );
+  });
+
+  return (
+    <nav aria-label="Documentation">
+      {/* Pinned top block — brand, search, and the 3-mode switch. Stays put
+          while the long hierarchy scrolls beneath it. */}
+      <div className="sticky top-0 z-20 border-b border-surface-200/70 bg-surface-50/95 backdrop-blur">
+        {/* Rail brand — click to return to the landing page */}
+        <Link
+          to="/"
+          title="Back to the landing page"
+          className="flex items-center gap-2.5 px-3 pb-2 pt-3 transition-colors hover:bg-surface-100/60"
+        >
+          <VaultLogo size={32} />
+          <span className="min-w-0">
+            <span className="block text-base font-semibold leading-tight tracking-tight text-surface-900">
+              Vault&nbsp;UI
+            </span>
+            <NpmMetaPill />
+          </span>
+        </Link>
+
+        {/* Search — always reachable without scrolling the tree */}
+        <div className="px-3 pb-2">
+          <label className="relative block">
+            <Search
+              aria-hidden="true"
+              className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-surface-400"
+            />
+            <input
+              type="search"
+              value={search}
+              onChange={(e) => onSearchChange(e.target.value)}
+              placeholder="Search components, kits…"
+              aria-label="Search the docs"
+              className="h-9 w-full rounded-lg border border-surface-200 bg-surface-0 pl-8 pr-8 text-sm text-surface-800 shadow-inset outline-none placeholder:text-surface-400 focus:border-brand-400 focus:ring-2 focus:ring-brand-500/20"
+            />
+            {search ? (
+              <button
+                type="button"
+                onClick={() => onSearchChange("")}
+                aria-label="Clear search"
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-0.5 text-surface-400 transition-colors hover:text-surface-700"
+              >
+                <X className="size-3.5" />
+              </button>
+            ) : onOpenPalette ? (
+              <button
+                type="button"
+                onClick={onOpenPalette}
+                title="Open command palette (⌘K)"
+                aria-label="Open command palette"
+                className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded border border-surface-200 bg-surface-50 px-1 font-mono text-[10px] leading-5 text-surface-400 transition-colors hover:text-surface-700"
+              >
+                ⌘K
+              </button>
+            ) : null}
+          </label>
+        </div>
+
+        {/* 3-mode switch — hides while searching so results span all modes */}
+        {q === "" && (
+          <div role="tablist" aria-label="Docs sections" className="mx-3 mb-2 flex gap-0.5 rounded-xl bg-surface-100 p-0.5">
+            {TABS.map((t) => {
+              const active = tab === t.id;
+              return (
+                <button
+                  key={t.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => setTab(t.id)}
+                  className={cn(
+                    "flex min-w-0 flex-1 items-center justify-center gap-1 rounded-[10px] px-1.5 py-1.5 text-xs font-medium transition-all",
+                    active
+                      ? "bg-surface-0 text-brand-700 shadow-soft"
+                      : "text-surface-600 hover:text-surface-900",
+                  )}
+                >
+                  <span className="truncate">{t.label}</span>
+                  <span
+                    className={cn(
+                      "shrink-0 font-mono text-[10px] tabular-nums",
+                      active ? "text-brand-500" : "text-surface-400",
+                    )}
+                  >
+                    {counts[t.id]}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* Body */}
+      <div className="px-3 pb-6 pt-3">
+        {q !== "" ? (
+          resultCount === 0 ? (
+            <p className="px-2 py-6 text-center text-sm text-surface-400">No results for “{search}”.</p>
+          ) : (
+            <div className="space-y-5">
+              {filtered.length > 0 && (
+                <>
+                  <CategoryLabel label="Components" count={filtered.reduce((n, g) => n + g.items.length, 0)} />
+                  {componentSections}
+                </>
+              )}
+              {filteredDashboards.length > 0 && (
+                <>
+                  <CategoryLabel label="Dashboards" count={filteredDashboards.reduce((n, g) => n + g.items.length, 0)} />
+                  <div>{dashboardList}</div>
+                </>
+              )}
+              {filteredGuidelines.length > 0 && (
+                <>
+                  <CategoryLabel label="Guidelines" count={filteredGuidelines.reduce((n, g) => n + g.items.length, 0)} />
+                  {guidelineSections}
+                </>
               )}
             </div>
-          );
-        })}
-        {filtered.length === 0 && (
-          <p className="px-2 py-6 text-center text-sm text-surface-400">No components match “{search}”.</p>
+          )
+        ) : tab === "components" ? (
+          <div className="space-y-5">{componentSections}</div>
+        ) : tab === "dashboards" ? (
+          <div>
+            <p className="mb-1.5 px-2.5 text-xs text-surface-400">
+              Full-page templates composed from the kit.
+            </p>
+            {dashboardList}
+          </div>
+        ) : (
+          <div className="space-y-1">{guidelineSections}</div>
         )}
       </div>
     </nav>
+  );
+}
+
+function CategoryLabel({ label, count }: { label: string; count: number }) {
+  return (
+    <p className="flex items-center gap-2 px-2.5 pb-1 pt-1 text-[11px] font-semibold uppercase tracking-wider text-surface-400">
+      {label}
+      <span className="font-mono text-[10px] tabular-nums text-surface-300">{count}</span>
+    </p>
   );
 }
 
@@ -383,17 +579,5 @@ function NpmMetaPill() {
       v{meta.version ?? "0.1.1"}
       {meta.downloads ? ` · ${meta.downloads} dls/mo` : ""}
     </span>
-  );
-}
-
-function SearchIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 20 20" fill="currentColor" className={className} aria-hidden="true">
-      <path
-        fillRule="evenodd"
-        d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
-        clipRule="evenodd"
-      />
-    </svg>
   );
 }

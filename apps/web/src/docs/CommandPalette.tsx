@@ -1,23 +1,145 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@vaultui/utils";
 import { Kbd } from "@vaultui/ui";
-import { NAV_ITEMS } from "../projects/entries";
+import { NAV_ITEMS, GROUP_NAME_BY_ID, isDashboard } from "../projects/entries";
+import { INSTALL_COMMAND } from "../projects/counts";
+import { useTheme } from "../theme/ThemeContext";
+import { GUIDELINE_GROUPS, GUIDELINE_NAV } from "./guidelines";
+import { readRecents } from "./recents";
 
 /**
- * ⌘K command palette — jump to any component or dashboard from anywhere in
- * the docs. Global Cmd/Ctrl+K listener; arrows + Enter to select; ESC closes.
+ * ⌘K command palette — one place to jump anywhere and run the few common
+ * actions. Fuzzy search across components, dashboards and guidelines, grouped
+ * by category, with a "Recent" group and keyboard-first navigation.
  */
+
+interface Result {
+  key: string;
+  label: string;
+  /** Secondary text (kit name / category / "Action"). */
+  hint: string;
+  category: "components" | "dashboards" | "guidelines" | "actions";
+  run: () => void;
+  /** Present for navigable entries — lets "Recent" resolve back to a result. */
+  navId?: string;
+}
+
+type Category = Result["category"];
+
+/**
+ * Subsequence fuzzy match. Returns a relevance score (lower is better);
+ * `match: false` when the query's characters don't appear in order.
+ */
+function fuzzy(text: string, query: string): { match: boolean; score: number } {
+  const t = text.toLowerCase();
+  const q = query.toLowerCase();
+  if (!q) return { match: true, score: 0 };
+  let ti = 0;
+  let score = 0;
+  let streak = 0;
+  for (let i = 0; i < q.length; i++) {
+    const found = t.indexOf(q[i]!, ti);
+    if (found === -1) return { match: false, score: 0 };
+    streak = found === ti ? streak + 1 : 0;
+    score += found - ti + (streak > 0 ? 0 : 2);
+    ti = found + 1;
+  }
+  if (t.startsWith(q)) score -= 6;
+  else if (t.includes(q)) score -= 3;
+  return { match: true, score };
+}
+
+function scoreOf(result: Result, query: string): number | null {
+  const label = fuzzy(result.label, query);
+  const hint = fuzzy(result.hint, query);
+  if (!label.match && !hint.match) return null;
+  return Math.min(label.match ? label.score : Infinity, hint.match ? hint.score + 5 : Infinity);
+}
+
+const GROUP_LABELS: Record<Category, string> = {
+  components: "Components",
+  dashboards: "Dashboards",
+  guidelines: "Guidelines",
+  actions: "Actions",
+};
+
 export function CommandPalette({
   open,
   onOpenChange,
   onNavigate,
+  onNavigateGuideline,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onNavigate: (id: string) => void;
+  onNavigateGuideline?: (id: string) => void;
 }) {
+  const { themes, themeId, setThemeId } = useTheme();
   const [q, setQ] = useState("");
   const [idx, setIdx] = useState(0);
+  const [recents, setRecents] = useState<string[]>([]);
+
+  // Every navigable entry (components + dashboards) and every guideline.
+  const navItems = useMemo<Result[]>(() => {
+    const entries: Result[] = NAV_ITEMS.filter((e) => e.id !== "overview").map((e) => {
+      const dash = isDashboard(e);
+      return {
+        key: `${dash ? "d" : "c"}:${e.id}`,
+        label: e.name,
+        hint: GROUP_NAME_BY_ID.get(e.id) ?? (dash ? "Dashboard" : ""),
+        category: dash ? "dashboards" : "components",
+        navId: e.id,
+        run: () => onNavigate(e.id),
+      };
+    });
+    const guides: Result[] = GUIDELINE_NAV.map((g) => ({
+      key: `g:${g.id}`,
+      label: g.label,
+      hint: GUIDELINE_GROUPS.find((grp) => grp.items.some((i) => i.id === g.id))?.title ?? "Guidelines",
+      category: "guidelines",
+      navId: `guideline:${g.id}`,
+      run: () => onNavigateGuideline?.(g.id),
+    }));
+    return [...entries, ...guides];
+  }, [onNavigate, onNavigateGuideline]);
+
+  const actionItems = useMemo<Result[]>(() => {
+    const i = themes.findIndex((t) => t.id === themeId);
+    const nextTheme = themes[(i + 1) % themes.length] ?? themes[0]!;
+    return [
+      {
+        key: "a:theme",
+        label: `Switch theme → ${nextTheme.label}`,
+        hint: "Action",
+        category: "actions",
+        run: () => setThemeId(nextTheme.id),
+      },
+      {
+        key: "a:download",
+        label: "Download the kit (.zip)",
+        hint: "Action",
+        category: "actions",
+        run: () => {
+          void import("./downloadKit").then((m) => m.downloadKit());
+        },
+      },
+      {
+        key: "a:install",
+        label: "Copy install command",
+        hint: "Action",
+        category: "actions",
+        run: () => {
+          void navigator.clipboard?.writeText(INSTALL_COMMAND);
+        },
+      },
+    ];
+  }, [themes, themeId, setThemeId]);
+
+  const reset = () => {
+    setQ("");
+    setIdx(0);
+    setRecents(readRecents());
+  };
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -25,10 +147,7 @@ export function CommandPalette({
         e.preventDefault();
         const next = !open;
         onOpenChange(next);
-        if (next) {
-          setQ("");
-          setIdx(0);
-        }
+        if (next) reset();
       } else if (e.key === "Escape") {
         onOpenChange(false);
       }
@@ -39,24 +158,54 @@ export function CommandPalette({
 
   const listRef = useRef<HTMLUListElement>(null);
 
-  // Keep the arrow-highlighted option visible while navigating long lists.
+  const query = q.trim();
+
+  const sections = useMemo(() => {
+    const out: { title: string; items: Result[] }[] = [];
+
+    if (!query) {
+      const recent = recents
+        .map((id) => navItems.find((r) => r.navId === id || r.navId === `guideline:${id}`))
+        .filter((r): r is Result => Boolean(r));
+      if (recent.length) out.push({ title: "Recent", items: recent });
+      out.push({ title: "Actions", items: actionItems });
+      return out;
+    }
+
+    const matched = [...navItems, ...actionItems]
+      .map((r) => ({ r, s: scoreOf(r, query) }))
+      .filter((x): x is { r: Result; s: number } => x.s !== null)
+      .sort((a, b) => a.s - b.s);
+
+    const byCategory: Partial<Record<Category, Result[]>> = {};
+    for (const { r } of matched) (byCategory[r.category] ??= []).push(r);
+
+    (["components", "dashboards", "guidelines", "actions"] as Category[]).forEach((cat) => {
+      const items = byCategory[cat];
+      if (items?.length) out.push({ title: GROUP_LABELS[cat], items });
+    });
+    return out;
+  }, [query, recents, navItems, actionItems]);
+
+  const flat = useMemo(() => sections.flatMap((s) => s.items), [sections]);
+  const cursor = flat.length ? Math.min(idx, flat.length - 1) : 0;
+
+  // Keep the highlighted row visible while arrowing through long lists.
   useEffect(() => {
-    listRef.current?.querySelector<HTMLElement>("[data-focused=\"true\"]")?.scrollIntoView({ block: "nearest" });
-  }, [idx]);
+    listRef.current
+      ?.querySelector<HTMLElement>("[data-focused=\"true\"]")
+      ?.scrollIntoView({ block: "nearest" });
+  }, [cursor, sections]);
 
-  const results = useMemo(() => {
-    const query = q.trim().toLowerCase();
-    const items = NAV_ITEMS.filter((e) => e.id !== "overview");
-    if (!query) return items;
-    return items.filter((e) => e.name.toLowerCase().includes(query) || e.id.includes(query));
-  }, [q]);
-
-  const pick = (id: string) => {
-    onNavigate(id);
+  const pick = (result: Result | undefined) => {
+    if (!result) return;
+    result.run();
     onOpenChange(false);
   };
 
   if (!open) return null;
+
+  let renderIndex = -1;
 
   return (
     <div className="fixed inset-0 z-[85] flex items-start justify-center p-4 pt-24">
@@ -79,48 +228,76 @@ export function CommandPalette({
             onKeyDown={(e) => {
               if (e.key === "ArrowDown") {
                 e.preventDefault();
-                setIdx((i) => Math.min(i + 1, Math.max(0, results.length - 1)));
+                setIdx((i) => Math.min(i + 1, Math.max(0, flat.length - 1)));
               } else if (e.key === "ArrowUp") {
                 e.preventDefault();
                 setIdx((i) => Math.max(i - 1, 0));
-              } else if (e.key === "Enter" && results[idx]) {
+              } else if (e.key === "Enter") {
                 e.preventDefault();
-                pick(results[idx]!.id);
+                pick(flat[cursor]);
               }
             }}
-            placeholder="Jump to a component or dashboard…"
+            placeholder="Search components, dashboards, guidelines or run a command…"
             className="w-full bg-transparent text-sm text-surface-800 outline-none placeholder:text-surface-400"
             role="combobox"
             aria-expanded="true"
+            aria-label="Search"
           />
           <Kbd>esc</Kbd>
         </div>
+
         <ul ref={listRef} className="max-h-96 overflow-y-auto p-2" role="listbox">
-          {results.length === 0 && (
+          {flat.length === 0 && (
             <li className="px-3 py-6 text-center text-sm text-surface-400">Nothing matches “{q}”.</li>
           )}
-          {results.map((e, i) => (
-            <li key={e.id}>
-              <button
-                type="button"
-                role="option"
-                aria-selected={i === idx}
-                data-focused={i === idx}
-                onMouseEnter={() => setIdx(i)}
-                onClick={() => pick(e.id)}
-                className={cn(
-                  "flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2 text-left transition-colors",
-                  i === idx ? "bg-surface-100" : "",
-                )}
-              >
-                <span className="truncate text-sm font-medium text-surface-800">{e.name}</span>
-                <span className="shrink-0 font-mono text-xs text-surface-400">
-                  {e.kind === "dashboard" ? "template" : "tier" in e ? e.tier : ""}
-                </span>
-              </button>
+          {sections.map((section) => (
+            <li key={section.title} role="presentation">
+              <p className="px-3 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-wider text-surface-400">
+                {section.title}
+              </p>
+              <ul role="presentation">
+                {section.items.map((r) => {
+                  renderIndex += 1;
+                  const focused = renderIndex === cursor;
+                  return (
+                    <li key={r.key} role="presentation">
+                      <button
+                        type="button"
+                        role="option"
+                        aria-selected={focused}
+                        data-focused={focused}
+                        onMouseEnter={() => setIdx(renderIndex)}
+                        onClick={() => pick(r)}
+                        className={cn(
+                          "flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2 text-left transition-colors",
+                          focused ? "bg-surface-100" : "",
+                        )}
+                      >
+                        <span className="truncate text-sm font-medium text-surface-800">{r.label}</span>
+                        <span className="shrink-0 truncate font-mono text-xs text-surface-400">{r.hint}</span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
             </li>
           ))}
+          {query === "" && recents.length === 0 && (
+            <li className="px-3 py-2 text-center text-xs text-surface-400">
+              Type to search {navItems.length} components, dashboards &amp; guidelines.
+            </li>
+          )}
         </ul>
+
+        <div className="flex items-center justify-between border-t border-surface-100 px-4 py-2 text-[11px] text-surface-400">
+          <span className="flex items-center gap-2">
+            <Kbd>↑</Kbd>
+            <Kbd>↓</Kbd> to navigate
+          </span>
+          <span className="flex items-center gap-2">
+            <Kbd>↵</Kbd> to select · <Kbd>esc</Kbd> to close
+          </span>
+        </div>
       </div>
     </div>
   );
