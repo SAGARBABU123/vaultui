@@ -14,6 +14,8 @@ import { ComponentShell } from "./ComponentShell";
 import { CommandPalette } from "./CommandPalette";
 import { AskTheKit } from "./AskTheKit";
 import { GuidelinesView } from "./GuidelinesView";
+import { Breadcrumbs, type Crumb } from "./Breadcrumbs";
+import { pushRecent } from "./recents";
 import {
   GUIDELINE_GROUPS,
   GUIDELINE_NAV,
@@ -30,6 +32,7 @@ import {
   OVERVIEW,
   entryUrl,
   isDashboard,
+  GROUP_NAME_BY_ID,
 } from "../projects/entries";
 
 /** Component count shown in the header / overview (overview itself excluded). */
@@ -72,6 +75,22 @@ function canonicalUrl(active: ActiveDoc): string {
   return active.kind === "guideline" ? guidelineUrl(active.id) : entryUrl(active);
 }
 
+/** Breadcrumb trail: Docs / <kit or category> / <entry>. */
+function crumbsFor(active: ActiveDoc): Crumb[] {
+  if (active.kind === "guideline") {
+    const group = GUIDELINE_GROUPS.find((g) => g.items.some((i) => i.id === active.id));
+    const item = GUIDELINE_NAV.find((g) => g.id === active.id);
+    return [
+      { label: "Guidelines" },
+      ...(group ? [{ label: group.title }] : []),
+      { label: item?.label ?? active.id },
+    ];
+  }
+  if (isDashboard(active)) return [{ label: "Dashboards" }, { label: active.name }];
+  const group = GROUP_NAME_BY_ID.get(active.id);
+  return [...(group ? [{ label: group }] : []), { label: active.name }];
+}
+
 export function DocsView() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -106,6 +125,13 @@ export function DocsView() {
   }, [navigate]);
 
   const active = resolveActive(pathname);
+
+  // Remember the last few entries opened — powers the palette's "Recent" group.
+  const recentId = active && active.kind !== "guideline" && active.id !== "overview" ? active.id : "";
+  useEffect(() => {
+    if (recentId) pushRecent(recentId);
+  }, [recentId]);
+
   // Kit URLs and unknown ids land on their canonical route.
   if (!active || pathname !== canonicalUrl(active)) {
     return <Navigate to={active ? canonicalUrl(active) : "/docs"} replace />;
@@ -128,6 +154,7 @@ export function DocsView() {
         ? "premium"
         : null;
   const locked = gate ? (gate === "dashboard" ? !isSignedIn : !isPremium) : false;
+  const crumbs = crumbsFor(active);
 
   const activeIndex = NAV_ITEMS.findIndex((e) => e.id === active.id);
   const prev = activeIndex > 0 ? NAV_ITEMS[activeIndex - 1] ?? null : null;
@@ -152,6 +179,13 @@ export function DocsView() {
 
   return (
     <div className="min-h-screen text-surface-900">
+      <a
+        href="#docs-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-surface-0 focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-brand-700 focus:shadow-popover"
+      >
+        Skip to content
+      </a>
+
       {/* Full-width app bar — the top-nav axis. Astryx `shell-nav` shape:
           a top menu bar spanning the whole frame, then a left hierarchy rail
           below it, beside the content. */}
@@ -179,12 +213,19 @@ export function DocsView() {
             onSelect={navigateEntry}
             onSelectGuideline={navigateGuideline}
             search={search}
+            onSearchChange={setSearch}
+            onOpenPalette={() => setPaletteOpen(true)}
           />
         </aside>
 
         {/* Content column — beside the rail, under the app bar */}
         <div className="min-w-0 flex-1">
-          <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} onNavigate={navigateEntry} />
+          <CommandPalette
+            open={paletteOpen}
+            onOpenChange={setPaletteOpen}
+            onNavigate={navigateEntry}
+            onNavigateGuideline={navigateGuideline}
+          />
           <AskTheKit />
 
           {/* Mobile drawer — stacked above the floating “Ask the kit” FAB on small screens */}
@@ -213,13 +254,15 @@ export function DocsView() {
                     onSelect={navigateEntry}
                     onSelectGuideline={navigateGuideline}
                     search={search}
+                    onSearchChange={setSearch}
+                    onOpenPalette={() => setPaletteOpen(true)}
                   />
                 </div>
               </div>
             </div>
           )}
 
-          <main className="px-4 py-8 sm:px-6 lg:px-10">
+          <main id="docs-content" className="px-4 py-8 sm:px-6 lg:px-10">
             <div
               className={cn(
                 isGuideline || active.id === "overview"
@@ -229,6 +272,7 @@ export function DocsView() {
                     : "mx-auto max-w-3xl",
               )}
             >
+              {active.id !== "overview" && <Breadcrumbs items={crumbs} />}
               {isGuideline ? (
                 <GuidelinesView item={GUIDELINE_NAV.find((g) => g.id === active.id)!} onNavigate={navigateGuideline} />
               ) : locked && gate ? (
