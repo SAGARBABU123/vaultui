@@ -6,6 +6,7 @@ import { INSTALL_COMMAND } from "../projects/counts";
 import { useTheme } from "../theme/ThemeContext";
 import { GUIDELINE_GROUPS, GUIDELINE_NAV } from "./guidelines";
 import { readRecents } from "./recents";
+import { readFavorites } from "./favorites";
 
 /**
  * ⌘K command palette — one place to jump anywhere and run the few common
@@ -77,7 +78,10 @@ export function CommandPalette({
   const { themes, themeId, setThemeId } = useTheme();
   const [q, setQ] = useState("");
   const [idx, setIdx] = useState(0);
-  const [recents, setRecents] = useState<string[]>([]);
+
+  // Read personal shortcuts each time the palette opens (any open path).
+  const recents = useMemo(() => (open ? readRecents() : []), [open]);
+  const pinned = useMemo(() => (open ? readFavorites() : []), [open]);
 
   // Every navigable entry (components + dashboards) and every guideline.
   const navItems = useMemo<Result[]>(() => {
@@ -138,7 +142,6 @@ export function CommandPalette({
   const reset = () => {
     setQ("");
     setIdx(0);
-    setRecents(readRecents());
   };
 
   useEffect(() => {
@@ -163,11 +166,16 @@ export function CommandPalette({
   const sections = useMemo(() => {
     const out: { title: string; items: Result[] }[] = [];
 
-    if (!query) {
-      const recent = recents
+    const resolve = (ids: string[]) =>
+      ids
         .map((id) => navItems.find((r) => r.navId === id || r.navId === `guideline:${id}`))
         .filter((r): r is Result => Boolean(r));
+
+    if (!query) {
+      const recent = resolve(recents);
+      const pins = resolve(pinned).filter((r) => !recent.some((x) => x.key === r.key));
       if (recent.length) out.push({ title: "Recent", items: recent });
+      if (pins.length) out.push({ title: "Pinned", items: pins });
       out.push({ title: "Actions", items: actionItems });
       return out;
     }
@@ -185,7 +193,7 @@ export function CommandPalette({
       if (items?.length) out.push({ title: GROUP_LABELS[cat], items });
     });
     return out;
-  }, [query, recents, navItems, actionItems]);
+  }, [query, recents, pinned, navItems, actionItems]);
 
   const flat = useMemo(() => sections.flatMap((s) => s.items), [sections]);
   const cursor = flat.length ? Math.min(idx, flat.length - 1) : 0;

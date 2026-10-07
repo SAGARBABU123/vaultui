@@ -99,6 +99,7 @@ function SectionHeader({
   count,
   collapsed,
   onToggle,
+  stickyTop = 0,
   accent = false,
 }: {
   icon: IconType;
@@ -106,6 +107,8 @@ function SectionHeader({
   count?: number;
   collapsed: boolean;
   onToggle: () => void;
+  /** Offset (px) the header sticks at, just below the pinned rail top. */
+  stickyTop?: number;
   accent?: boolean;
 }) {
   return (
@@ -113,7 +116,8 @@ function SectionHeader({
       type="button"
       onClick={onToggle}
       aria-expanded={!collapsed}
-      className="group mb-1.5 flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left transition-colors hover:bg-surface-100"
+      style={{ top: stickyTop }}
+      className="group sticky z-10 mb-1.5 flex w-full items-center gap-2 rounded-lg bg-surface-50/95 px-2.5 py-1.5 text-left backdrop-blur transition-colors hover:bg-surface-100"
     >
       <Icon
         aria-hidden="true"
@@ -237,6 +241,22 @@ export function Sidebar({
     (activeLinkRef.current ?? activeBtnRef.current)?.scrollIntoView({ block: "nearest" });
   }, [activeId, activeGuidelineId, tab, q]);
 
+  // Measure the pinned top block so section headers stick just beneath it.
+  const topRef = useRef<HTMLDivElement | null>(null);
+  const [railTop, setRailTop] = useState(0);
+  useEffect(() => {
+    const el = topRef.current;
+    if (!el) return;
+    const update = () => setRailTop(el.offsetHeight);
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    const raf = requestAnimationFrame(update);
+    return () => {
+      ro.disconnect();
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+
   const toggleSection = (name: string) => {
     setCollapsed((prev) => {
       const next = new Set(prev);
@@ -300,6 +320,7 @@ export function Sidebar({
           count={group.items.length}
           collapsed={groupCollapsed}
           onToggle={() => toggleSection(group.group)}
+          stickyTop={railTop}
         />
         {!groupCollapsed && (
           <ul className="space-y-0.5">
@@ -379,6 +400,7 @@ export function Sidebar({
           label={group.title}
           collapsed={groupCollapsed}
           onToggle={() => toggleSection(group.title)}
+          stickyTop={railTop}
         />
         {!groupCollapsed && (
           <ul className="space-y-0.5">
@@ -408,7 +430,7 @@ export function Sidebar({
     <nav aria-label="Documentation">
       {/* Pinned top block — brand, search, and the 3-mode switch. Stays put
           while the long hierarchy scrolls beneath it. */}
-      <div className="sticky top-0 z-20 border-b border-surface-200/70 bg-surface-50/95 backdrop-blur">
+      <div ref={topRef} className="sticky top-0 z-20 border-b border-surface-200/70 bg-surface-50/95 backdrop-blur">
         {/* Rail brand — click to return to the landing page */}
         <Link
           to="/"
