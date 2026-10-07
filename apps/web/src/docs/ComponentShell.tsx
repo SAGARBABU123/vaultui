@@ -1,6 +1,6 @@
 import { Badge, Button } from "@vaultui/ui";
 import { cn } from "@vaultui/utils";
-import { ArrowRight, Check, Copy, Download, FolderPlus, Grab, Package, Plus, Terminal, X } from "lucide-react";
+import { ArrowRight, Check, Copy, Download, FolderPlus, Grab, Package, Plus, Star, Terminal, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { INSTALL_COMMAND } from "../projects/counts";
@@ -10,9 +10,11 @@ import { Playground, PLAYGROUNDS, type PlaygroundBuilder } from "./Playground";
 import { ThemeCompare } from "./ThemeCompare";
 import { ThemeWall } from "./ThemeWall";
 import { ComponentInsights } from "./ComponentInsights";
+import { useFavorites } from "./favorites";
+import { readRecents } from "./recents";
 import { VaultLogo } from "../brand/VaultLogo";
 import { useProjects } from "../projects/ProjectContext";
-import { ALL_DASHBOARDS, ALL_GROUPS } from "../projects/entries";
+import { ALL_DASHBOARDS, ALL_GROUPS, entryById, GROUP_NAME_BY_ID } from "../projects/entries";
 import type { ComponentEntry, DashboardEntry } from "./types";
 
 type DemoView = "demo" | "playground" | "ab" | "wall";
@@ -42,6 +44,7 @@ export function ComponentShell({ entry, prev, next, onNavigate, onNavigateGuidel
     return (
       <article key={entry.id} className="animate-rise">
         <OverviewHero componentTotal={componentTotal} />
+        <PersonalShortcuts onNavigate={onNavigate} />
         <section className="mt-8">
           <SectionLabel>At a glance</SectionLabel>
           <OverviewStats total={componentTotal + 1} />
@@ -84,7 +87,10 @@ export function ComponentShell({ entry, prev, next, onNavigate, onNavigateGuidel
               Dashboard template
             </Badge>
             <Badge variant="neutral" size="sm">Token-driven · all 4 themes</Badge>
-            <AddToProjectControl entryId={entry.id} className="ml-auto" />
+            <div className="ml-auto flex items-center gap-2">
+              <FavoriteButton entryId={entry.id} />
+              <AddToProjectControl entryId={entry.id} />
+            </div>
           </div>
           <p className="mt-2 max-w-2xl leading-relaxed text-surface-500">{entry.description}</p>
           {entry.packages.length > 0 && (
@@ -94,8 +100,10 @@ export function ComponentShell({ entry, prev, next, onNavigate, onNavigateGuidel
           )}
         </header>
 
+        <SectionJump items={[{ id: "sec-preview", label: "Live preview" }]} />
+
         {/* Live preview — full-bleed composition, re-skins with the theme dropdown */}
-        <section className="mt-6">
+        <section id="sec-preview" className="mt-6 scroll-mt-24">
           <div className="mb-3 flex flex-wrap items-center gap-2">
             <SectionLabel>Live preview</SectionLabel>
             <DemoViewChips view={view} onChange={setView} showPlayground={false} />
@@ -125,16 +133,32 @@ export function ComponentShell({ entry, prev, next, onNavigate, onNavigateGuidel
               {entry.tier === "free" ? "Free · MIT" : "Paid kit"}
             </Badge>
           )}
-          {entry.id !== "overview" && <AddToProjectControl entryId={entry.id} className="ml-auto" />}
+          {entry.id !== "overview" && (
+            <div className="ml-auto flex items-center gap-2">
+              <FavoriteButton entryId={entry.id} />
+              <AddToProjectControl entryId={entry.id} />
+            </div>
+          )}
         </div>
         <p className="mt-2 max-w-2xl leading-relaxed text-surface-500">{entry.description}</p>
         {entry.id !== "overview" && <ComponentInsights entry={entry} />}
       </header>
 
       {entry.id !== "overview" && (
+        <SectionJump
+          items={[
+            { id: "sec-grab", label: "React grab" },
+            { id: "sec-usage", label: "Usage" },
+            ...(entry.props.length > 0 ? [{ id: "sec-api", label: "API" }] : []),
+            { id: "sec-demo", label: "Live demo" },
+          ]}
+        />
+      )}
+
+      {entry.id !== "overview" && (
         <>
           {/* React grab — select + comment + copy (first thing you see) */}
-          <section className="mt-6">
+          <section id="sec-grab" className="mt-6 scroll-mt-24">
             <SectionLabel>React grab</SectionLabel>
             <p className="mb-3 text-sm leading-relaxed text-surface-500">
               Grab this component — type a comment and it gets dropped into the copied snippet.
@@ -143,7 +167,7 @@ export function ComponentShell({ entry, prev, next, onNavigate, onNavigateGuidel
           </section>
 
           {/* Usage */}
-          <section className="mt-8">
+          <section id="sec-usage" className="mt-8 scroll-mt-24">
             <SectionLabel>Usage</SectionLabel>
             <div className="grid gap-4 lg:grid-cols-2">
               <div className="rounded-2xl border border-surface-200/70 bg-surface-0 p-4">
@@ -165,7 +189,7 @@ export function ComponentShell({ entry, prev, next, onNavigate, onNavigateGuidel
 
       {/* API */}
       {entry.props.length > 0 && (
-        <section className="mt-8">
+        <section id="sec-api" className="mt-8 scroll-mt-24">
           <SectionLabel>API</SectionLabel>
           <div className="overflow-x-auto rounded-2xl border-0 bg-surface-0 shadow-soft">
             <table className="w-full min-w-[560px] border-collapse text-left">
@@ -193,7 +217,7 @@ export function ComponentShell({ entry, prev, next, onNavigate, onNavigateGuidel
       )}
 
       {/* Demo */}
-      <section className="mt-8">
+      <section id="sec-demo" className="mt-8 scroll-mt-24">
         <div className="mb-3 flex flex-wrap items-center gap-2">
           <SectionLabel>Live demo</SectionLabel>
           <DemoViewChips view={view} onChange={setView} showPlayground={playground !== null} />
@@ -397,6 +421,112 @@ function OverviewHero({ componentTotal }: { componentTotal: number }) {
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-surface-400">{children}</h2>;
+}
+
+/** Pin / unpin the current entry to the overview's shortlist. */
+function FavoriteButton({ entryId }: { entryId: string }) {
+  const { isFavorite, toggle } = useFavorites();
+  const active = isFavorite(entryId);
+  return (
+    <Button
+      size="sm"
+      variant="ghost"
+      aria-pressed={active}
+      title={active ? "Unpin from overview" : "Pin to overview"}
+      onClick={() => toggle(entryId)}
+      leadingIcon={<Star className={cn("size-4", active && "fill-warning-400 text-warning-500")} />}
+    >
+      {active ? "Pinned" : "Pin"}
+    </Button>
+  );
+}
+
+/** "On this page" jump chips — find a section without scrolling the article. */
+function SectionJump({ items }: { items: { id: string; label: string }[] }) {
+  if (items.length === 0) return null;
+  const jump = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    history.replaceState(null, "", `#${id}`);
+  };
+  return (
+    <nav aria-label="On this page" className="mt-4 flex flex-wrap items-center gap-1.5">
+      <span className="mr-1 text-xs font-semibold uppercase tracking-wider text-surface-400">On this page</span>
+      {items.map((it) => (
+        <button
+          key={it.id}
+          type="button"
+          onClick={() => jump(it.id)}
+          className="rounded-full border border-surface-200 bg-surface-0 px-2.5 py-1 text-xs text-surface-600 shadow-soft transition-colors hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700"
+        >
+          {it.label}
+        </button>
+      ))}
+    </nav>
+  );
+}
+
+/** Overview shortcuts: recently viewed + pinned entries (renders nothing when empty). */
+function PersonalShortcuts({ onNavigate }: { onNavigate: (id: string) => void }) {
+  const { favorites } = useFavorites();
+  const recents = readRecents();
+
+  const resolve = (ids: string[]) =>
+    ids
+      .map((id) => entryById(id))
+      .filter((e): e is ComponentEntry | DashboardEntry => e !== null);
+
+  const recentEntries = resolve(recents);
+  const pinnedEntries = resolve(favorites);
+
+  if (recentEntries.length === 0 && pinnedEntries.length === 0) return null;
+
+  return (
+    <>
+      {recentEntries.length > 0 && (
+        <section className="mt-8">
+          <SectionLabel>Continue where you left off</SectionLabel>
+          <ShortcutRow entries={recentEntries} onNavigate={onNavigate} />
+        </section>
+      )}
+      {pinnedEntries.length > 0 && (
+        <section className="mt-8">
+          <SectionLabel>Pinned</SectionLabel>
+          <ShortcutRow entries={pinnedEntries} onNavigate={onNavigate} />
+        </section>
+      )}
+    </>
+  );
+}
+
+function ShortcutRow({
+  entries,
+  onNavigate,
+}: {
+  entries: (ComponentEntry | DashboardEntry)[];
+  onNavigate: (id: string) => void;
+}) {
+  return (
+    <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+      {entries.map((e) => (
+        <button
+          key={e.id}
+          type="button"
+          onClick={() => onNavigate(e.id)}
+          className="group flex items-center justify-between gap-2 rounded-xl border border-surface-200 bg-surface-0 px-3 py-2.5 text-left shadow-soft transition-all hover:-translate-y-0.5 hover:border-brand-300"
+        >
+          <span className="min-w-0">
+            <span className="block truncate text-sm font-semibold text-surface-800 group-hover:text-brand-700">
+              {e.name}
+            </span>
+            <span className="block truncate text-xs text-surface-400">
+              {GROUP_NAME_BY_ID.get(e.id) ?? (e.kind === "dashboard" ? "Dashboard" : "")}
+            </span>
+          </span>
+          <ArrowRight className="size-4 shrink-0 text-surface-300 transition-transform group-hover:translate-x-0.5 group-hover:text-brand-500" />
+        </button>
+      ))}
+    </div>
+  );
 }
 
 /** Demo / Playground / Theme A/B switcher for an entry's preview. */
