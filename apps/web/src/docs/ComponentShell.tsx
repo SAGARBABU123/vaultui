@@ -545,9 +545,9 @@ function DemoViewChips({
 }) {
   const chips: Array<{ id: DemoView; label: string }> = [
     { id: "demo", label: "Demo" },
-    ...(showPlayground ? [{ id: "playground" as const, label: "⚙ Playground" }] : []),
-    { id: "ab", label: "⧉ Theme A/B" },
-    { id: "wall", label: "▦ Theme wall" },
+    ...(showPlayground ? [{ id: "playground" as const, label: "Playground" }] : []),
+    { id: "ab", label: "Theme A/B" },
+    { id: "wall", label: "Theme wall" },
   ];
   return (
     <div className="flex items-center gap-1 rounded-lg border border-surface-200 bg-surface-0 p-1 shadow-inset">
