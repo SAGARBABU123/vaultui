@@ -14,7 +14,7 @@ import { useFavorites } from "./favorites";
 import { readRecents } from "./recents";
 import { VaultLogo } from "../brand/VaultLogo";
 import { useProjects } from "../projects/ProjectContext";
-import { ALL_DASHBOARDS, ALL_GROUPS, entryById, GROUP_NAME_BY_ID } from "../projects/entries";
+import { ALL_COMPONENTS, ALL_DASHBOARDS, ALL_GROUPS, entryById, GROUP_NAME_BY_ID } from "../projects/entries";
 import type { ComponentEntry, DashboardEntry } from "./types";
 
 type DemoView = "demo" | "playground" | "ab" | "wall";
@@ -116,6 +116,8 @@ export function ComponentShell({ entry, prev, next, onNavigate, onNavigateGuidel
             <div className="overflow-hidden rounded-2xl border border-surface-200 shadow-raised">{entry.demo}</div>
           )}
         </section>
+
+        <CrossLinks entry={entry} onNavigate={onNavigate} />
 
         <PrevNext prev={prev} next={next} onNavigate={onNavigate} />
       </article>
@@ -232,6 +234,8 @@ export function ComponentShell({ entry, prev, next, onNavigate, onNavigateGuidel
           <div className="rounded-2xl border-0 bg-surface-100 shadow-inset p-4 shadow-soft sm:p-6">{entry.demo}</div>
         )}
       </section>
+
+      <CrossLinks entry={entry} onNavigate={onNavigate} />
 
       {/* Prev / Next */}
       <PrevNext prev={prev} next={next} onNavigate={onNavigate} />
@@ -772,6 +776,77 @@ const KIT_ACCENTS: Record<string, string> = {
   "Collab Kit": "bg-danger-500/15 text-danger-500",
   "Marketing Kit": "bg-brand-100 text-brand-700",
 };
+
+/** Cross-links: what uses this entry, and its siblings in the same kit. */
+function CrossLinks({
+  entry,
+  onNavigate,
+}: {
+  entry: ComponentEntry | DashboardEntry;
+  onNavigate: (id: string) => void;
+}) {
+  const group = ALL_GROUPS.find((g) => g.items.some((i) => i.id === entry.id)) ?? null;
+  const related = group
+    ? group.items.filter((i) => i.id !== entry.id && i.id !== "overview").slice(0, 6)
+    : [];
+  const usedIn =
+    entry.kind !== "dashboard"
+      ? ALL_DASHBOARDS.filter((d) => d.packages.includes(entry.package))
+      : [];
+  const composed =
+    entry.kind === "dashboard"
+      ? ALL_COMPONENTS.filter((c) => c.id !== "overview" && entry.packages.includes(c.package)).slice(0, 12)
+      : [];
+
+  if (related.length === 0 && usedIn.length === 0 && composed.length === 0) return null;
+
+  return (
+    <section className="mt-8 space-y-6">
+      {usedIn.length > 0 && (
+        <div>
+          <SectionLabel>Used in these dashboards</SectionLabel>
+          <div className="flex flex-wrap gap-2">
+            {usedIn.map((d) => (
+              <button
+                key={d.id}
+                type="button"
+                onClick={() => onNavigate(d.id)}
+                className="rounded-full border border-surface-200 bg-surface-0 px-3 py-1.5 text-xs font-medium text-surface-600 shadow-soft transition-colors hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700"
+              >
+                {d.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {related.length > 0 && group && (
+        <div>
+          <SectionLabel>More in {group.group}</SectionLabel>
+          <ShortcutRow entries={related} onNavigate={onNavigate} />
+        </div>
+      )}
+
+      {composed.length > 0 && (
+        <div>
+          <SectionLabel>Composed from</SectionLabel>
+          <div className="flex flex-wrap gap-2">
+            {composed.map((c) => (
+              <button
+                key={c.id}
+                type="button"
+                onClick={() => onNavigate(c.id)}
+                className="rounded-full border border-surface-200 bg-surface-0 px-3 py-1.5 text-xs font-medium text-surface-600 shadow-soft transition-colors hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700"
+              >
+                {c.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
 
 function OverviewStats({ total }: { total: number }) {
   const kits = ALL_GROUPS.filter((g) => g.group !== "Start" && g.group !== "Free tier").length;
