@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 import { getSupabase } from "./supabase";
+import { AUTH_ENABLED } from "./config";
 import {
   demoMarkOnboarded,
   demoReadSession,
@@ -64,6 +65,15 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+/** Single open identity used while auth is parked (config.AUTH_ENABLED = false). */
+const GUEST_USER: AuthUser = {
+  id: "guest",
+  name: "Guest",
+  email: "guest@vaultui.local",
+  role: "premium",
+  hasOnboarded: true,
+};
+
 function userFromSupabase(session: { user?: { id?: string; email?: string | null; user_metadata?: { name?: string } } } | null): AuthUser | null {
   const email = session?.user?.email;
   if (!email) return null;
@@ -77,9 +87,12 @@ function userFromSupabase(session: { user?: { id?: string; email?: string | null
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const supabase = getSupabase();
+  // Auth parked → no Supabase client, guest identity, everything unlocked.
+  const supabase = AUTH_ENABLED ? getSupabase() : null;
   const [mode] = useState<AuthMode>(supabase ? "supabase" : "mock");
-  const [user, setUser] = useState<AuthUser | null>(() => (supabase ? null : demoReadSession()));
+  const [user, setUser] = useState<AuthUser | null>(() =>
+    AUTH_ENABLED ? (supabase ? null : demoReadSession()) : GUEST_USER,
+  );
   const [error, setError] = useState<string | null>(null);
 
   // Derived — a session equals a signed-in user.
