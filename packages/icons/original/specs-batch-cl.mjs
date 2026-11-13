@@ -14,7 +14,6 @@ export const BATCH_CL = {
   "level-slider": `<path d="M2.8 10.2h18.4v4H2.8Z M9 11h6v2.4H9Z" fill-rule="evenodd"/><circle cx="12" cy="12.2" r="1"/>`,
   "litter-in-bin-sign": `<path d="M12 3.4a8.6 8.6 0 1 0 0 17.2 8.6 8.6 0 0 0 0-17.2Zm0 1.6a7 7 0 1 1 0 14 7 7 0 0 1 0-14Z" fill-rule="evenodd"/><path d="M9.6 11.4h4.8l-.6 5H10.2Z M9.2 10h5.6v1.4H9.2Z M11 8.8h2v1.2h-2Z"/><path d="M14.6 7.8h1.2v1.2h-1.2Z M13.4 9.2h1v1h-1Z"/>`,
   "money-bag": `<path d="M7 8.4h10c-.4 1.6 0 2.8 1.2 4.6 2.2 3.2 1.8 6.4-1.4 7.6-2.8 1-6.8 1-9.6 0-3.2-1.2-3.6-4.4-1.4-7.6 1.2-1.8 1.6-3 1.2-4.6Z"/><path d="M8.2 6.4h7.6l-.6 2H8.8Z"/>`,
-  "mouse-trap": `<path d="M3.4 14h17.2v4.4H3.4Z"/><path d="M6 14c0-3.4 2.4-5.6 6-5.6s6 2.2 6 5.6h-1.6c0-2.6-1.8-4-4.4-4s-4.4 1.4-4.4 4Z"/><path d="M8.6 12.4 13 12.4 13 14H8.6Z M9.6 13h1v.6h-1Z M11.4 13h1v.6h-1Z" fill-rule="evenodd"/>`,
   "nail-polish": `<path d="M8.4 11h7.2v7.2a2 2 0 0 1-2 2h-3.2a2 2 0 0 1-2-2Z"/><path d="M9.8 8.6h4.4V11H9.8Z"/><path d="M9.4 4.2h5.2v4.4H9.4Z"/>`,
   "nut-and-bolt": `<path d="M3.4 9.6h3v4.8h-3Z M6.4 11.2h9.2v1.6H6.4Z"/><path d="M15.6 8.6 18.6 10.3v3.4l-3 1.7-3-1.7v-3.4Z M15.6 10.4a1.6 1.6 0 1 0 0 3.2 1.6 1.6 0 0 0 0-3.2Z" fill-rule="evenodd"/>`,
   pick: `<path d="M10.8 20.4 11.6 8h1.6l-.8 12.4Z"/><path d="M4.4 8.6c4.8-2.6 10.4-2.4 15.2.6l-1 1.8c-4.2-2.6-9-2.8-13.2-.6Z"/>`,

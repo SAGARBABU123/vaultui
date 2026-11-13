@@ -1,10 +1,10 @@
-# Vault Icons — Program State & Resume Playbook
+# Vault Icons â€” Program State & Resume Playbook
 
 > Source of truth for resuming the icon program. If a session is lost, read this
 > file top-to-bottom and continue. Update the snapshot after every collected batch.
 
-Last updated: 2026-11-13 (dictionary expansion complete — 2,475 originals, deployed)
-Repo: `C:\Users\Sagar Babu\vaultui` — GitHub `SAGARBABU123/vaultui`
+Last updated: 2026-11-13 (dictionary expansion complete â€” 2,474 originals, deployed)
+Repo: `C:\Users\Sagar Babu\vaultui` â€” GitHub `SAGARBABU123/vaultui`
 Working branch: **`sagar/dev`** (do not work on `main`)
 
 ---
@@ -15,18 +15,18 @@ Working branch: **`sagar/dev`** (do not work on `main`)
 | --- | --- |
 | Commit (`sagar/dev`) | `48bc3e6` |
 | Remote tip (`fork/sagar/dev`) | `48bc3e6` |
-| Inventory | **2,475 icons × 6 weights = 14,850 SVGs** |
-| Original masters | **2,475 (100%)** |
+| Inventory | **2,474 icons x 6 weights = 14,844 SVGs** |
+| Original masters | **2,474 (100%)** |
 | Reference source | **none** |
-| Validator | **PASS** — 0 problems |
-| Site pages | 2,477 (index + 2,475 icon pages + 404) |
+| Validator | **PASS** â€” 0 problems |
+| Site pages | 2,476 (index + 2,474 icon pages + 404) |
 | Live URL | **https://icons.abhayaui.workers.dev** |
 | Worker version | `a836edaa-d3d1-4747-96b2-682b084bd6e2` |
-| Cloudflare account | `mani868849@gmail.com` (id `20d1209b…`) |
+| Cloudflare account | `mani868849@gmail.com` (id `20d1209bâ€¦`) |
 | Cloudflare account subdomain | `abhayaui` |
 
-Per-category counts: core-ui 412 · objects-life 878 · dev-data 301 · alerts-status 174 ·
-arrows 166 · communication 121 · media 120 · text 101 · files 91 · commerce 78.
+Per-category counts: core-ui 412 Â· objects-life 878 Â· dev-data 301 Â· alerts-status 174 Â·
+arrows 166 Â· communication 121 Â· media 120 Â· text 101 Â· files 91 Â· commerce 78.
 
 ---
 
@@ -34,10 +34,10 @@ arrows 166 · communication 121 · media 120 · text 101 · files 91 · commerce
 
 - **Manager (me):** collect agent branches, verify diffs, build, validate, typecheck,
   deploy, update this file, assign next batches. Does not hand-draw icons.
-- **Agent 1–6:** batch authors. **Batch program complete — no batches remain.**
+- **Agent 1â€“6:** batch authors. **Batch program complete â€” no batches remain.**
 
 **Hard rules for every agent**
-1. Work in a **separate clone / git worktree** — never the manager's checkout.
+1. Work in a **separate clone / git worktree** â€” never the manager's checkout.
 2. One new file per batch: `packages/icons/original/specs-batch-<letter>.mjs`.
 3. Never `git add -A`, never push `main`, never edit `build.mjs`, `specs.mjs`,
    `taxonomy.mjs`, app files, lockfiles or CI.
@@ -49,11 +49,11 @@ arrows 166 · communication 121 · media 120 · text 101 · files 91 · commerce
 export const BATCH_X = { "icon-name": `<path .../>` };
 export const BATCH_X_FILLS = { "icon-name": `<path .../>` }; // open-path icons only
 ```
-- 24×24 grid, geometry inside 2.4–21.6, outline stroke 1.6 optically.
-- Inner markup only — no `<svg>`, no `fill=`, no `stroke=`.
-- 1–4 shapes, rounded caps/joins, closed shapes preferred.
+- 24Ã—24 grid, geometry inside 2.4â€“21.6, outline stroke 1.6 optically.
+- Inner markup only â€” no `<svg>`, no `fill=`, no `stroke=`.
+- 1â€“4 shapes, rounded caps/joins, closed shapes preferred.
 - Every open-path glyph needs a solid silhouette in `*_FILLS`.
-- Original geometry only — never copy/trace third-party sets.
+- Original geometry only â€” never copy/trace third-party sets.
 - Skip names already `source: "original"` in `packages/icons/generated/manifest.json`.
 
 ---
@@ -74,13 +74,13 @@ git push origin sagar/dev
 # deploy (from apps/icons)
 pnpm exec wrangler deploy
 ```
-Then update §1 and §4 here.
+Then update Â§1 and Â§4 here.
 
 `build.mjs` auto-merges every `original/specs-batch-*.mjs` file, so no wiring is needed.
 
 ### Batched verify mode (adopted 2026-11-12, saves time/tokens)
 
-- **Every batch** (cheap): collect → one commit → `build.mjs` + `validate-icons.mjs` only.
+- **Every batch** (cheap): collect â†’ one commit â†’ `build.mjs` + `validate-icons.mjs` only.
 - **Every ~5 batches / "ship" milestone**: `typecheck` + site `build` + `wrangler deploy`
   + push `sagar/dev` + update snapshot/ledger, once for the whole batch group.
 - Rationale: a single batch never needs a full site rebuild or deploy; commit+push per
@@ -142,23 +142,23 @@ Then update §1 and §4 here.
 | BA | Agent 6 | 30 | collected `13dc500` | 1523 |
 | BB | Agent 1 | 30 | collected `b77ce4c` | 1553 |
 | BC | Agent 2 | 4 | collected `bedc52c` | 1557 |
-| BD–BF | A1 | 90 | collected `5966dc0` | 1647 |
-| BG–BI | A2 | 90 | collected `f4d4c0b` | 1737 |
-| BJ–BL | A3 | 90 | collected `86936ee` | 1827 |
-| BM–BN | A4 | 49 | collected `bc48f32` | 1876 |
-| BO–BP | A5 | 35 | collected `a979f69` | 1911 |
-| BQ–BS | A3 | 90 | collected `f4d4c0b` | 2001 |
-| BT–BV | A1 | 88 | collected `f4d4c0b` | 2089 |
-| BW–BY | A5 | 64 | collected `bc48f32` | 2153 |
-| CA–CB, CG | A1 | 86 | collected `56fd7d2` | 2239 |
-| CC–CD, CH | A2 | 85 | collected `2f06937` | 2324 |
-| CE, CI–CJ | A3 | 80 | collected `4207f20` | 2404 |
-| CK–CL | A4 | 33 | collected `040f2c3` | 2437 |
-| CM–CN | A5 | 49 | collected `19cf600` | 2486 |
+| BDâ€“BF | A1 | 90 | collected `5966dc0` | 1647 |
+| BGâ€“BI | A2 | 90 | collected `f4d4c0b` | 1737 |
+| BJâ€“BL | A3 | 90 | collected `86936ee` | 1827 |
+| BMâ€“BN | A4 | 49 | collected `bc48f32` | 1876 |
+| BOâ€“BP | A5 | 35 | collected `a979f69` | 1911 |
+| BQâ€“BS | A3 | 90 | collected `f4d4c0b` | 2001 |
+| BTâ€“BV | A1 | 88 | collected `f4d4c0b` | 2089 |
+| BWâ€“BY | A5 | 64 | collected `bc48f32` | 2153 |
+| CAâ€“CB, CG | A1 | 86 | collected `56fd7d2` | 2239 |
+| CCâ€“CD, CH | A2 | 85 | collected `2f06937` | 2324 |
+| CE, CIâ€“CJ | A3 | 80 | collected `4207f20` | 2404 |
+| CKâ€“CL | A4 | 33 | collected `040f2c3` | 2437 |
+| CMâ€“CN | A5 | 49 | collected `19cf600` | 2486 |
 
-Deduped during collection: `skateboard`/`sled` (bt), `admission-tickets`/`circus-tent`/`kite` (bm/bt), `onion` (bw), `mushroom`/`desert`/`desert-island` (ce), `oyster` (cc), `honey-pot` (bv), `pushpin` (bq), `purse`/`torch` (bs/ch), `archive` (e). Final unique inventory **2,475**.
+Deduped during collection: `skateboard`/`sled` (bt), `admission-tickets`/`circus-tent`/`kite` (bm/bt), `onion` (bw), `mushroom`/`desert`/`desert-island` (ce), `oyster` (cc), `honey-pot` (bv), `pushpin` (bq), `purse`/`torch` (bs/ch), `archive` (e). Final unique inventory **2,474**. Renamed `police-car-light` -> `police-car-siren` (weight-suffix collision) and removed `mouse-trap` (dup of `mousetrap`).
 
-**Batch program COMPLETE** — 2,475/2,475 icons are `source: "original"` (100%). No reference glyphs remain.
+**Batch program COMPLETE** - 2,474/2,474 icons are `source: "original"` (100%). No reference glyphs remain.
 
 > S/T superseded: S (sports/fitness) folded into V; T (weather/nature) was covered by Q.
 > Batch T (`8a2dc3c`) rejected on collection: 25/30 names already `original` (Q).
@@ -175,7 +175,7 @@ Deduped during collection: `skateboard`/`sled` (bt), `admission-tickets`/`circus
 5. Interaction/a11y (keyboard grid nav, history-aware drawer, focus trap, skip link)
 6. Cloudflare deploy (`icons.vaultui-icons-site.workers.dev`)
 7. QA tooling (`validate-icons.mjs`, `contact-sheet.mjs`) + CI validation
-8. Original glyph program — **COMPLETE (1,557/1,557 = 100%)**
+8. Original glyph program â€” **COMPLETE (1,557/1,557 = 100%)**
 
 **Pending**
 10. Batch QA/audit (fill/duotone, optical consistency) per delivery
@@ -186,7 +186,7 @@ Deduped during collection: `skateboard`/`sled` (bt), `admission-tickets`/`circus
 15. SEO v2: category pages, OG images, internal linking
 16. QA: Playwright e2e, Lighthouse CI, visual regression
 17. CI/CD v2: Workers deploy workflow (currently Pages-based), preview deploys
-18. Release ops: merge `main` PR (protected), Vercel root → `apps/components`
+18. Release ops: merge `main` PR (protected), Vercel root â†’ `apps/components`
 19. Cleanup: remove Phosphor + `THIRD-PARTY.md` when coverage hits 100%
 20. Perf: font preload, hashed assets, cache headers
 21. Search v2: ranking/typo tolerance, zero-result suggestions
@@ -199,7 +199,7 @@ Deduped during collection: `skateboard`/`sled` (bt), `admission-tickets`/`circus
   Monorepo PR branch: `feat/monorepo` (`d7bc610`).
   Compare: `https://github.com/SAGARBABU123/vaultui/compare/main...feat/monorepo?expand=1`
 - Cloudflare auth is stored (wrangler OAuth, `mani868849@gmail.com`) on a dedicated
-  account (`20d1209b…`) separate from the `kaundinya` account — do not deploy to the
+  account (`20d1209bâ€¦`) separate from the `kaundinya` account â€” do not deploy to the
   `kaundinya` account (it hosts `admin`, `app`, `kaundinya-consultancy-marketing-page`).
 - `apps/icons/wrangler.jsonc`: worker `icons`, static assets `./dist`,
   `not_found_handling: "404-page"`.

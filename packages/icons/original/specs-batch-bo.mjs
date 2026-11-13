@@ -11,7 +11,7 @@ export const BATCH_BO = {
   "pickup-truck": `<path d="M3.4 10.2h7.8v5.2H3.4Z"/><path d="M11.2 6.8h3.8l3.8 4.4v4.2h-7.6Z"/><path d="M5.2 17.4a1.9 1.9 0 1 1 3.8 0 1.9 1.9 0 0 1-3.8 0Zm9.2 0a1.9 1.9 0 1 1 3.8 0 1.9 1.9 0 0 1-3.8 0Z"/><path d="M2.8 15.4h18.4v1.6H2.8Z"/>`,
   "place-of-worship": `<path d="M12 3.2c2.7 2.3 4 4.6 4 7.3v1.5H8v-1.5c0-2.7 1.3-5 4-7.3Z"/><path d="M5.2 12h13.6v8.4H5.2Z"/><path d="M9.8 20.4v-4.6a2.2 2.2 0 0 1 4.4 0v4.6Z"/><path d="M4 20.4h16v1.2H4Z"/>`,
   "playground-slide": `<path d="M13 4.6h6.4v1.6H13Z"/><path d="M12.6 4.4l1.8.6-7 11.8-1.9-.8Z"/><path d="M13.4 6.2h1.4v14.2h-1.4Z"/><path d="M17.4 6.2h1.4v14.2h-1.4Z"/>`,
-  "police-car-light": `<path d="M3.6 13.6h16.8v2.6H3.6Z"/><path d="M6.6 13.6v-1.8a2.4 2.4 0 0 1 4.8 0v1.8Z"/><path d="M12.6 13.6v-1.8a2.4 2.4 0 0 1 4.8 0v1.8Z"/><path d="M4.6 16.2h14.8l1.2 3.4H3.4Z"/>`,
+  "police-car-siren": `<path d="M3.6 13.6h16.8v2.6H3.6Z"/><path d="M6.6 13.6v-1.8a2.4 2.4 0 0 1 4.8 0v1.8Z"/><path d="M12.6 13.6v-1.8a2.4 2.4 0 0 1 4.8 0v1.8Z"/><path d="M4.6 16.2h14.8l1.2 3.4H3.4Z"/>`,
   "post-office": `<path d="M16.4 4.2H17.8v4.2h-1.4Z"/><path d="M17.8 4.2h3.2v2.6h-3.2Z"/><path d="M3.2 8.4h17.6v10.4H3.2Zm1.6 1.6h14.4v7.2H4.8Z" fill-rule="evenodd"/><path d="M4.8 9.8 12 14.8 19.2 9.8 18.4 8.8 12 13.1 5.6 8.8Z"/>`,
   "railway-car": `<path d="M3.2 6.6h17.6v9.6H3.2Zm1.6 1.6h14.4v6.4H4.8Zm2.6 1.4h3.6v2.6H7.4Zm5.2 0h3.6v2.6h-3.6Z" fill-rule="evenodd"/><circle cx="7.4" cy="18.4" r="1.5"/><circle cx="16.6" cy="18.4" r="1.5"/><path d="M3 20.6h18v1H3Z"/>`,
   "railway-track": `<path d="M5.4 3.4h1.6v17.2H5.4Z"/><path d="M17 3.4h1.6v17.2H17Z"/><path d="M4.2 5.6h15.6v1.4H4.2Zm0 4h15.6v1.4H4.2Zm0 4h15.6v1.4H4.2Zm0 4h15.6v1.4H4.2Z"/>`,
