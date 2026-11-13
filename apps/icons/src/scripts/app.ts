@@ -28,7 +28,7 @@ const $$ = <T extends Element = HTMLElement>(selector: string) =>
 const grid = $("#icon-grid") as HTMLElement;
 const scroller = $("#main") as HTMLElement;
 const searchInput = $("#search") as HTMLInputElement;
-const resultCount = $("#result-count") as HTMLElement;
+const resultCount = $("#result-count") as HTMLElement | null;
 const viewTitle = $("#view-title") as HTMLElement;
 const viewDesc = $("#view-desc") as HTMLElement;
 const emptyState = $("#empty-state") as HTMLElement;
@@ -491,7 +491,9 @@ function apply(push = true) {
 
   const activeCategory = state.catalog.categories.find((c) => c.id === state.category);
 
-  resultCount.textContent = `${state.items.length.toLocaleString()} icon${state.items.length === 1 ? "" : "s"}`;
+  if (resultCount) {
+    resultCount.textContent = `${state.items.length.toLocaleString()} icon${state.items.length === 1 ? "" : "s"}`;
+  }
   emptyState.hidden = state.items.length > 0;
   grid.style.display = state.items.length > 0 ? "" : "none";
 
