@@ -21,7 +21,7 @@ Working branch: **`sagar/dev`** (do not work on `main`)
 | Validator | **PASS** — 0 problems |
 | Site pages | 2,476 (index + 2,474 icon pages + 404) |
 | Live URL | **https://icons.abhayaui.workers.dev** |
-| Worker version | `d4a257b4-2b6f-42c1-a373-12d8902476f7` |
+| Worker version | `c8dc1041-142f-4b66-a2c6-b324c98d55c3` |
 | Cloudflare account | `mani868849@gmail.com` (id `20d1209b…`) |
 | Cloudflare account subdomain | `abhayaui` |
 | Site features | multi-select cart · global icon colour picker (default currentColor) · philosophy + getting-started pages |
