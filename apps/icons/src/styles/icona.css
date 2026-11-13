@@ -843,6 +843,78 @@ h2 {
   background-color: var(--color-brand-500);
 }
 
+.side-item__icon {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.side-item__icon svg,
+.sidebar__collapse-icon svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+.sidebar__collapse-icon {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+}
+
+.sidebar__collapse-icon.icon-expand {
+  display: none;
+}
+
+@media (min-width: 901px) {
+  .app-shell[data-sidebar-collapsed="true"] {
+    grid-template-columns: 72px minmax(0, 1fr);
+  }
+
+  .sidebar[data-collapsed="true"] .sidebar__head {
+    justify-content: center;
+    padding: 14px 6px 10px;
+  }
+
+  .sidebar[data-collapsed="true"] .sidebar__logo,
+  .sidebar[data-collapsed="true"] .sidebar__brand,
+  .sidebar[data-collapsed="true"] .sidebar__section-title,
+  .sidebar[data-collapsed="true"] .side-item__label {
+    display: none;
+  }
+
+  .sidebar[data-collapsed="true"] .sidebar__scroll {
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+
+  .sidebar[data-collapsed="true"] .side-item {
+    justify-content: center;
+    gap: 0;
+    padding: 8px;
+  }
+
+  .sidebar[data-collapsed="true"] .side-item__icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .sidebar[data-collapsed="true"] .side-item[aria-current="true"]::before {
+    left: -6px;
+  }
+
+  .sidebar[data-collapsed="true"] .sidebar__collapse-icon.icon-collapse {
+    display: none;
+  }
+
+  .sidebar[data-collapsed="true"] .sidebar__collapse-icon.icon-expand {
+    display: grid;
+  }
+}
+
 /* ==========================================================================
  * Responsive
  * ======================================================================== */

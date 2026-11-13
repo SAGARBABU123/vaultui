@@ -184,6 +184,28 @@ function saveIconColor(color: string) {
   }
 }
 
+/* ---------------------------------------------------------- sidebar rail */
+
+const SIDEBAR_KEY = "vault-icons:sidebar-collapsed";
+
+function setSidebarCollapsed(collapsed: boolean) {
+  const shell = document.querySelector(".app-shell");
+  const sidebar = $("#sidebar");
+  const button = $("[data-sidebar-collapse]");
+  shell?.setAttribute("data-sidebar-collapsed", String(collapsed));
+  sidebar?.setAttribute("data-collapsed", String(collapsed));
+  if (button) {
+    button.setAttribute("aria-pressed", String(collapsed));
+    button.setAttribute("aria-label", collapsed ? "Expand navigation" : "Collapse navigation");
+    button.setAttribute("title", collapsed ? "Expand navigation" : "Collapse navigation");
+  }
+  try {
+    localStorage.setItem(SIDEBAR_KEY, collapsed ? "1" : "0");
+  } catch {
+    /* storage unavailable — ignore */
+  }
+}
+
 function updateSelectUi() {
   const count = state.selected.size;
 
@@ -877,6 +899,10 @@ function wire() {
     saveIconColor("");
     setColorMenu(false);
   });
+  $("[data-sidebar-collapse]")?.addEventListener("click", () => {
+    const sidebar = $("#sidebar");
+    setSidebarCollapsed(sidebar?.getAttribute("data-collapsed") !== "true");
+  });
   document.addEventListener("click", (event) => {
     if (!(event.target as Element).closest("#color-picker")) setColorMenu(false);
   });
@@ -1215,6 +1241,12 @@ async function boot() {
   try {
     const savedColor = localStorage.getItem(COLOR_KEY);
     if (savedColor) applyIconColor(savedColor);
+  } catch {
+    /* storage unavailable — ignore */
+  }
+
+  try {
+    if (localStorage.getItem(SIDEBAR_KEY) === "1") setSidebarCollapsed(true);
   } catch {
     /* storage unavailable — ignore */
   }
