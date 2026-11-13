@@ -204,6 +204,13 @@ function setSidebarCollapsed(collapsed: boolean) {
   } catch {
     /* storage unavailable — ignore */
   }
+
+  const refresh = () => {
+    measure();
+    if (state.catalog) apply(false);
+  };
+  requestAnimationFrame(refresh);
+  window.setTimeout(refresh, 380);
 }
 
 function updateSelectUi() {
@@ -403,7 +410,9 @@ function measure() {
   layout.tileH = tileH;
   layout.gap = gap;
   layout.rowH = tileH + gap;
-  layout.cols = Math.max(1, Math.floor((grid.clientWidth + gap) / (tile + gap)));
+  const cols = Math.max(1, Math.floor((grid.clientWidth + gap) / (tile + gap)));
+  const collapsed = $("#sidebar")?.getAttribute("data-collapsed") === "true";
+  layout.cols = collapsed ? Math.min(cols, 12) : cols;
 }
 
 function gridOffsetTop() {
@@ -902,6 +911,12 @@ function wire() {
   $("[data-sidebar-collapse]")?.addEventListener("click", () => {
     const sidebar = $("#sidebar");
     setSidebarCollapsed(sidebar?.getAttribute("data-collapsed") !== "true");
+  });
+  document.querySelector(".app-shell")?.addEventListener("transitionend", (event) => {
+    if ((event as TransitionEvent).propertyName === "grid-template-columns") {
+      measure();
+      if (state.catalog) apply(false);
+    }
   });
   document.addEventListener("click", (event) => {
     if (!(event.target as Element).closest("#color-picker")) setColorMenu(false);
