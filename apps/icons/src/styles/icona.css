@@ -73,6 +73,7 @@ h2 {
   padding: 6px;
   overflow: hidden;
   background-color: var(--color-surface-50);
+  transition: grid-template-columns 0.34s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .sidebar {
@@ -89,6 +90,28 @@ h2 {
   align-items: center;
   gap: 12px;
   padding: 14px 12px 10px;
+  transition: padding 0.34s cubic-bezier(0.16, 1, 0.3, 1), gap 0.34s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sidebar__logo {
+  max-width: 36px;
+  overflow: hidden;
+  transition: max-width 0.34s cubic-bezier(0.16, 1, 0.3, 1), margin 0.34s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease;
+}
+
+.sidebar__brand {
+  max-width: 200px;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: max-width 0.34s cubic-bezier(0.16, 1, 0.3, 1), margin 0.34s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease;
+}
+
+.sidebar__section-title {
+  transition: opacity 0.2s ease, height 0.3s cubic-bezier(0.16, 1, 0.3, 1), margin 0.3s cubic-bezier(0.16, 1, 0.3, 1), padding 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.side-item__label {
+  transition: opacity 0.22s ease, transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .sidebar__scroll {
@@ -98,6 +121,7 @@ h2 {
   overscroll-behavior: contain;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  transition: padding 0.34s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .sidebar__scroll::-webkit-scrollbar {
@@ -813,7 +837,8 @@ h2 {
   border-radius: var(--radius-md);
   font-size: 14px;
   color: var(--color-surface-700);
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition: background-color 0.15s ease, color 0.15s ease,
+    padding 0.34s cubic-bezier(0.16, 1, 0.3, 1), gap 0.34s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .side-item:hover {
@@ -863,6 +888,7 @@ h2 {
   place-items: center;
   width: 16px;
   height: 16px;
+  transition: opacity 0.2s ease, transform 0.34s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .sidebar__collapse-icon.icon-expand {
@@ -876,14 +902,39 @@ h2 {
 
   .sidebar[data-collapsed="true"] .sidebar__head {
     justify-content: center;
+    gap: 0;
     padding: 14px 6px 10px;
   }
 
-  .sidebar[data-collapsed="true"] .sidebar__logo,
-  .sidebar[data-collapsed="true"] .sidebar__brand,
-  .sidebar[data-collapsed="true"] .sidebar__section-title,
+  .sidebar[data-collapsed="true"] .sidebar__logo {
+    max-width: 0;
+    margin-right: -12px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .sidebar[data-collapsed="true"] .sidebar__brand {
+    max-width: 0;
+    margin-left: -12px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
   .sidebar[data-collapsed="true"] .side-item__label {
-    display: none;
+    width: 0;
+    opacity: 0;
+    transform: translateX(-6px);
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .sidebar[data-collapsed="true"] .sidebar__section-title {
+    height: 0;
+    margin: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    opacity: 0;
+    overflow: hidden;
   }
 
   .sidebar[data-collapsed="true"] .sidebar__scroll {
