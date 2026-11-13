@@ -28,7 +28,6 @@ export const BATCH_E = {
   scissors: `<circle cx="6.8" cy="17.8" r="2.6"/><circle cx="17.2" cy="17.8" r="2.6"/><path d="M8.6 15.7 17.2 3.6M15.4 15.7 6.8 3.6"/>`,
   clipboard: `<rect x="5" y="4.4" width="14" height="17" rx="2"/><rect x="9" y="2.6" width="6" height="4.2" rx="1.4"/><path d="M8.6 11.4h6.8M8.6 15h6.8"/>`,
   paperclip: `<path d="M15.6 6.6v9.4a3.6 3.6 0 0 1-7.2 0V7.4a2.4 2.4 0 0 1 4.8 0v8a1.2 1.2 0 0 1-2.4 0V8.6"/>`,
-  archive: `<rect x="3.2" y="4.4" width="17.6" height="4.4" rx="1.6"/><path d="M4.8 8.8h14.4v10.2a1.6 1.6 0 0 1-1.6 1.6H6.4a1.6 1.6 0 0 1-1.6-1.6Z"/><path d="M9.8 12.4h4.4"/>`,
 };
 
 export const BATCH_E_FILLS = {
@@ -55,6 +54,5 @@ export const BATCH_E_FILLS = {
   scissors: `<circle cx="6.8" cy="17.8" r="2.8"/><circle cx="17.2" cy="17.8" r="2.8"/><path d="M7.95 15.24 9.25 16.16 17.85 4.06 16.55 3.14ZM16.05 15.24 14.75 16.16 6.15 4.06 7.45 3.14Z"/>`,
   clipboard: `<path d="M7 4.4h10a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-13a2 2 0 0 1 2-2Zm1.6 6.2h6.8v1.6H8.6Zm0 3.6h6.8v1.6H8.6Z" fill-rule="evenodd"/><rect x="9" y="2.6" width="6" height="4.2" rx="1.4"/>`,
   paperclip: `<path d="M15.6 4.6h1.6v11.4a4.4 4.4 0 0 1-8.8 0V7.4a2.4 2.4 0 0 1 4.8 0v8a1.2 1.2 0 0 1-2.4 0V8.6h1.6v6.8a0.4 0.4 0 0 0 0.8 0v-8a1.6 1.6 0 0 0-3.2 0v8.6a3.6 3.6 0 0 0 7.2 0V4.6Z"/>`,
-  archive: `<rect x="3.2" y="4.4" width="17.6" height="4.4" rx="1.6"/><path d="M4.8 8.8h14.4v10.2a1.6 1.6 0 0 1-1.6 1.6H6.4a1.6 1.6 0 0 1-1.6-1.6Zm4.2 3h5.2v2H9Z" fill-rule="evenodd"/>`,
 };
 

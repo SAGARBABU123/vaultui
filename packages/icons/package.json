@@ -1,13 +1,9 @@
 {
   "name": "@vaultui/icons",
-  "version": "0.1.0",
+  "version": "0.0.1",
+  "private": true,
   "type": "module",
-  "license": "MIT",
-  "description": "Vault Icons — 1,557 hand-authored vector icons in 6 weights, with zero runtime dependencies.",
-  "publishConfig": {
-    "access": "public"
-  },
-  "sideEffects": false,
+  "description": "Vault Icons — 1,200+ vector icons in 6 weights, generated and optimized from reference geometry.",
   "exports": {
     ".": "./index.mjs",
     "./taxonomy": "./taxonomy.mjs",

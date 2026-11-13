@@ -37,12 +37,3 @@ bun.lock
 packages/icons/generated/
 apps/icons/public/data/
 **/.astro/
-
-# Vault Icons — generated framework components (built from original specs)
-packages/icons-react/src/aggregate/
-packages/icons-react/src/icons/
-packages/icons-react/src/index.ts
-packages/icons-vue/src/icons/
-packages/icons-vue/src/index.ts
-packages/icons-svelte/src/icons/
-packages/icons-svelte/src/index.ts
