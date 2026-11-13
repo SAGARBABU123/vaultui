@@ -73,7 +73,7 @@ function quantize(value) {
 function quote(value) {
   const text = String(value);
   if (!/[\s"&|<>^()]/.test(text)) return text;
-  return `"${text.replace(/"/g, '\\"')}"`;
+  return `"${text.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
 }
 
 function run(command, commandArgs = [], options = {}) {
