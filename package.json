@@ -17,13 +17,16 @@
     "icons": "pnpm --filter @vaultui/icons-site dev",
     "icons:build": "pnpm --filter @vaultui/icons-site build",
     "icons:validate": "node packages/icons/scripts/validate-icons.mjs",
+    "icons:pack:check": "node scripts/verify-icon-packages.mjs",
     "storybook": "pnpm --filter @vaultui/storybook storybook",
     "clean": "turbo run clean && rm -rf node_modules",
     "publish:free": "cd packages/tokens && npm publish --access public && cd ../../packages/utils && npm publish --access public && cd ../../packages/ui && npm publish --access public"
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.5",
     "@eslint/js": "^10.0.1",
     "@types/node": "^26.6.4",
+    "esbuild": "^0.28.2",
     "eslint": "^10.9.1",
     "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^17.11.0",

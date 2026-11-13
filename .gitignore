@@ -39,6 +39,7 @@ apps/icons/public/data/
 **/.astro/
 
 # Vault Icons — generated framework components (built from original specs)
+packages/icons-react/src/aggregate/
 packages/icons-react/src/icons/
 packages/icons-react/src/index.ts
 packages/icons-vue/src/icons/

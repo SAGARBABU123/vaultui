@@ -1,20 +1,55 @@
 {
   "name": "@vaultui/icons-react",
-  "version": "0.1.0",
-  "description": "Vault Icons — 1,557 hand-authored icons in 6 weights as tree-shakeable React components.",
+  "version": "0.2.0",
+  "description": "Vault Icons - 1,557 hand-authored icons in 6 weights as tree-shakeable React components.",
   "license": "MIT",
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
-    }
+      "types": {
+        "import": "./dist/index.d.ts",
+        "require": "./dist/index.d.cts"
+      },
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js"
+    },
+    "./icons/*": {
+      "types": "./dist/icons/*/index.d.ts",
+      "import": "./dist/icons/*/index.js"
+    },
+    "./icons/*/thin": {
+      "types": "./dist/icons/*/thin.d.ts",
+      "import": "./dist/icons/*/thin.js"
+    },
+    "./icons/*/light": {
+      "types": "./dist/icons/*/light.d.ts",
+      "import": "./dist/icons/*/light.js"
+    },
+    "./icons/*/regular": {
+      "types": "./dist/icons/*/regular.d.ts",
+      "import": "./dist/icons/*/regular.js"
+    },
+    "./icons/*/bold": {
+      "types": "./dist/icons/*/bold.d.ts",
+      "import": "./dist/icons/*/bold.js"
+    },
+    "./icons/*/fill": {
+      "types": "./dist/icons/*/fill.d.ts",
+      "import": "./dist/icons/*/fill.js"
+    },
+    "./icons/*/duotone": {
+      "types": "./dist/icons/*/duotone.d.ts",
+      "import": "./dist/icons/*/duotone.js"
+    },
+    "./package.json": "./package.json"
   },
   "files": [
-    "dist"
+    "dist",
+    "!dist/**/*.map"
   ],
   "publishConfig": {
     "access": "public"
@@ -22,7 +57,7 @@
   "sideEffects": false,
   "scripts": {
     "generate": "node ../icons/scripts/generate-components.mjs react",
-    "build": "pnpm run generate && tsup",
+    "build": "pnpm run generate && tsup && node scripts/build-icons.mjs",
     "typecheck": "pnpm run generate && tsc --noEmit",
     "prepublishOnly": "pnpm run build"
   },
@@ -41,12 +76,11 @@
       "src/index.ts"
     ],
     "format": [
-      "esm",
       "cjs"
     ],
     "dts": true,
     "clean": true,
-    "sourcemap": true,
+    "sourcemap": false,
     "treeshake": true,
     "external": [
       "react",

@@ -1,178 +1,1570 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 
-const canonical = new URL(
-  "/philosophy",
-  Astro.site ?? "https://icons.vaultui-icons-site.workers.dev",
-).toString();
-
 const principles = [
-  { label: "Grid", value: "24 × 24" },
-  { label: "Safe zone", value: "2.4 – 21.6" },
-  { label: "Optical stroke", value: "1.6 regular" },
-  { label: "Stroke weights", value: "0.9 / 1.25 / 2.4" },
-  { label: "Caps & joins", value: "rounded" },
-  { label: "Shape budget", value: "1 – 4" },
+  {
+    n: "01",
+    id: "grid",
+    label: "Canvas",
+    value: "24 × 24",
+    short: "Every glyph starts on the same 24-unit square, with the centre at 12, 12.",
+    why: "At 16, 20, 24 or 48 px the same drawing keeps its rhythm. Icons line up in a toolbar without nudging.",
+    visual: "grid",
+  },
+  {
+    n: "02",
+    id: "safe-zone",
+    label: "Edge margin",
+    value: "2.4 – 21.6",
+    short: "No anchor or curve enters the outer 2.4-unit band — the safe zone. The live area is 19.2 units square.",
+    why: "Nothing collides with the edge at small sizes, and every icon keeps the same optical margin next to text.",
+    visual: "safe",
+  },
+  {
+    n: "03",
+    id: "optical-stroke",
+    label: "Default line",
+    value: "1.6 units",
+    short: "The regular weight draws every line 1.6 units thick — tuned to read like 1.5 px at 24 px.",
+    why: "It matches the weight of UI text, so icons sit beside labels without looking heavier or lighter.",
+    visual: "stroke",
+  },
+  {
+    n: "04",
+    id: "stroke-ramp",
+    label: "Six weights",
+    value: "0.9 → 2.4",
+    short: "Thin, light and bold step the same geometry up and down. Fill and duotone replace the stroke with solid shapes.",
+    why: "Six weights share one silhouette. You can change emphasis without changing the icon's identity.",
+    visual: "weights",
+  },
+  {
+    n: "05",
+    id: "caps-joins",
+    label: "Line endings",
+    value: "rounded",
+    short: "Every open stroke ends and turns with a round cap and a round join.",
+    why: "Rounded terminals stay soft at 16 px and avoid the sharp, mechanical corners that read as noise.",
+    visual: "caps",
+  },
+  {
+    n: "06",
+    id: "shape-budget",
+    label: "Shapes per icon",
+    value: "1 – 4",
+    short: "A glyph uses at most four shapes. A path with several subpaths still counts as one.",
+    why: "Fewer shapes mean cleaner silhouettes, smaller files and faster rendering — without losing meaning.",
+    visual: "shapes",
+  },
 ];
 
 const guarantees = [
-  { label: "Tree-shakeable", value: "import one icon, ship one icon" },
-  { label: "Runtime deps", value: "zero" },
-  { label: "License", value: "MIT" },
-  { label: "Package managers", value: "npm · yarn · pnpm · bun" },
-  { label: "Weights", value: "6 — thin · light · regular · bold · fill · duotone" },
+  { label: "Library", value: "1,557 icons" },
+  { label: "Weights", value: "6" },
+  { label: "Runtime deps", value: "0" },
+  { label: "Licence", value: "MIT" },
+  { label: "Frameworks", value: "React · Vue · Svelte" },
+];
+
+const plain = [
+  {
+    label: "Canvas",
+    value: "24 × 24",
+    text: "Every icon is drawn in the same square. That is why icons from different categories still line up.",
+  },
+  {
+    label: "Breathing room",
+    value: "2.4 units",
+    text: "Nothing touches the edge. Each icon keeps the same margin, so it never feels cramped next to text.",
+  },
+  {
+    label: "Default line",
+    value: "1.6 units",
+    text: "The regular weight is tuned to look right at 24 px, roughly the same weight as UI text.",
+  },
+];
+
+const useCases = [
+  {
+    title: "Mix any two icons",
+    text: "Because every glyph uses the same canvas and margin, icons from different sets sit together without visual jumps.",
+  },
+  {
+    title: "Change weight, keep identity",
+    text: "Thin, light, regular and bold share one silhouette. Fill and duotone swap the stroke for solid shapes.",
+  },
+  {
+    title: "Ship only what you import",
+    text: "Deep imports load one weight of one icon. Your app does not pay for the other 9,341 modules.",
+  },
+];
+
+const acornOutline = [
+  "M7 10.6c0-3.4 2.2-5.6 5-5.6s5 2.2 5 5.6Z",
+  "M8.3 10.6h7.4c.3 4.4-1.2 7.2-3.7 8.8-2.5-1.6-4-4.4-3.7-8.8Z",
+  "M12 5.2V3",
+  "M9.2 8.6l.8 2M12 7.6v3M14.8 8.6l-.8 2",
+];
+
+const acornFill = [
+  "M7 10.6c0-3.4 2.2-5.6 5-5.6s5 2.2 5 5.6Z",
+  "M8.3 10.6h7.4c.3 4.4-1.2 7.2-3.7 8.8-2.5-1.6-4-4.4-3.7-8.8Z",
+];
+
+const weights = [
+  { id: "thin", label: "Thin", note: "0.9", stroke: 0.9 },
+  { id: "light", label: "Light", note: "1.25", stroke: 1.25 },
+  { id: "regular", label: "Regular", note: "1.6", stroke: 1.6 },
+  { id: "bold", label: "Bold", note: "2.4", stroke: 2.4 },
+  { id: "fill", label: "Fill", note: "solid", fill: true },
+  { id: "duotone", label: "Duotone", note: "22%", duotone: true },
 ];
 ---
 
 <BaseLayout
-  title="Philosophy — Vault Icons"
-  description="Why Vault Icons exists: a complete, consistent, hand-crafted icon set. Free, MIT-licensed, 100% original geometry, zero runtime dependencies."
+  title="Philosophy — Abhayaui Icons"
+  description="The six rules behind Abhayaui Icons: one 24×24 grid, a 2.4-unit safe zone, a 1.6 optical stroke, six weights and a four-shape budget."
 >
-  <link rel="canonical" href={canonical} />
+  <main class="ph">
+    <div class="ph-progress" aria-hidden="true"></div>
+    <nav class="ph-nav" aria-label="Page">
+      <a href="/" class="ph-nav__back">← All icons</a>
+      <span class="ph-nav__index">Philosophy · 001</span>
+      <a
+        href="https://github.com/SAGARBABU123/vaultui"
+        class="ph-nav__link"
+        aria-label="GitHub repository"
+      >GitHub</a>
+    </nav>
 
-  <main class="min-h-dvh">
-    <div class="mx-auto max-w-[900px] px-6 py-10">
-      <nav class="flex flex-wrap items-center justify-between gap-3">
-        <a href="/" class="text-[14px] font-medium" style="color: var(--color-brand-700)">← All icons</a>
-        <a
-          href="https://github.com/SAGARBABU123/vaultui"
-          class="text-[14px]"
-          style="color: var(--color-surface-600)"
-          aria-label="GitHub repository"
-        >GitHub</a>
-      </nav>
-
-      <header class="mt-12">
-        <p class="text-[12px] font-bold uppercase tracking-[0.14em]" style="color: var(--color-surface-500)">Philosophy</p>
-        <h1 class="text-[44px] sm:text-[56px] leading-[1.04] font-semibold mt-2" style="letter-spacing: -0.03em">
-          Hand-crafted, never traced
-        </h1>
-        <p class="mt-4 max-w-[56ch] text-[17px] leading-relaxed" style="color: var(--color-surface-600)">
-          Every glyph in Vault Icons is drawn from an empty 24×24 grid — one set of rules,
-          one optical rhythm, zero shortcuts. This is the contract we hold all 1,557 icons to.
+    <header class="ph-hero">
+      <div class="ph-marks" aria-hidden="true">
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <div class="ph-frame" aria-hidden="true"></div>
+      <div class="ph-hero__copy">
+        <p class="ph-eyebrow"><span>Philosophy</span><span>Field notes / 001</span></p>
+        <h1>The grid is<br /><em>a promise.</em></h1>
+        <p class="ph-lede">
+          One drawing system, not 1,557 separate drawings. These six rules explain
+          how every icon is made — and what the measurements mean in practice.
         </p>
-      </header>
+        <p class="ph-meta">1,557 glyphs · 6 weights · 4 shapes max · MIT</p>
+      </div>
 
-      <section class="mt-12" aria-labelledby="mission-heading">
-        <div class="rounded-lg border p-6 sm:p-8" style="border-color: var(--color-surface-200); background: var(--color-surface-0); box-shadow: var(--shadow-soft)">
-          <div class="flex items-center gap-3">
-            <span
-              class="grid place-items-center w-9 h-9 rounded-lg shrink-0"
-              style="background: linear-gradient(140deg, var(--color-brand-100), var(--color-brand-50)); box-shadow: inset 0 0 0 1px var(--color-brand-200)"
-              aria-hidden="true"
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-brand-600)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="9" />
-                <circle cx="12" cy="12" r="4.5" />
-                <circle cx="12" cy="12" r="0.5" fill="var(--color-brand-600)" />
-              </svg>
-            </span>
-            <h2 id="mission-heading" class="text-[20px] font-semibold" style="letter-spacing: -0.02em">Mission</h2>
-          </div>
-          <p class="mt-4 text-[16px] leading-relaxed max-w-[62ch]" style="color: var(--color-surface-700)">
-            A complete, consistent, hand-crafted icon set. Free, MIT-licensed, and with zero runtime
-            dependencies — so it drops into any stack without weighing it down.
-          </p>
+      <figure class="ph-specimen ph-board">
+        <div class="ph-board__head">
+          <span>Weight system</span>
+          <span>6 styles / 1 silhouette</span>
         </div>
-      </section>
-
-      <section class="mt-6" aria-labelledby="principles-heading">
-        <div class="rounded-lg border p-6 sm:p-8" style="border-color: var(--color-surface-200); background: var(--color-surface-0); box-shadow: var(--shadow-soft)">
-          <div class="flex items-center gap-3">
-            <span
-              class="grid place-items-center w-9 h-9 rounded-lg shrink-0"
-              style="background: linear-gradient(140deg, var(--color-brand-100), var(--color-brand-50)); box-shadow: inset 0 0 0 1px var(--color-brand-200)"
-              aria-hidden="true"
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-brand-600)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 20V4" />
-                <path d="M4 20h16" />
-                <rect x="8" y="9" width="9" height="7" rx="1" />
+        <div class="ph-board__grid">
+          {weights.map((w) => (
+            <div class={`ph-board__tile${w.id === "regular" ? " is-default" : ""}`}>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                {w.fill ? (
+                  <path d="M20.6 12 12.6 4v5H3.4v6h9.2v5Z" fill="currentColor" />
+                ) : w.duotone ? (
+                  <>
+                    <path d="M20.6 12 12.6 4v5H3.4v6h9.2v5Z" fill="currentColor" opacity="0.22" />
+                    <g stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none">
+                      <path d="M4.5 12h15" />
+                      <path d="M13 5.5 19.5 12 13 18.5" />
+                    </g>
+                  </>
+                ) : (
+                  <g stroke="currentColor" stroke-width={w.stroke} stroke-linecap="round" stroke-linejoin="round" fill="none">
+                    <path d="M4.5 12h15" />
+                    <path d="M13 5.5 19.5 12 13 18.5" />
+                  </g>
+                )}
               </svg>
-            </span>
-            <h2 id="principles-heading" class="text-[20px] font-semibold" style="letter-spacing: -0.02em">Design principles</h2>
-          </div>
-          <p class="mt-4 text-[15px] leading-relaxed max-w-[62ch]" style="color: var(--color-surface-700)">
-            Six rules keep every glyph optically consistent, from a single weather icon to the whole library.
-          </p>
-          <dl class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {principles.map((item) => (
-              <div
-                class="rounded-md px-4 py-3 border"
-                style="border-color: var(--color-surface-200); background: var(--color-surface-50)"
-              >
-                <dt class="text-[12px] font-semibold uppercase tracking-[0.1em]" style="color: var(--color-surface-500)">
-                  {item.label}
-                </dt>
-                <dd class="mt-1 text-[15px] font-medium tabular-nums" style="color: var(--color-surface-900)">
-                  {item.value}
-                </dd>
-              </div>
-            ))}
-          </dl>
+              <span class="ph-board__name">
+                {w.label}
+                {w.id === "regular" && <em>default</em>}
+              </span>
+              <span class="ph-board__value">{w.note}</span>
+            </div>
+          ))}
         </div>
-      </section>
-
-      <section class="mt-6" aria-labelledby="original-heading">
-        <div class="rounded-lg border p-6 sm:p-8" style="border-color: var(--color-surface-200); background: var(--color-surface-0); box-shadow: var(--shadow-soft)">
-          <div class="flex items-center gap-3">
-            <span
-              class="grid place-items-center w-9 h-9 rounded-lg shrink-0"
-              style="background: linear-gradient(140deg, var(--color-brand-100), var(--color-brand-50)); box-shadow: inset 0 0 0 1px var(--color-brand-200)"
-              aria-hidden="true"
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-brand-600)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 2.5 20.5 7v10L12 21.5 3.5 17V7Z" />
-                <path d="M12 2.5v19" />
-                <path d="M12 7 3.5 12M12 7l8.5 5" />
-              </svg>
-            </span>
-            <h2 id="original-heading" class="text-[20px] font-semibold" style="letter-spacing: -0.02em">100% original geometry</h2>
-          </div>
-          <p class="mt-4 text-[16px] leading-relaxed max-w-[62ch]" style="color: var(--color-surface-700)">
-            All 1,557 icons are hand-authored in-house, never traced. No third-party glyphs, no
-            auto-traced outlines, no borrowed paths — every point is placed on purpose.
-          </p>
+        <div class="ph-board__foot">
+          <span>24 × 24 grid</span>
+          <span>1,557 glyphs</span>
+          <span>MIT</span>
         </div>
-      </section>
+      </figure>
+    </header>
 
-      <section class="mt-6" aria-labelledby="guarantees-heading">
-        <div class="rounded-lg border p-6 sm:p-8" style="border-color: var(--color-surface-200); background: var(--color-surface-0); box-shadow: var(--shadow-soft)">
-          <div class="flex items-center gap-3">
-            <span
-              class="grid place-items-center w-9 h-9 rounded-lg shrink-0"
-              style="background: linear-gradient(140deg, var(--color-brand-100), var(--color-brand-50)); box-shadow: inset 0 0 0 1px var(--color-brand-200)"
-              aria-hidden="true"
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-brand-600)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 3 5 5.5v5c0 4.2 2.9 7.6 7 9.5 4.1-1.9 7-5.3 7-9.5v-5Z" />
-                <path d="m9 12 2 2 4-4" />
-              </svg>
-            </span>
-            <h2 id="guarantees-heading" class="text-[20px] font-semibold" style="letter-spacing: -0.02em">Developer guarantees</h2>
+    <section class="ph-start" aria-labelledby="start-heading">
+      <div class="ph-start__head">
+        <p class="ph-kicker">Start here</p>
+        <h2 id="start-heading">What the numbers actually mean</h2>
+        <p>
+          You do not need to know the coordinate system to use Abhayaui Icons.
+          These are the only three numbers that affect how the icons look.
+        </p>
+      </div>
+      <div class="ph-start__grid">
+        {plain.map((item, index) => (
+          <div class="ph-start__card">
+            <span class="ph-start__n">0{index + 1}</span>
+            <span class="ph-start__value">{item.value}</span>
+            <h3>{item.label}</h3>
+            <p>{item.text}</p>
           </div>
-          <dl class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {guarantees.map((item) => (
-              <div
-                class="rounded-md px-4 py-3 border"
-                style="border-color: var(--color-surface-200); background: var(--color-surface-50)"
-              >
-                <dt class="text-[12px] font-semibold uppercase tracking-[0.1em]" style="color: var(--color-surface-500)">
-                  {item.label}
-                </dt>
-                <dd class="mt-1 text-[15px] font-medium" style="color: var(--color-surface-900)">
-                  {item.value}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </section>
+        ))}
+      </div>
+    </section>
 
-      <footer class="mt-12 pb-8 flex flex-wrap items-center justify-between gap-3 text-[13px]" style="color: var(--color-surface-600)">
-        <span>Vault Icons · free, MIT, zero deps</span>
-        <a href="/" class="font-medium" style="color: var(--color-brand-700)">Browse the library →</a>
-      </footer>
-    </div>
+    <section class="ph-rules" id="principles" aria-labelledby="principles-heading">
+      <div class="ph-rules__intro">
+        <p class="ph-kicker">The contract</p>
+        <h2 id="principles-heading">Six rules.<br />One optical family.</h2>
+        <p>
+          These are the measurements every icon is checked against. Each rule
+          below has a diagram, a plain-language explanation and a note on why it
+          matters.
+        </p>
+        <p class="ph-note">Values use the 24-unit grid, not pixels.</p>
+        <nav class="ph-jump" aria-label="Jump to a rule">
+          {principles.map((p) => (
+            <a href={`#rule-${p.id}`}><span>{p.n}</span>{p.label}</a>
+          ))}
+        </nav>
+      </div>
+
+      <div class="ph-rules__list">
+        {principles.map((p) => (
+          <article class="ph-rule" id={`rule-${p.id}`}>
+            <div class="ph-rule__head">
+              <span class="ph-rule__n">{p.n}</span>
+              <h3>{p.label}</h3>
+              <span class="ph-rule__value">{p.value}</span>
+            </div>
+            <div class="ph-rule__body">
+              <figure class="ph-figure">
+                {p.visual === "grid" && (
+                  <svg viewBox="0 0 120 120" aria-hidden="true">
+                    <defs>
+                      <pattern id="ph-rule-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                        <path d="M20 0H0V20" fill="none" stroke="currentColor" stroke-width="1" opacity="0.42" />
+                      </pattern>
+                    </defs>
+                    <rect x="10" y="10" width="100" height="100" fill="url(#ph-rule-grid)" stroke="currentColor" stroke-width="2.5" />
+                    <rect x="30" y="30" width="40" height="40" fill="currentColor" opacity="0.14" stroke="currentColor" stroke-width="2.5" />
+                    <path d="M10 50h100M50 10v100" stroke="currentColor" stroke-width="1" stroke-dasharray="3 4" opacity="0.7" />
+                    <circle cx="50" cy="50" r="2.6" fill="currentColor" />
+                    <text x="12" y="8" font-family="monospace" font-size="7" fill="currentColor">0</text>
+                    <text x="96" y="8" font-family="monospace" font-size="7" fill="currentColor">24</text>
+                    <text x="88" y="116" font-family="monospace" font-size="7" fill="currentColor">12 · 12</text>
+                  </svg>
+                )}
+
+                {p.visual === "safe" && (
+                  <svg viewBox="0 0 120 120" aria-hidden="true">
+                    <defs>
+                      <pattern id="ph-rule-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                        <line x1="0" y1="0" x2="0" y2="6" stroke="currentColor" stroke-width="1.1" opacity="0.34" />
+                      </pattern>
+                    </defs>
+                    <path d="M10 10h100v100H10Z M20 20v80h80V20Z" fill="url(#ph-rule-hatch)" fill-rule="evenodd" />
+                    <rect x="10" y="10" width="100" height="100" fill="none" stroke="currentColor" stroke-width="2.5" />
+                    <rect x="20" y="20" width="80" height="80" fill="none" stroke="currentColor" stroke-width="2.5" stroke-dasharray="5 4" />
+                    <path d="M10 20h8M20 10v8M110 100h-8M100 110v-8" stroke="currentColor" stroke-width="1.4" />
+                    <text x="22" y="16" font-family="monospace" font-size="7" fill="currentColor">2.4</text>
+                    <text x="50" y="63" font-family="monospace" font-size="8" fill="currentColor">19.2</text>
+                    <text x="88" y="116" font-family="monospace" font-size="7" fill="currentColor">2.4</text>
+                  </svg>
+                )}
+
+                {p.visual === "stroke" && (
+                  <svg viewBox="0 0 120 96" aria-hidden="true">
+                    <rect x="34" y="46" width="76" height="24" fill="currentColor" opacity="0.1" />
+                    <g stroke="currentColor" stroke-linecap="round">
+                      <line x1="38" y1="22" x2="106" y2="22" stroke-width="2.7" opacity="0.55" />
+                      <line x1="38" y1="42" x2="106" y2="42" stroke-width="3.75" opacity="0.55" />
+                      <line x1="38" y1="58" x2="106" y2="58" stroke-width="4.8" />
+                      <line x1="38" y1="82" x2="106" y2="82" stroke-width="7.2" opacity="0.55" />
+                    </g>
+                    <g font-family="monospace" font-size="7" fill="currentColor">
+                      <text x="8" y="25">0.9</text>
+                      <text x="8" y="45">1.25</text>
+                      <text x="8" y="61">1.6</text>
+                      <text x="8" y="85">2.4</text>
+                    </g>
+                    <text x="80" y="16" font-family="monospace" font-size="7" fill="currentColor">regular</text>
+                  </svg>
+                )}
+
+                {p.visual === "caps" && (
+                  <svg viewBox="0 0 120 96" aria-hidden="true">
+                    <g stroke="currentColor" stroke-width="8" stroke-linecap="round">
+                      <line x1="16" y1="30" x2="84" y2="30" />
+                    </g>
+                    <g stroke="currentColor" stroke-width="8" stroke-linecap="butt" opacity="0.4">
+                      <line x1="16" y1="66" x2="84" y2="66" />
+                    </g>
+                    <path d="M16 20v20M16 56v20" stroke="currentColor" stroke-width="1" opacity="0.45" />
+                    <g font-family="monospace" font-size="7" fill="currentColor">
+                      <text x="92" y="33">round</text>
+                      <text x="92" y="69" opacity="0.55">square</text>
+                    </g>
+                    <text x="16" y="90" font-family="monospace" font-size="6.5" fill="currentColor" opacity="0.55">left edge</text>
+                  </svg>
+                )}
+
+                {p.visual === "shapes" && (
+                  <svg viewBox="0 0 120 96" aria-hidden="true">
+                    <g fill="none" stroke="currentColor" stroke-width="1.1" opacity="0.28">
+                      <rect x="6" y="10" width="24" height="30" rx="4" />
+                      <rect x="34" y="10" width="24" height="30" rx="4" />
+                      <rect x="62" y="10" width="24" height="30" rx="4" />
+                      <rect x="90" y="10" width="24" height="30" rx="4" />
+                    </g>
+                    <g fill="currentColor" opacity="0.2" stroke="currentColor" stroke-width="1.6">
+                      <rect x="11" y="17" width="14" height="16" rx="2" />
+                      <rect x="40" y="17" width="5" height="16" rx="1.5" />
+                      <rect x="48" y="17" width="5" height="16" rx="1.5" />
+                      <rect x="68" y="17" width="4" height="16" rx="1.2" />
+                      <rect x="74" y="17" width="4" height="16" rx="1.2" />
+                      <rect x="80" y="17" width="4" height="16" rx="1.2" />
+                      <circle cx="98" cy="21" r="3.2" />
+                      <circle cx="106" cy="21" r="3.2" />
+                      <circle cx="98" cy="29" r="3.2" />
+                      <circle cx="106" cy="29" r="3.2" />
+                    </g>
+                    <g font-family="monospace" font-size="7" fill="currentColor" text-anchor="middle">
+                      <text x="18" y="53">1</text>
+                      <text x="46" y="53">2</text>
+                      <text x="74" y="53">3</text>
+                      <text x="102" y="53">4</text>
+                    </g>
+                    <path d="M6 62h108" stroke="currentColor" stroke-width="1" opacity="0.3" />
+                    <text x="6" y="78" font-family="monospace" font-size="6.5" fill="currentColor">max 4 shapes per glyph</text>
+                    <text x="6" y="88" font-family="monospace" font-size="6.5" fill="currentColor" opacity="0.55">a multi-subpath path counts as one</text>
+                  </svg>
+                )}
+
+                {p.visual === "weights" && (
+                  <div class="ph-weights">
+                    {weights.map((w) => (
+                      <figure class="ph-weight">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                          {w.fill ? (
+                            <g fill="currentColor">
+                              {acornFill.map((d) => <path d={d} />)}
+                              <rect x="11.4" y="2.9" width="1.2" height="2.4" rx="0.6" />
+                            </g>
+                          ) : w.duotone ? (
+                            <>
+                              <g opacity="0.22" fill="currentColor" stroke="none">
+                                {acornFill.map((d) => <path d={d} />)}
+                                <rect x="11.4" y="2.9" width="1.2" height="2.4" rx="0.6" />
+                              </g>
+                              <g stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none">
+                                {acornOutline.map((d) => <path d={d} />)}
+                              </g>
+                            </>
+                          ) : (
+                            <g stroke="currentColor" stroke-width={w.stroke} stroke-linecap="round" stroke-linejoin="round" fill="none">
+                              {acornOutline.map((d) => <path d={d} />)}
+                            </g>
+                          )}
+                        </svg>
+                        <figcaption>{w.label}<span>{w.note}</span></figcaption>
+                      </figure>
+                    ))}
+                  </div>
+                )}
+
+                <figcaption>
+                  {p.visual === "grid" && "24 units, centre at 12, 12"}
+                  {p.visual === "safe" && "2.4-unit margin on every edge"}
+                  {p.visual === "stroke" && "the same line at four optical weights"}
+                  {p.visual === "weights" && "one silhouette, six expressions"}
+                  {p.visual === "caps" && "round terminals, round corners"}
+                  {p.visual === "shapes" && "one to four shapes, never more"}
+                </figcaption>
+              </figure>
+
+              <dl class="ph-rule__text">
+                <dt>What it means</dt>
+                <dd>{p.short}</dd>
+                <dt>Why it matters</dt>
+                <dd>{p.why}</dd>
+              </dl>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="ph-use" aria-labelledby="use-heading">
+      <div class="ph-use__head">
+        <p class="ph-kicker">In practice</p>
+        <h2 id="use-heading">What this gives you</h2>
+      </div>
+      <div class="ph-use__grid">
+        {useCases.map((item, index) => (
+          <div class="ph-use__item">
+            <span>0{index + 1}</span>
+            <h3>{item.title}</h3>
+            <p>{item.text}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="ph-contract" aria-labelledby="contract-heading">
+      <div class="ph-contract__copy">
+        <p class="ph-kicker">The promise</p>
+        <h2 id="contract-heading">Original by construction.<br /><span>Consistent by contract.</span></h2>
+        <p>
+          Every icon is hand-authored in-house - never traced, never borrowed.
+          The rules above are checked before a glyph ships, so adding icon 1,558
+          cannot make the first 1,557 look wrong.
+        </p>
+        <div class="ph-seal" aria-hidden="true">
+          <svg viewBox="0 0 120 120">
+            <defs>
+              <path id="ph-seal-ring" d="M60,60 m-46,0 a46,46 0 1,1 92,0 a46,46 0 1,1 -92,0" />
+            </defs>
+            <circle cx="60" cy="60" r="54" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="2 5" opacity="0.5" />
+            <circle cx="60" cy="60" r="34" fill="none" stroke="currentColor" stroke-width="1" opacity="0.35" />
+            <text class="ph-seal__ring">
+              <textPath href="#ph-seal-ring" startOffset="0">100% ORIGINAL GEOMETRY · HAND AUTHORED · </textPath>
+            </text>
+            <text class="ph-seal__big" x="60" y="60" text-anchor="middle">1,557</text>
+            <text class="ph-seal__small" x="60" y="74" text-anchor="middle">GLYPHS</text>
+          </svg>
+        </div>
+      </div>
+
+      <div class="ph-contract__panel">
+        <div class="ph-contract__panel-head">
+          <span>Guarantees</span>
+          <span>05</span>
+        </div>
+        <dl>
+          {guarantees.map((item, index) => (
+            <div class="ph-guarantee">
+              <span class="ph-guarantee__n">0{index + 1}</span>
+              <dt>{item.label}</dt>
+              <dd>{item.value}</dd>
+            </div>
+          ))}
+        </dl>
+        <div class="ph-contract__panel-foot">
+          <span>Checked before every release</span>
+          <span>MIT</span>
+        </div>
+      </div>
+    </section>
+
+    <footer class="ph-footer">
+      <div class="ph-footer__brand">
+        <span class="ph-footer__mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M4.5 12h15M13 5.5 19.5 12 13 18.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </span>
+        <div>
+          <strong>Abhayaui Icons</strong>
+          <span>Hand-drawn, MIT, zero dependencies</span>
+        </div>
+      </div>
+      <nav class="ph-footer__links" aria-label="Footer">
+        <a href="/">Browse library</a>
+        <a href="/getting-started/">Get started</a>
+        <a href="https://github.com/SAGARBABU123/vaultui">GitHub</a>
+      </nav>
+    </footer>
   </main>
+
+  <style>
+    .ph {
+      --ink: var(--color-surface-950);
+      --paper: var(--color-surface-50);
+      --line: var(--color-surface-200);
+      --brand: var(--color-brand-600);
+      --font-mono: var(--font-sans);
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 20px clamp(16px, 4vw, 40px) 64px;
+      font-family: var(--font-sans);
+      color: var(--ink);
+    }
+
+    :global(html) {
+      scroll-behavior: smooth;
+    }
+
+    .ph-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 6px 2px 20px;
+      font-size: 14px;
+    }
+
+    .ph-nav a {
+      text-decoration: none;
+    }
+
+    .ph-nav__back {
+      color: var(--color-brand-700);
+      font-weight: 500;
+    }
+
+    .ph-nav__link {
+      color: var(--color-surface-600);
+    }
+
+    .ph-nav__index {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-surface-500);
+    }
+
+    .ph-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 60;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--color-brand-400), var(--color-brand-700));
+      transform: scaleX(0);
+      transform-origin: 0 50%;
+      pointer-events: none;
+    }
+
+    @supports (animation-timeline: scroll()) {
+      .ph-progress {
+        animation: ph-progress-grow linear;
+        animation-timeline: scroll(root block);
+      }
+
+      @keyframes ph-progress-grow {
+        from {
+          transform: scaleX(0);
+        }
+        to {
+          transform: scaleX(1);
+        }
+      }
+    }
+
+    .ph-hero {
+      position: relative;
+      isolation: isolate;
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(300px, 0.95fr);
+      gap: clamp(28px, 5vw, 72px);
+      align-items: center;
+      padding: clamp(28px, 5vw, 68px);
+      border-radius: 28px;
+      overflow: hidden;
+      color: var(--color-surface-0);
+      background:
+        radial-gradient(760px 420px at 88% 4%, rgb(111 123 242 / 0.3), transparent 62%),
+        radial-gradient(520px 320px at 4% 110%, rgb(90 167 226 / 0.16), transparent 65%),
+        linear-gradient(145deg, #1a1d3d 0%, #101124 58%, #1b1e42 100%);
+    }
+
+    .ph-hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: radial-gradient(120% 100% at 50% 0%, transparent 40%, rgb(0 0 0 / 0.28) 100%);
+      pointer-events: none;
+    }
+
+    .ph-frame {
+      position: absolute;
+      inset: 14px;
+      border: 1px solid rgb(255 255 255 / 0.07);
+      border-radius: 18px;
+      pointer-events: none;
+    }
+
+    .ph-hero__copy,
+    .ph-specimen {
+      position: relative;
+      z-index: 1;
+    }
+
+    .ph-marks {
+      position: absolute;
+      inset: 14px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .ph-marks span {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border: 0 solid rgb(255 255 255 / 0.3);
+    }
+
+    .ph-marks span:nth-child(1) {
+      top: 0;
+      left: 0;
+      border-top-width: 1px;
+      border-left-width: 1px;
+    }
+
+    .ph-marks span:nth-child(2) {
+      top: 0;
+      right: 0;
+      border-top-width: 1px;
+      border-right-width: 1px;
+    }
+
+    .ph-marks span:nth-child(3) {
+      bottom: 0;
+      left: 0;
+      border-bottom-width: 1px;
+      border-left-width: 1px;
+    }
+
+    .ph-marks span:nth-child(4) {
+      right: 0;
+      bottom: 0;
+      border-right-width: 1px;
+      border-bottom-width: 1px;
+    }
+
+    .ph-eyebrow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 18px;
+      margin: 0 0 22px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--color-brand-300);
+    }
+
+    .ph-eyebrow span + span::before {
+      content: "·";
+      margin-right: 18px;
+      color: rgb(255 255 255 / 0.35);
+    }
+
+    .ph-hero h1 {
+      margin: 0;
+      font-size: clamp(50px, 7.4vw, 92px);
+      font-weight: 600;
+      line-height: 0.94;
+      letter-spacing: -0.055em;
+    }
+
+    .ph-hero h1 em {
+      font-family: inherit;
+      font-weight: inherit;
+      font-style: normal;
+      letter-spacing: inherit;
+      color: var(--color-brand-300);
+    }
+
+    .ph-lede {
+      max-width: 44ch;
+      margin: 24px 0 0;
+      font-size: clamp(16px, 1.6vw, 18px);
+      line-height: 1.55;
+      color: rgb(255 255 255 / 0.74);
+    }
+
+    .ph-meta {
+      margin: 30px 0 0;
+      padding-top: 16px;
+      border-top: 1px solid rgb(255 255 255 / 0.14);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      color: rgb(255 255 255 / 0.56);
+    }
+
+    .ph-specimen {
+      margin: 0;
+    }
+
+    .ph-board {
+      padding: clamp(14px, 2vw, 20px);
+      border-radius: 20px;
+      background: var(--color-surface-0);
+      color: var(--color-surface-900);
+      box-shadow:
+        0 24px 70px rgb(0 0 0 / 0.38),
+        inset 0 0 0 1px rgb(0 0 0 / 0.05);
+    }
+
+    .ph-board__head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 0 2px 12px;
+      border-bottom: 1px solid var(--color-surface-200);
+      font-size: 9.5px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-surface-500);
+    }
+
+    .ph-board__grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .ph-board__tile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      min-height: 104px;
+      padding: 14px 6px 10px;
+      border: 1px solid var(--color-surface-200);
+      border-radius: 12px;
+      background: var(--color-surface-50);
+    }
+
+    .ph-board__tile svg {
+      width: 46px;
+      height: 46px;
+      color: var(--color-surface-900);
+    }
+
+    .ph-board__tile.is-default {
+      border-color: var(--color-brand-400);
+      background: var(--color-brand-50);
+      box-shadow: inset 0 0 0 1px var(--color-brand-200);
+    }
+
+    .ph-board__tile.is-default svg {
+      color: var(--color-brand-700);
+    }
+
+    .ph-board__name {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--color-surface-800);
+    }
+
+    .ph-board__name em {
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: var(--color-brand-600);
+      color: var(--color-surface-0);
+      font-size: 7px;
+      font-style: normal;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .ph-board__value {
+      font-size: 9px;
+      color: var(--color-surface-500);
+    }
+
+    .ph-board__foot {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--color-surface-200);
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-surface-500);
+    }
+
+    .ph-start {
+      display: grid;
+      grid-template-columns: minmax(220px, 0.8fr) minmax(0, 1.2fr);
+      gap: clamp(24px, 4vw, 48px);
+      margin-top: 18px;
+      padding: clamp(24px, 4vw, 40px);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: var(--color-surface-0);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .ph-start__head h2 {
+      margin: 0;
+      font-size: clamp(24px, 3vw, 34px);
+      font-weight: 600;
+      line-height: 1.08;
+      letter-spacing: -0.04em;
+    }
+
+    .ph-start__head p:last-child {
+      margin: 14px 0 0;
+      font-size: 14.5px;
+      line-height: 1.6;
+      color: var(--color-surface-600);
+    }
+
+    .ph-start__grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--line);
+    }
+
+    .ph-start__card {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(18px, 2.6vw, 26px);
+      background: var(--paper);
+    }
+
+    .ph-start__card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--brand);
+      transition: width 0.25s ease;
+    }
+
+    .ph-start__card:hover::before {
+      width: 100%;
+    }
+
+    .ph-start__n {
+      display: block;
+      margin-bottom: 14px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      color: var(--color-surface-400);
+    }
+
+    .ph-start__value {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--brand);
+      letter-spacing: -0.02em;
+    }
+
+    .ph-start__card h3 {
+      margin: 10px 0 0;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .ph-start__card p {
+      margin: 8px 0 0;
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: var(--color-surface-600);
+    }
+
+    .ph-note {
+      margin-top: 10px !important;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      letter-spacing: 0.04em;
+      color: var(--color-surface-500) !important;
+    }
+
+    .ph-rules {
+      display: grid;
+      grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
+      gap: clamp(28px, 6vw, 84px);
+      margin-top: clamp(56px, 8vw, 110px);
+    }
+
+    .ph-rules__intro {
+      position: sticky;
+      top: 28px;
+      align-self: start;
+    }
+
+    .ph-kicker {
+      margin: 0 0 16px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--brand);
+    }
+
+    .ph-rules__intro h2 {
+      margin: 0;
+      font-size: clamp(32px, 4vw, 50px);
+      font-weight: 600;
+      line-height: 1.02;
+      letter-spacing: -0.045em;
+    }
+
+    .ph-rules__intro > p {
+      margin: 18px 0 0;
+      max-width: 36ch;
+      font-size: 14.5px;
+      line-height: 1.6;
+      color: var(--color-surface-600);
+    }
+
+    .ph-jump {
+      display: flex;
+      flex-direction: column;
+      margin-top: 28px;
+    }
+
+    .ph-jump a {
+      display: flex;
+      gap: 12px;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--line);
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      letter-spacing: 0.03em;
+      color: var(--color-surface-700);
+      text-decoration: none;
+      transition: color 0.15s ease, padding-left 0.15s ease;
+    }
+
+    .ph-jump a span {
+      color: var(--color-surface-400);
+    }
+
+    .ph-jump a:hover {
+      padding-left: 4px;
+      color: var(--brand);
+    }
+
+    .ph-rule {
+      padding: clamp(26px, 3.4vw, 38px) 0;
+      border-top: 1px solid var(--line);
+      scroll-margin-top: 24px;
+    }
+
+    .ph-rule:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .ph-rule:target {
+      background: linear-gradient(90deg, var(--color-brand-50), transparent 72%);
+    }
+
+    .ph-rule:target .ph-rule__n {
+      color: var(--color-brand-800);
+    }
+
+    .ph-rule__head {
+      display: grid;
+      grid-template-columns: 52px minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: baseline;
+    }
+
+    .ph-rule__n {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--brand);
+    }
+
+    .ph-rule__head h3 {
+      margin: 0;
+      font-size: clamp(24px, 3vw, 32px);
+      font-weight: 600;
+      letter-spacing: -0.035em;
+    }
+
+    .ph-rule__value {
+      padding: 6px 11px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      white-space: nowrap;
+      color: var(--color-surface-700);
+      background: var(--color-surface-0);
+    }
+
+    .ph-rule__body {
+      display: grid;
+      grid-template-columns: minmax(220px, 0.9fr) minmax(0, 1.1fr);
+      gap: clamp(20px, 3.4vw, 42px);
+      margin-top: 22px;
+    }
+
+    .ph-rule:nth-child(even) .ph-rule__body {
+      grid-template-columns: minmax(0, 1.1fr) minmax(220px, 0.9fr);
+    }
+
+    .ph-rule:nth-child(even) .ph-figure {
+      order: 2;
+    }
+
+    .ph-figure {
+      margin: 0;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background:
+        linear-gradient(rgb(72 66 58 / 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgb(72 66 58 / 0.035) 1px, transparent 1px),
+        var(--color-surface-100);
+      background-size: 12px 12px;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .ph-figure svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      color: var(--color-brand-700);
+      overflow: visible;
+    }
+
+    .ph-figure svg text {
+      font-family: var(--font-sans);
+    }
+
+    .ph-figure figcaption {
+      margin-top: 10px;
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-surface-500);
+    }
+
+    .ph-rule__text {
+      align-self: center;
+      margin: 0;
+    }
+
+    .ph-rule__text dt {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--brand);
+    }
+
+    .ph-rule__text dd {
+      margin: 7px 0 18px;
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--ink);
+    }
+
+    .ph-rule__text dd:last-child {
+      margin-bottom: 0;
+      color: var(--color-surface-600);
+    }
+
+    .ph-weights {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 4px;
+    }
+
+    .ph-weight {
+      margin: 0;
+      text-align: center;
+    }
+
+    .ph-weight svg {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1;
+      color: var(--color-brand-700);
+      transition: transform 0.2s ease;
+    }
+
+    .ph-weight:hover svg {
+      transform: translateY(-2px);
+    }
+
+    .ph-weight figcaption {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      margin-top: 4px;
+      font-family: var(--font-mono);
+      font-size: 8px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--color-surface-500);
+    }
+
+    .ph-weight figcaption span {
+      font-size: 7px;
+      letter-spacing: 0.02em;
+      text-transform: none;
+      color: var(--color-surface-400);
+    }
+
+    .ph-contract {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(340px, 0.95fr);
+      gap: clamp(24px, 4vw, 56px);
+      margin-top: clamp(56px, 8vw, 100px);
+      padding: clamp(26px, 4vw, 52px);
+      border-radius: 26px;
+      overflow: hidden;
+      color: var(--color-surface-0);
+      background:
+        radial-gradient(720px 400px at 12% 0%, rgb(111 123 242 / 0.28), transparent 65%),
+        linear-gradient(145deg, #1a1d3d 0%, #101124 60%, #1b1e42 100%);
+      box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.06);
+    }
+
+    .ph-contract::after {
+      content: "";
+      position: absolute;
+      inset: 14px;
+      border: 1px solid rgb(255 255 255 / 0.06);
+      border-radius: 18px;
+      pointer-events: none;
+    }
+
+    .ph-contract__copy {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .ph-contract h2 {
+      margin: 0;
+      font-size: clamp(30px, 4vw, 46px);
+      line-height: 1.03;
+      letter-spacing: -0.045em;
+    }
+
+    .ph-contract h2 span {
+      color: var(--color-brand-300);
+    }
+
+    .ph-contract__copy > p:not(.ph-kicker) {
+      margin: 18px 0 0;
+      max-width: 42ch;
+      font-size: 15px;
+      line-height: 1.6;
+      color: rgb(255 255 255 / 0.66);
+    }
+
+    .ph-contract .ph-kicker {
+      color: var(--color-brand-300);
+    }
+
+    .ph-seal {
+      width: clamp(120px, 14vw, 156px);
+      margin-top: clamp(24px, 4vw, 40px);
+      color: var(--color-brand-200);
+    }
+
+    .ph-seal svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .ph-seal__ring {
+      font-size: 7.2px;
+      letter-spacing: 0.22em;
+      fill: currentColor;
+      opacity: 0.8;
+    }
+
+    .ph-seal__big {
+      font-family: var(--font-sans);
+      font-size: 21px;
+      font-weight: 600;
+      letter-spacing: -0.04em;
+      fill: var(--color-surface-0);
+    }
+
+    .ph-seal__small {
+      font-family: var(--font-sans);
+      font-size: 7px;
+      letter-spacing: 0.28em;
+      fill: currentColor;
+      opacity: 0.7;
+    }
+
+    .ph-contract__panel {
+      position: relative;
+      z-index: 1;
+      padding: clamp(18px, 2.4vw, 26px);
+      border-radius: 18px;
+      background: var(--color-surface-0);
+      color: var(--color-surface-900);
+      box-shadow: 0 20px 60px rgb(0 0 0 / 0.32);
+    }
+
+    .ph-contract__panel-head,
+    .ph-contract__panel-foot {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-surface-500);
+    }
+
+    .ph-contract__panel-head {
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .ph-contract__panel-foot {
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+    }
+
+    .ph-contract__panel dl {
+      margin: 0;
+    }
+
+    .ph-guarantee {
+      display: grid;
+      grid-template-columns: 22px minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: baseline;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .ph-guarantee:last-child {
+      border-bottom: 0;
+    }
+
+    .ph-guarantee__n {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: var(--color-brand-600);
+    }
+
+    .ph-guarantee dt {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-surface-500);
+    }
+
+    .ph-guarantee dd {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 600;
+      text-align: right;
+      color: var(--color-surface-900);
+    }
+
+    .ph-footer {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 36px;
+      padding: 20px 2px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .ph-footer__brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .ph-footer__mark {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: var(--color-brand-600);
+      color: var(--color-surface-0);
+      box-shadow: 0 6px 16px rgb(91 102 232 / 0.3);
+    }
+
+    .ph-footer__mark svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .ph-footer__brand div {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .ph-footer__brand strong {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .ph-footer__brand span {
+      font-size: 11.5px;
+      color: var(--color-surface-500);
+    }
+
+    .ph-footer__links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      font-size: 12.5px;
+    }
+
+    .ph-footer__links a {
+      color: var(--color-surface-600);
+      font-weight: 500;
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+
+    .ph-footer__links a:hover {
+      color: var(--color-brand-700);
+    }
+
+    @media (hover: hover) {
+      .ph-rule:hover .ph-figure {
+        border-color: var(--color-brand-300);
+        background-color: var(--color-brand-50);
+      }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .ph-board__tile {
+        animation: ph-rise 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+      }
+
+      .ph-board__tile:nth-child(2) {
+        animation-delay: 0.04s;
+      }
+
+      .ph-board__tile:nth-child(3) {
+        animation-delay: 0.08s;
+      }
+
+      .ph-board__tile:nth-child(4) {
+        animation-delay: 0.12s;
+      }
+
+      .ph-board__tile:nth-child(5) {
+        animation-delay: 0.16s;
+      }
+
+      .ph-board__tile:nth-child(6) {
+        animation-delay: 0.2s;
+      }
+
+      @keyframes ph-rise {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+    }
+
+    @media (max-width: 980px) {
+      .ph-hero {
+        grid-template-columns: 1fr;
+      }
+
+      .ph-start {
+        grid-template-columns: 1fr;
+      }
+
+      .ph-board {
+        max-width: 480px;
+        margin: 0 auto;
+      }
+
+      .ph-rules {
+        grid-template-columns: 1fr;
+      }
+
+      .ph-rules__intro {
+        position: static;
+      }
+
+      .ph-jump {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .ph-jump a {
+        gap: 8px;
+        padding: 7px 11px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--color-surface-0);
+      }
+
+      .ph-contract {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .ph-use {
+      margin-top: clamp(56px, 8vw, 100px);
+    }
+
+    .ph-use__head h2 {
+      margin: 0;
+      font-size: clamp(28px, 3.6vw, 42px);
+      font-weight: 600;
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+    }
+
+    .ph-use__grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1px;
+      margin-top: 20px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--line);
+    }
+
+    .ph-use__item {
+      padding: clamp(22px, 3vw, 32px);
+      background: var(--color-surface-0);
+    }
+
+    .ph-use__item span {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: var(--brand);
+    }
+
+    .ph-use__item h3 {
+      margin: 12px 0 0;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .ph-use__item p {
+      margin: 8px 0 0;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--color-surface-600);
+    }
+
+    @media (max-width: 720px) {
+      .ph-start__grid,
+      .ph-use__grid {
+        grid-template-columns: 1fr;
+      }
+
+      .ph-rule__body,
+      .ph-rule:nth-child(even) .ph-rule__body {
+        grid-template-columns: 1fr;
+      }
+
+      .ph-rule:nth-child(even) .ph-figure {
+        order: 0;
+      }
+
+      .ph-rule__head {
+        grid-template-columns: 38px minmax(0, 1fr);
+      }
+
+      .ph-rule__value {
+        grid-column: 2;
+        justify-self: start;
+      }
+
+      .ph-hero {
+        border-radius: 20px;
+      }
+
+      .ph-footer {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .ph-footer__links {
+        gap: 14px;
+      }
+
+      .ph-seal {
+        width: 132px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .ph-weights {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .ph-board__tile {
+        min-height: 92px;
+        padding: 12px 4px 8px;
+      }
+
+      .ph-board__tile svg {
+        width: 40px;
+        height: 40px;
+      }
+
+      .ph-board__name {
+        font-size: 9px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ph-progress {
+        display: none;
+      }
+
+      :global(html) {
+        scroll-behavior: auto;
+      }
+
+      .ph *,
+      .ph *::before,
+      .ph *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
 </BaseLayout>

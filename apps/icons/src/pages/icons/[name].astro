@@ -39,7 +39,7 @@ const category = manifest.categories.find((entry: { id: string }) => entry.id ==
 const svg = svgFor(icon.name, "regular");
 const label = (weight: string) => weight.charAt(0).toUpperCase() + weight.slice(1);
 
-const canonical = new URL(`/icons/${icon.name}`, Astro.site ?? "https://icons.vaultui-icons-site.workers.dev").toString();
+const canonical = new URL(`/icons/${icon.name}`, Astro.site ?? "https://icons.abhayaui.workers.dev").toString();
 const jsonLd = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "CreativeWork",
@@ -49,14 +49,14 @@ const jsonLd = JSON.stringify({
   url: canonical,
   isPartOf: {
     "@type": "CollectionPage",
-    name: "Vault Icons",
-    url: new URL("/", Astro.site ?? "https://icons.vaultui-icons-site.workers.dev").toString(),
+    name: "Abhayaui Icons",
+    url: new URL("/", Astro.site ?? "https://icons.abhayaui.workers.dev").toString(),
   },
 });
 ---
 
 <BaseLayout
-  title={`${icon.name} icon — Vault Icons`}
+  title={`${icon.name} icon — Abhayaui Icons`}
   description={`${icon.name} — ${category?.label ?? "icon"} in six weights. Free SVG, ready for React, Vue and Svelte.`}
 >
   <style is:global>

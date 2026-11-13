@@ -134,6 +134,19 @@ ${body}
 }`;
 }
 
+function reactWeightComponent(exportName, weight, inner, fill) {
+  const component = reactWeight(exportName, weight, inner, fill).replace(
+    `function ${exportName}`,
+    `export function ${exportName}`,
+  );
+  return `import type { VaultIconProps } from "../../types";
+
+${component}
+
+export default ${exportName};
+`;
+}
+
 function reactBody(weight, inner, fill) {
   if (weight === "fill") return toJsx(fill);
   if (weight === "duotone") {
@@ -239,18 +252,37 @@ async function main() {
   const pkgRoot = path.join(repoRoot, "packages");
 
   if (want("react")) {
-    const dir = path.join(pkgRoot, "icons-react", "src", "icons");
+    const reactSrc = path.join(pkgRoot, "icons-react", "src");
+    const dir = path.join(reactSrc, "icons");
+    const aggregateDir = path.join(reactSrc, "aggregate");
     await rm(dir, { recursive: true, force: true });
+    await rm(aggregateDir, { recursive: true, force: true });
     await mkdir(dir, { recursive: true });
+    await mkdir(aggregateDir, { recursive: true });
     const barrel = [];
     for (const name of names) {
       const inner = icons[name];
       const fill = fills[name] ?? inner;
       const component = pascal(name);
-      await writeFile(path.join(dir, `${name}.tsx`), reactComponent(component, inner, fill), "utf8");
-      barrel.push(`export { ${WEIGHTS.map((w) => iconName(component, w)).join(", ")} } from "./icons/${name}";`);
+      await writeFile(path.join(aggregateDir, `${name}.tsx`), reactComponent(component, inner, fill), "utf8");
+      const iconDir = path.join(dir, name);
+      await mkdir(iconDir, { recursive: true });
+      const weightBarrel = [];
+      for (const weight of WEIGHTS) {
+        const exportName = iconName(component, weight);
+        await writeFile(
+          path.join(iconDir, `${weight}.tsx`),
+          reactWeightComponent(exportName, weight, inner, fill),
+          "utf8",
+        );
+        weightBarrel.push(`export { ${exportName} } from "./${weight}";`);
+      }
+      await writeFile(path.join(iconDir, "index.ts"), weightBarrel.join("\n") + "\n", "utf8");
+      barrel.push(
+        `export { ${WEIGHTS.map((w) => iconName(component, w)).join(", ")} } from "./aggregate/${name}";`,
+      );
     }
-    await writeFile(path.join(pkgRoot, "icons-react", "src", "index.ts"), barrel.join("\n") + "\n", "utf8");
+    await writeFile(path.join(reactSrc, "index.ts"), barrel.join("\n") + "\n", "utf8");
   }
 
   if (want("vue")) {

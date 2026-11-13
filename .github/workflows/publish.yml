@@ -70,6 +70,10 @@ jobs:
           pnpm --filter @vaultui/icons-vue generate
           pnpm --filter @vaultui/icons-svelte generate
 
+      # Refuse to publish a package whose export/size/type guarantees regressed.
+      - name: Verify icon packages
+        run: node scripts/verify-icon-packages.mjs
+
       - name: Publish to npm registry
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

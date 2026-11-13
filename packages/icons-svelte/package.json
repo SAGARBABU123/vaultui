@@ -1,6 +1,6 @@
 {
   "name": "@vaultui/icons-svelte",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Vault Icons — 1,557 hand-authored icons in 6 weights as tree-shakeable Svelte components.",
   "license": "MIT",
   "type": "module",
@@ -10,7 +10,38 @@
       "types": "./src/index.ts",
       "svelte": "./src/index.ts",
       "default": "./src/index.ts"
-    }
+    },
+    "./icons/*/regular": {
+      "types": "./src/icons/*.svelte",
+      "svelte": "./src/icons/*.svelte",
+      "default": "./src/icons/*.svelte"
+    },
+    "./icons/*/thin": {
+      "types": "./src/icons/*-thin.svelte",
+      "svelte": "./src/icons/*-thin.svelte",
+      "default": "./src/icons/*-thin.svelte"
+    },
+    "./icons/*/light": {
+      "types": "./src/icons/*-light.svelte",
+      "svelte": "./src/icons/*-light.svelte",
+      "default": "./src/icons/*-light.svelte"
+    },
+    "./icons/*/bold": {
+      "types": "./src/icons/*-bold.svelte",
+      "svelte": "./src/icons/*-bold.svelte",
+      "default": "./src/icons/*-bold.svelte"
+    },
+    "./icons/*/fill": {
+      "types": "./src/icons/*-fill.svelte",
+      "svelte": "./src/icons/*-fill.svelte",
+      "default": "./src/icons/*-fill.svelte"
+    },
+    "./icons/*/duotone": {
+      "types": "./src/icons/*-duotone.svelte",
+      "svelte": "./src/icons/*-duotone.svelte",
+      "default": "./src/icons/*-duotone.svelte"
+    },
+    "./package.json": "./package.json"
   },
   "files": [
     "src"

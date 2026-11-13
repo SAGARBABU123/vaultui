@@ -7,7 +7,7 @@ export const prerender = true;
 export const GET: APIRoute = ({ site }) => {
   const dataRoot = path.join(process.cwd(), "public", "data");
   const manifest = JSON.parse(readFileSync(path.join(dataRoot, "manifest.json"), "utf8"));
-  const base = (site ?? new URL("https://icons.vaultui-icons-site.workers.dev")).toString().replace(/\/$/, "");
+  const base = (site ?? new URL("https://icons.abhayaui.workers.dev")).toString().replace(/\/$/, "");
 
   const urls = [
     "/",

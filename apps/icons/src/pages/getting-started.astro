@@ -38,14 +38,12 @@ function weightSvg(weight: { id: string; stroke: string | null }): string {
   return `<svg ${attrs} fill="none" stroke="currentColor" stroke-width="${weight.stroke}" stroke-linecap="round" stroke-linejoin="round">${acornOutline}</svg>`;
 }
 
-const reactCode = `import {
-  Acorn,
-  AcornThin,
-  AcornLight,
-  AcornBold,
-  AcornFill,
-  AcornDuotone,
-} from "@vaultui/icons-react";
+const reactCode = `import { Acorn } from "@vaultui/icons-react/icons/acorn/regular";
+import { AcornThin } from "@vaultui/icons-react/icons/acorn/thin";
+import { AcornLight } from "@vaultui/icons-react/icons/acorn/light";
+import { AcornBold } from "@vaultui/icons-react/icons/acorn/bold";
+import { AcornFill } from "@vaultui/icons-react/icons/acorn/fill";
+import { AcornDuotone } from "@vaultui/icons-react/icons/acorn/duotone";
 
 export default function Icons() {
   return (
@@ -61,14 +59,12 @@ export default function Icons() {
 }`;
 
 const vueCode = `<script setup lang="ts">
-import {
-  Acorn,
-  AcornThin,
-  AcornLight,
-  AcornBold,
-  AcornFill,
-  AcornDuotone,
-} from "@vaultui/icons-vue";
+import Acorn from "@vaultui/icons-vue/icons/acorn/regular";
+import AcornThin from "@vaultui/icons-vue/icons/acorn/thin";
+import AcornLight from "@vaultui/icons-vue/icons/acorn/light";
+import AcornBold from "@vaultui/icons-vue/icons/acorn/bold";
+import AcornFill from "@vaultui/icons-vue/icons/acorn/fill";
+import AcornDuotone from "@vaultui/icons-vue/icons/acorn/duotone";
 </script>
 
 <template>
@@ -83,14 +79,12 @@ import {
 </template>`;
 
 const svelteCode = `<script>
-import {
-  Acorn,
-  AcornThin,
-  AcornLight,
-  AcornBold,
-  AcornFill,
-  AcornDuotone,
-} from "@vaultui/icons-svelte";
+import Acorn from "@vaultui/icons-svelte/icons/acorn/regular";
+import AcornThin from "@vaultui/icons-svelte/icons/acorn/thin";
+import AcornLight from "@vaultui/icons-svelte/icons/acorn/light";
+import AcornBold from "@vaultui/icons-svelte/icons/acorn/bold";
+import AcornFill from "@vaultui/icons-svelte/icons/acorn/fill";
+import AcornDuotone from "@vaultui/icons-svelte/icons/acorn/duotone";
 </script>
 
 <div style="display: flex; gap: 12px; color: #4f46e5">
@@ -110,8 +104,8 @@ const examples = [
 ---
 
 <BaseLayout
-  title="Getting started — Vault Icons"
-  description="Install Vault Icons and render 1,500+ hand-authored glyphs in React, Vue and Svelte — six weights, one grid, zero runtime dependencies."
+  title="Getting started — Abhayaui Icons"
+  description="Install Abhayaui Icons and render 1,500+ hand-authored glyphs in React, Vue and Svelte — six weights, one grid, zero runtime dependencies."
 >
   <a href="#main" class="skip-link">Skip to content</a>
 
@@ -131,7 +125,7 @@ const examples = [
             <path d="M12 8.8v6.4" stroke="var(--color-brand-500)" />
           </svg>
         </span>
-        <span class="font-semibold text-[15px] leading-tight" style="color: var(--color-surface-900)">Vault Icons</span>
+        <span class="font-semibold text-[15px] leading-tight" style="color: var(--color-surface-900)">Abhayaui Icons</span>
       </a>
 
       <nav class="ml-auto flex items-center gap-1" aria-label="Site navigation">
@@ -144,10 +138,10 @@ const examples = [
 
   <main id="main" class="gs-container pb-24">
     <section class="gs-hero">
-      <p class="text-[12px] font-bold uppercase tracking-[0.14em]" style="color: var(--color-brand-600)">Vault Icons</p>
+      <p class="text-[12px] font-bold uppercase tracking-[0.14em]" style="color: var(--color-brand-600)">Abhayaui Icons</p>
       <h1 class="text-[40px] sm:text-[48px] leading-[1.05] font-semibold mt-3" style="letter-spacing: -0.03em">Getting started</h1>
       <p class="mt-4 text-[16px] leading-relaxed max-w-[62ch]" style="color: var(--color-surface-600)">
-        Install Vault Icons into React, Vue or Svelte and drop a glyph straight into your
+        Install Abhayaui Icons into React, Vue or Svelte and drop a glyph straight into your
         components. Every one of the 1,557 icons ships in six weights with zero runtime
         dependencies.
       </p>
@@ -205,8 +199,11 @@ const examples = [
     <section class="gs-section" aria-labelledby="usage-heading">
       <h2 id="usage-heading" class="gs-section__title">Usage</h2>
       <p class="gs-section__lede">
-        Import the weights you need and render them like any other component. The
-        <code>Acorn</code> glyph is used below across all six weights.
+        Import the weights you need and render them like any other component. Each
+        example uses a deep, per-weight import so only the glyphs you use are pulled
+        in; root imports such as <code>@vaultui/icons-react</code> still work for
+        compatibility. The <code>Acorn</code> glyph is used below across all six
+        weights.
       </p>
 
       <div class="flex flex-col gap-6">

@@ -1,6 +1,6 @@
 {
   "name": "@vaultui/icons-vue",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Vault Icons — 1,557 hand-authored icons in 6 weights as tree-shakeable Vue 3 components.",
   "license": "MIT",
   "type": "module",
@@ -8,7 +8,32 @@
     ".": {
       "types": "./src/index.ts",
       "import": "./src/index.ts"
-    }
+    },
+    "./icons/*/regular": {
+      "types": "./src/icons/*.vue",
+      "import": "./src/icons/*.vue"
+    },
+    "./icons/*/thin": {
+      "types": "./src/icons/*-thin.vue",
+      "import": "./src/icons/*-thin.vue"
+    },
+    "./icons/*/light": {
+      "types": "./src/icons/*-light.vue",
+      "import": "./src/icons/*-light.vue"
+    },
+    "./icons/*/bold": {
+      "types": "./src/icons/*-bold.vue",
+      "import": "./src/icons/*-bold.vue"
+    },
+    "./icons/*/fill": {
+      "types": "./src/icons/*-fill.vue",
+      "import": "./src/icons/*-fill.vue"
+    },
+    "./icons/*/duotone": {
+      "types": "./src/icons/*-duotone.vue",
+      "import": "./src/icons/*-duotone.vue"
+    },
+    "./package.json": "./package.json"
   },
   "files": [
     "src"

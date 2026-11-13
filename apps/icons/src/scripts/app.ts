@@ -98,13 +98,22 @@ const WEIGHT_SUFFIX: Record<string, string> = {
   duotone: "Duotone",
 };
 
+function deepImportLine(lang: "react" | "vue" | "svelte", name: string, weight: string): string {
+  const component = `${pascal(name)}${WEIGHT_SUFFIX[weight] ?? ""}`;
+  const target = `${PACKAGES[lang]}/icons/${name}/${weight}`;
+  return lang === "react"
+    ? `import { ${component} } from "${target}";`
+    : `import ${component} from "${target}";`;
+}
+
 function installFor(name: string): { command: string; importLine: string } | null {
-  const pkg = PACKAGES[state.lang];
+  const lang = state.lang;
+  if (lang === "html") return null;
+  const pkg = PACKAGES[lang];
   if (!pkg) return null;
-  const suffix = WEIGHT_SUFFIX[state.modalWeight] ?? "";
   return {
     command: `${INSTALLERS[state.pm]} ${pkg}`,
-    importLine: `import { ${pascal(name)}${suffix} } from "${pkg}";`,
+    importLine: deepImportLine(lang, name, state.modalWeight),
   };
 }
 
@@ -118,13 +127,14 @@ function selectionInstall(): string {
 }
 
 function selectionImport(): string {
-  const pkg = PACKAGES[state.selectLang];
+  const lang = state.selectLang;
+  const pkg = PACKAGES[lang];
   if (!pkg || state.selected.size === 0) return "";
-  const suffix = WEIGHT_SUFFIX[state.weight] ?? "";
-  const names = [...state.selected]
+  const weight = state.weight;
+  return [...state.selected]
     .sort((a, b) => a.localeCompare(b))
-    .map((name) => pascal(name) + suffix);
-  return `import { ${names.join(", ")} } from "${pkg}";`;
+    .map((name) => deepImportLine(lang, name, weight))
+    .join("\n");
 }
 
 function persistSelection() {
