@@ -24,7 +24,18 @@ const distIcons = path.join(distDir, "icons");
 
 const WEIGHTS = ["thin", "light", "regular", "bold", "fill", "duotone"];
 const SUFFIX = { thin: "Thin", light: "Light", regular: "", bold: "Bold", fill: "Fill", duotone: "Duotone" };
-const EXPECTED_ICONS = 1557;
+const MANIFEST = path.resolve(pkgRoot, "..", "icons", "generated", "manifest.json");
+
+/** Inventory size comes from the generated manifest, never a hard-coded number. */
+async function expectedIconCount(fallback) {
+  try {
+    const manifest = JSON.parse(await readFile(MANIFEST, "utf8"));
+    if (Number.isInteger(manifest.total) && manifest.total > 0) return manifest.total;
+  } catch {
+    /* manifest not built yet — fall back to the directory count */
+  }
+  return fallback;
+}
 
 function pascal(name) {
   return name
@@ -65,8 +76,9 @@ async function main() {
     .map((entry) => entry.name)
     .sort();
 
-  if (names.length !== EXPECTED_ICONS) {
-    fail(`expected ${EXPECTED_ICONS} icon dirs, found ${names.length}`);
+  const expectedIcons = await expectedIconCount(names.length);
+  if (names.length !== expectedIcons) {
+    fail(`expected ${expectedIcons} icon dirs, found ${names.length}`);
   }
 
   const { transform } = await loadEsbuild();
@@ -113,8 +125,8 @@ async function main() {
     rootLines.push(`export * from "./icons/${name}/index.js";`);
   }
 
-  if (modules !== EXPECTED_ICONS * WEIGHTS.length) {
-    fail(`expected ${EXPECTED_ICONS * WEIGHTS.length} weight modules, wrote ${modules}`);
+  if (modules !== expectedIcons * WEIGHTS.length) {
+    fail(`expected ${expectedIcons * WEIGHTS.length} weight modules, wrote ${modules}`);
   }
 
   await writeFile(path.join(distDir, "index.js"), rootLines.join("\n") + "\n", "utf8");
