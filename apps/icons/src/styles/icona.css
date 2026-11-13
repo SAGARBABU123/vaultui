@@ -175,13 +175,13 @@ h2 {
   place-items: center;
   width: 44px;
   height: 44px;
-  color: var(--color-surface-600);
+  color: var(--icon-color, var(--color-surface-600));
   background-color: transparent;
   transition: color 0.18s ease;
 }
 
 .icon-tile:hover .icon-tile__glyph {
-  color: var(--color-brand-600);
+  color: var(--icon-color, var(--color-brand-600));
 }
 
 .icon-tile__glyph svg {
@@ -204,6 +204,137 @@ h2 {
 
 .icon-tile:hover .icon-tile__name {
   color: var(--color-surface-900);
+}
+
+/* --------------------------------------------------------------------------
+ * Icon colour picker — global tint for every glyph on the page
+ * ------------------------------------------------------------------------ */
+
+.color-picker-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.color-picker {
+  position: relative;
+}
+
+.color-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--color-surface-0);
+  color: var(--color-surface-700);
+  box-shadow: var(--shadow-soft);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.color-toggle:hover {
+  color: var(--color-surface-900);
+}
+
+.color-toggle__swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--icon-color, var(--color-surface-600));
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.18);
+}
+
+.color-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 60;
+  width: 236px;
+  padding: 12px;
+  border-radius: 14px;
+  background: var(--color-surface-0);
+  box-shadow:
+    0 18px 50px rgb(20 18 12 / 0.18),
+    0 2px 6px rgb(20 18 12 / 0.08);
+}
+
+.color-menu__title {
+  margin-bottom: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-surface-600);
+}
+
+.color-swatches {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+}
+
+.color-swatch {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+}
+
+.color-swatch[aria-selected="true"] {
+  border-color: var(--color-brand-500);
+  background: var(--color-brand-50);
+}
+
+.color-swatch__dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.18);
+}
+
+.color-swatch__dot[data-default="true"] {
+  background: conic-gradient(from 90deg, #e5e7eb, #9ca3af, #e5e7eb, #9ca3af, #e5e7eb);
+}
+
+.color-custom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--color-surface-700);
+}
+
+.color-custom input {
+  width: 36px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid var(--color-surface-200);
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.color-reset {
+  width: 100%;
+  margin-top: 10px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--color-surface-100);
+  color: var(--color-surface-800);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.color-reset:hover {
+  background: var(--color-surface-200);
 }
 
 /* ==========================================================================
@@ -379,6 +510,7 @@ h2 {
   width: var(--preview-size, 48px);
   height: var(--preview-size, 48px);
   display: block;
+  color: var(--icon-color, currentColor);
 }
 
 .drawer__fields {

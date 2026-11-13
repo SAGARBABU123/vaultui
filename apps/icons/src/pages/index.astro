@@ -37,6 +37,21 @@ for (let index = 0; ; index += 1) {
 
 const initial = ordered.slice(0, 72);
 const totalFiles = manifest.total * manifest.weights.length;
+
+const colorPresets = [
+  { name: "Default", value: "" },
+  { name: "Slate", value: "#475569" },
+  { name: "Gray", value: "#6b7280" },
+  { name: "Blue", value: "#2563eb" },
+  { name: "Indigo", value: "#4f46e5" },
+  { name: "Violet", value: "#7c3aed" },
+  { name: "Emerald", value: "#059669" },
+  { name: "Amber", value: "#d97706" },
+  { name: "Rose", value: "#e11d48" },
+  { name: "Red", value: "#dc2626" },
+  { name: "Teal", value: "#0d9488" },
+  { name: "Black", value: "#111827" },
+];
 ---
 
 <BaseLayout>
@@ -146,12 +161,6 @@ const totalFiles = manifest.total * manifest.weights.length;
               {manifest.total.toLocaleString()} icons
             </span>
             <a
-              href="/philosophy"
-              class="hidden sm:inline-flex items-center h-10 rounded-md px-3 text-[14px] font-medium"
-              style="background: var(--color-surface-0); color: var(--color-surface-700); box-shadow: var(--shadow-soft)"
-              title="Philosophy"
-            >Philosophy</a>
-            <a
               href="https://github.com/SAGARBABU123/vaultui"
               class="inline-grid place-items-center w-10 h-10 rounded-md"
               style="background: var(--color-surface-0); color: var(--color-surface-700); box-shadow: var(--shadow-soft)"
@@ -174,9 +183,55 @@ const totalFiles = manifest.total * manifest.weights.length;
               {manifest.total.toLocaleString()} icons across {manifest.categories.length} categories, each in six weights. Click any icon for React, Vue and Svelte snippets.
             </p>
           </div>
-          <p class="text-[12px] tabular-nums shrink-0" style="color: var(--color-surface-600)">
-            {totalFiles.toLocaleString()} SVG files · 256 grid · currentColor
-          </p>
+          <div class="color-picker-wrap">
+            <div class="color-picker" id="color-picker">
+              <button
+                type="button"
+                id="color-toggle"
+                class="color-toggle"
+                aria-haspopup="true"
+                aria-expanded="false"
+                aria-controls="color-menu"
+                aria-label="Icon colour"
+              >
+                <span class="color-toggle__swatch" data-color-swatch aria-hidden="true"></span>
+                <span class="hidden sm:inline" data-color-label>Colour</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+              <div class="color-menu" id="color-menu" hidden>
+                <p class="color-menu__title">Icon colour</p>
+                <div class="color-swatches" role="listbox" aria-label="Icon colours">
+                  {colorPresets.map((preset) => (
+                    <button
+                      type="button"
+                      class="color-swatch"
+                      role="option"
+                      data-color={preset.value}
+                      aria-selected={preset.value === "" ? "true" : "false"}
+                      aria-label={preset.name}
+                      title={preset.name}
+                    >
+                      <span
+                        class="color-swatch__dot"
+                        style={preset.value ? `background:${preset.value}` : undefined}
+                        data-default={preset.value === "" ? "true" : undefined}
+                      ></span>
+                    </button>
+                  ))}
+                </div>
+                <label class="color-custom">
+                  <span>Custom</span>
+                  <input type="color" id="color-input" value="#4f46e5" aria-label="Custom icon colour" />
+                </label>
+                <button type="button" id="color-reset" class="color-reset">Reset to default</button>
+              </div>
+            </div>
+            <p class="text-[12px] tabular-nums shrink-0" style="color: var(--color-surface-600)">
+              {totalFiles.toLocaleString()} SVG files · 256 grid · currentColor
+            </p>
+          </div>
         </div>
 
         <div class="select-hint" id="select-hint" hidden>

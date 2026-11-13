@@ -56,6 +56,7 @@ const state = {
   selected: new Set<string>(),
   selectLang: "react" as "react" | "vue" | "svelte",
   selectPm: "npm" as "npm" | "yarn" | "pnpm" | "bun",
+  iconColor: "",
 };
 
 const layout = { cols: 1, tile: 104, tileH: 84, gap: 12, rowH: 96 };
@@ -140,6 +141,44 @@ function selectionImport(): string {
 function persistSelection() {
   try {
     localStorage.setItem(CART_KEY, JSON.stringify([...state.selected]));
+  } catch {
+    /* storage unavailable — ignore */
+  }
+}
+
+/* -------------------------------------------------------------- icon tint */
+
+const COLOR_KEY = "vault-icons:icon-color";
+
+function applyIconColor(color: string) {
+  state.iconColor = color;
+  const root = document.documentElement;
+  if (color) root.style.setProperty("--icon-color", color);
+  else root.style.removeProperty("--icon-color");
+
+  const swatch = $("[data-color-swatch]") as HTMLElement | null;
+  if (swatch) swatch.style.background = color;
+
+  const input = $("#color-input") as HTMLInputElement | null;
+  if (input && color) input.value = color;
+
+  $$("[data-color]").forEach((button) => {
+    button.setAttribute("aria-selected", String((button.getAttribute("data-color") || "") === color));
+  });
+}
+
+function setColorMenu(open: boolean) {
+  const menu = $("#color-menu");
+  const toggle = $("#color-toggle");
+  if (!menu || !toggle) return;
+  menu.hidden = !open;
+  toggle.setAttribute("aria-expanded", String(open));
+}
+
+function saveIconColor(color: string) {
+  try {
+    if (color) localStorage.setItem(COLOR_KEY, color);
+    else localStorage.removeItem(COLOR_KEY);
   } catch {
     /* storage unavailable — ignore */
   }
@@ -814,6 +853,32 @@ function trapFocus(event: KeyboardEvent) {
 function wire() {
   selectToggle?.addEventListener("click", () => setSelectionMode(!state.selectionMode));
 
+  $("#color-toggle")?.addEventListener("click", () => {
+    const menu = $("#color-menu");
+    if (menu) setColorMenu(menu.hidden);
+  });
+  $$("[data-color]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const color = button.getAttribute("data-color") || "";
+      applyIconColor(color);
+      saveIconColor(color);
+      setColorMenu(false);
+    });
+  });
+  $("#color-input")?.addEventListener("input", (event) => {
+    const color = (event.target as HTMLInputElement).value;
+    applyIconColor(color);
+    saveIconColor(color);
+  });
+  $("#color-reset")?.addEventListener("click", () => {
+    applyIconColor("");
+    saveIconColor("");
+    setColorMenu(false);
+  });
+  document.addEventListener("click", (event) => {
+    if (!(event.target as Element).closest("#color-picker")) setColorMenu(false);
+  });
+
   $$("[data-select-lang]").forEach((button) => {
     button.addEventListener("click", () => {
       const lang = button.getAttribute("data-select-lang");
@@ -1144,6 +1209,13 @@ async function boot() {
   }
 
   state.catalog = catalog;
+
+  try {
+    const savedColor = localStorage.getItem(COLOR_KEY);
+    if (savedColor) applyIconColor(savedColor);
+  } catch {
+    /* storage unavailable — ignore */
+  }
   state.all = interleave(
     catalog.icons.map(([name, category, tags, aliases]) => ({
       name,
