@@ -112,18 +112,50 @@ function iconSvg(name: string): string {
       </nav>
     </section>
 
-    <section class="mt-6" aria-labelledby="mcp-heading">
-      <h2 id="mcp-heading" class="sidebar__section-title px-2 mb-2 text-[12px] font-bold uppercase tracking-[0.14em]" style="color: var(--color-surface-600)">
-        Extend
+    <section class="mt-6" aria-labelledby="ecosystem-heading">
+      <h2 id="ecosystem-heading" class="sidebar__section-title px-2 mb-2 text-[12px] font-bold uppercase tracking-[0.14em]" style="color: var(--color-surface-600)">
+        Ecosystem
       </h2>
       <nav class="flex flex-col gap-0.5">
         <button type="button" class="side-item" data-mcp-open title="MCP Server">
           <span class="side-item__icon" aria-hidden="true" set:html={iconSvg("plugs-connected")}></span>
           <span class="side-item__label flex-1 text-left">MCP Server</span>
         </button>
+        <a
+          href="https://vault-ui-bice.vercel.app"
+          class="side-item"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Vault UI Components (opens in a new tab)"
+        >
+          <span class="side-item__icon" aria-hidden="true" set:html={iconSvg("puzzle-piece")}></span>
+          <span class="side-item__label flex-1 text-left">Vault UI Components</span>
+          <svg class="side-item__external" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M14 4h6v6" />
+            <path d="M20 4 10 14" />
+            <path d="M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4" />
+          </svg>
+          <span class="sr-only">(opens in a new tab)</span>
+        </a>
       </nav>
     </section>
   </div>
 </aside>
 
 <div class="sidebar-backdrop" data-sidebar-backdrop></div>
+
+<style>
+  .side-item__external {
+    flex-shrink: 0;
+    margin-left: auto;
+    opacity: 0.55;
+  }
+
+  .side-item:hover .side-item__external {
+    opacity: 0.9;
+  }
+
+  .sidebar[data-collapsed="true"] .side-item__external {
+    display: none;
+  }
+</style>
