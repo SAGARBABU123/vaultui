@@ -7,13 +7,16 @@
   "scripts": {
     "sync:data": "node scripts/sync-data.mjs",
     "dev": "node scripts/sync-data.mjs && astro dev",
-    "build": "node scripts/sync-data.mjs && astro build",
+    "build:mcp": "pnpm --filter @vaultui/icons-mcp build",
+    "build": "node scripts/sync-data.mjs && pnpm --filter @vaultui/icons-mcp build && astro build",
+    "dev:mcp": "wrangler dev --port 8787",
     "preview": "astro preview",
     "deploy": "wrangler deploy",
     "typecheck": "astro check"
   },
   "dependencies": {
     "@vaultui/icons": "workspace:*",
+    "@vaultui/icons-mcp": "workspace:*",
     "@vaultui/tokens": "workspace:*",
     "astro": "^7.4.11"
   },

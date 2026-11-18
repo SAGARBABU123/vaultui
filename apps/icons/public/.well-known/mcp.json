@@ -1,0 +1,18 @@
+{
+  "name": "vaultui-icons",
+  "description": "Abhayaui Icons - 2,474 original icons in six weights. Search, fetch SVG, and get framework imports.",
+  "version": "0.1.0",
+  "protocolVersion": "2025-06-18",
+  "transport": "streamable-http",
+  "endpoint": "https://icons.abhayaui.workers.dev/mcp",
+  "authentication": "none",
+  "readOnly": true,
+  "tools": [
+    "search_icons",
+    "get_icon",
+    "list_categories",
+    "list_icons",
+    "get_usage"
+  ],
+  "license": "MIT"
+}

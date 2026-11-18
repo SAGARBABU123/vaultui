@@ -1,0 +1,56 @@
+{
+  "name": "@vaultui/icons-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for Abhayaui Icons - search 2,474 icons, fetch SVGs and framework imports.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "vaultui-icons-mcp": "./bin/vaultui-icons-mcp.mjs"
+  },
+  "exports": {
+    ".": "./dist/index.js",
+    "./worker": "./dist/worker.js",
+    "./stdio": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "index": "node scripts/build-index.mjs",
+    "prebuild": "node scripts/build-index.mjs",
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test test/*.test.mjs",
+    "smoke": "node scripts/smoke-worker.mjs",
+    "start": "node bin/vaultui-icons-mcp.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsup": "^8.5.0",
+    "typescript": "^5.7.0"
+  },
+  "tsup": {
+    "entry": {
+      "index": "src/index.ts",
+      "worker": "src/worker.ts",
+      "cli": "src/cli.ts"
+    },
+    "format": [
+      "esm"
+    ],
+    "target": "es2022",
+    "dts": false,
+    "clean": true,
+    "sourcemap": false,
+    "treeshake": true
+  }
+}

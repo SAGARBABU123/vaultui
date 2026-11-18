@@ -1,0 +1,275 @@
+<div class="icon-modal" id="mcp-modal" hidden>
+  <div class="drawer-backdrop" data-mcp-close></div>
+
+  <aside
+    class="drawer"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="mcp-title"
+  >
+    <header class="drawer__head">
+      <div class="min-w-0 flex-1">
+        <h2 id="mcp-title" class="drawer__title">MCP Server</h2>
+      </div>
+      <button type="button" class="drawer__close" data-mcp-close aria-label="Close MCP panel">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
+      </button>
+    </header>
+
+    <div class="drawer__body">
+      <div class="segmented" role="radiogroup" aria-label="Connection method">
+        <button type="button" class="seg-btn" role="radio" data-mcp-tab="remote" aria-checked="true">Remote URL</button>
+        <button type="button" class="seg-btn" role="radio" data-mcp-tab="local" aria-checked="false">Local npx</button>
+      </div>
+
+      <section class="mcp-panel" data-mcp-panel="remote">
+        <div class="mcp-code-card">
+          <div class="mcp-code-card__head">
+            <span>mcp.json</span>
+            <button type="button" class="btn btn--ghost btn--sm" data-mcp-copy="remote">Copy</button>
+          </div>
+          <pre class="mcp-code" data-mcp-config="remote"></pre>
+        </div>
+        <p class="mcp-hint">
+          Works with Claude, Cursor, VS Code and any client that supports remote MCP servers.
+          Add the block under <code>mcpServers</code>.
+        </p>
+      </section>
+
+      <section class="mcp-panel" data-mcp-panel="local" hidden>
+        <div class="mcp-command">
+          <code data-mcp-command>npx -y @vaultui/icons-mcp</code>
+          <button type="button" class="btn btn--ghost btn--sm" data-mcp-copy="command">Copy</button>
+        </div>
+        <div class="mcp-code-card">
+          <div class="mcp-code-card__head">
+            <span>mcp.json</span>
+            <button type="button" class="btn btn--ghost btn--sm" data-mcp-copy="local">Copy</button>
+          </div>
+          <pre class="mcp-code" data-mcp-config="local"></pre>
+        </div>
+        <p class="mcp-hint">Runs over stdio with Node 20+. Useful when remote URLs are blocked.</p>
+      </section>
+
+      <div class="mcp-tools">
+        <span class="field__label">Tools</span>
+        <ul class="mcp-tools__list">
+          <li><code>search_icons</code><span>concept, name, tag or alias search</span></li>
+          <li><code>get_icon</code><span>SVG plus React / Vue / Svelte / HTML import</span></li>
+          <li><code>list_categories</code><span>the ten-category taxonomy</span></li>
+          <li><code>list_icons</code><span>paged inventory</span></li>
+          <li><code>get_usage</code><span>install and usage instructions</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <footer class="drawer__foot">
+      <div class="drawer__foot-meta">
+        <span class="drawer__hint"><kbd>esc</kbd> close</span>
+      </div>
+      <a class="btn btn--ghost btn--sm" href="/getting-started#mcp">Read the docs</a>
+    </footer>
+  </aside>
+</div>
+
+<style>
+  .mcp-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .mcp-code-card {
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface-50);
+    box-shadow: inset 0 0 0 1px var(--color-surface-200);
+    overflow: hidden;
+  }
+
+  .mcp-code-card__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 6px 6px 12px;
+    border-bottom: 1px solid var(--color-surface-200);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--color-surface-600);
+  }
+
+  .mcp-code {
+    margin: 0;
+    padding: 12px;
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 11.5px;
+    line-height: 1.55;
+    overflow-x: auto;
+    white-space: pre;
+    color: var(--color-surface-800);
+  }
+
+  .mcp-command {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    padding: 4px 4px 4px 12px;
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface-50);
+    box-shadow: inset 0 0 0 1px var(--color-surface-200);
+  }
+
+  .mcp-command code {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 12px;
+    color: var(--color-surface-800);
+  }
+
+  .mcp-hint {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--color-surface-600);
+  }
+
+  .mcp-tools {
+    margin-top: 20px;
+  }
+
+  .mcp-tools__list {
+    list-style: none;
+    margin: 8px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .mcp-tools__list li {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--color-surface-600);
+  }
+
+  .mcp-tools__list code {
+    flex: none;
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 11.5px;
+    color: var(--color-surface-900);
+  }
+</style>
+
+<script>
+  const modal = document.getElementById("mcp-modal");
+
+  if (modal) {
+    // The Worker serves /mcp on whatever host the site is opened from, so the
+    // deployed Cloudflare URL is picked up automatically after deploy.
+    const endpoint = new URL("/mcp", window.location.origin).toString();
+    const remoteConfig = JSON.stringify(
+      { mcpServers: { "vaultui-icons": { type: "streamable-http", url: endpoint } } },
+      null,
+      2,
+    );
+    const localConfig = JSON.stringify(
+      { mcpServers: { "vaultui-icons": { command: "npx", args: ["-y", "@vaultui/icons-mcp"] } } },
+      null,
+      2,
+    );
+    const command = "npx -y @vaultui/icons-mcp";
+    const payloads: Record<string, string> = {
+      remote: remoteConfig,
+      local: localConfig,
+      command,
+    };
+
+    const remoteEl = modal.querySelector<HTMLElement>('[data-mcp-config="remote"]');
+    const localEl = modal.querySelector<HTMLElement>('[data-mcp-config="local"]');
+    if (remoteEl) remoteEl.textContent = remoteConfig;
+    if (localEl) localEl.textContent = localConfig;
+
+    function setTab(tab: string) {
+      modal!.querySelectorAll<HTMLElement>("[data-mcp-tab]").forEach((button) => {
+        button.setAttribute("aria-checked", String(button.dataset.mcpTab === tab));
+      });
+      modal!.querySelectorAll<HTMLElement>("[data-mcp-panel]").forEach((panel) => {
+        panel.hidden = panel.dataset.mcpPanel !== tab;
+      });
+    }
+
+    async function copy(text: string, button: HTMLElement | null) {
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch {
+        const area = document.createElement("textarea");
+        area.value = text;
+        area.style.position = "fixed";
+        area.style.opacity = "0";
+        document.body.append(area);
+        area.select();
+        document.execCommand("copy");
+        area.remove();
+      }
+      if (button) {
+        const previous = button.textContent;
+        button.textContent = "Copied";
+        window.setTimeout(() => {
+          button.textContent = previous || "Copy";
+        }, 1200);
+      }
+    }
+
+    function open() {
+      modal!.hidden = false;
+      document.querySelector<HTMLElement>("[data-mcp-open]")?.setAttribute("aria-current", "true");
+      modal!.querySelector<HTMLElement>("[data-mcp-close]")?.focus();
+    }
+
+    function close() {
+      modal!.hidden = true;
+      document.querySelector<HTMLElement>("[data-mcp-open]")?.removeAttribute("aria-current");
+    }
+
+    document.addEventListener("click", (event) => {
+      const target = event.target as HTMLElement;
+
+      if (target.closest("[data-mcp-open]")) {
+        event.preventDefault();
+        open();
+        return;
+      }
+
+      if (!modal.hidden) {
+        if (target.closest("[data-mcp-close]")) {
+          close();
+          return;
+        }
+        const tab = target.closest<HTMLElement>("[data-mcp-tab]");
+        if (tab?.dataset.mcpTab) {
+          setTab(tab.dataset.mcpTab);
+          return;
+        }
+        const copyButton = target.closest<HTMLElement>("[data-mcp-copy]");
+        if (copyButton) {
+          const kind = copyButton.dataset.mcpCopy ?? "";
+          void copy(payloads[kind] ?? "", copyButton);
+          return;
+        }
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !modal.hidden) close();
+    });
+  }
+</script>

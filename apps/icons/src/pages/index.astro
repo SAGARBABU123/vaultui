@@ -4,6 +4,7 @@ import path from "node:path";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Sidebar from "../components/Sidebar.astro";
 import IconModal from "../components/IconModal.astro";
+import McpModal from "../components/McpModal.astro";
 
 const dataRoot = path.join(process.cwd(), "public", "data");
 const manifest = JSON.parse(readFileSync(path.join(dataRoot, "manifest.json"), "utf8"));
@@ -322,6 +323,7 @@ const colorPresets = [
   </div>
 
   <IconModal weights={manifest.weights} />
+  <McpModal />
 
   <script>
     import "../scripts/app";

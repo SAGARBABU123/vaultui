@@ -101,6 +101,40 @@ const examples = [
   { id: "vue", label: "Vue SFC", code: vueCode },
   { id: "svelte", label: "Svelte", code: svelteCode },
 ];
+
+const mcpRemote = JSON.stringify(
+  {
+    mcpServers: {
+      "vaultui-icons": {
+        type: "streamable-http",
+        url: "https://icons.abhayaui.workers.dev/mcp",
+      },
+    },
+  },
+  null,
+  2,
+);
+
+const mcpLocal = JSON.stringify(
+  {
+    mcpServers: {
+      "vaultui-icons": {
+        command: "npx",
+        args: ["-y", "@vaultui/icons-mcp"],
+      },
+    },
+  },
+  null,
+  2,
+);
+
+const mcpTools = [
+  ["search_icons", "Concept, name, tag or alias search with pagination."],
+  ["get_icon", "SVG plus a React, Vue, Svelte or HTML import; weight, size, color."],
+  ["list_categories", "The ten-category taxonomy with ids and counts."],
+  ["list_icons", "Page through the full inventory, optionally by category."],
+  ["get_usage", "Install commands and usage instructions."],
+];
 ---
 
 <BaseLayout
@@ -142,7 +176,7 @@ const examples = [
       <h1 class="text-[40px] sm:text-[48px] leading-[1.05] font-semibold mt-3" style="letter-spacing: -0.03em">Getting started</h1>
       <p class="mt-4 text-[16px] leading-relaxed max-w-[62ch]" style="color: var(--color-surface-600)">
         Install Abhayaui Icons into React, Vue or Svelte and drop a glyph straight into your
-        components. Every one of the 1,557 icons ships in six weights with zero runtime
+        components. Every one of the 2,474 icons ships in six weights with zero runtime
         dependencies.
       </p>
     </section>
@@ -217,6 +251,57 @@ const examples = [
             </div>
           ))
         }
+      </div>
+    </section>
+
+    <section class="gs-section" id="mcp" aria-labelledby="mcp-heading">
+      <h2 id="mcp-heading" class="gs-section__title">MCP Server</h2>
+      <p class="gs-section__lede">
+        The whole library is available to AI agents through a Model Context Protocol server.
+        Agents search by concept, fetch the exact SVG and get the correct framework import
+        instead of guessing icon names. The endpoint is read-only, stateless and needs no
+        authentication.
+      </p>
+
+      <div class="gs-grid">
+        <div class="gs-card">
+          <div class="flex items-center gap-3 mb-4">
+            <h3 class="text-[18px] font-semibold" style="color: var(--color-surface-900)">Remote</h3>
+            <code class="gs-pkg">streamable-http</code>
+          </div>
+          <p class="text-[13px] leading-relaxed mb-3" style="color: var(--color-surface-600)">
+            Add the endpoint to Claude, Cursor, VS Code or any remote-MCP client.
+          </p>
+          <div class="code-well">
+            <pre><code>{mcpRemote}</code></pre>
+          </div>
+        </div>
+        <div class="gs-card">
+          <div class="flex items-center gap-3 mb-4">
+            <h3 class="text-[18px] font-semibold" style="color: var(--color-surface-900)">Local</h3>
+            <code class="gs-pkg">stdio</code>
+          </div>
+          <p class="text-[13px] leading-relaxed mb-3" style="color: var(--color-surface-600)">
+            Run the server locally over stdio when remote URLs are blocked.
+          </p>
+          <div class="code-well">
+            <pre><code>{mcpLocal}</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6">
+        <h3 class="text-[16px] font-semibold mb-3" style="color: var(--color-surface-900)">Tools</h3>
+        <div class="flex flex-col gap-2">
+          {
+            mcpTools.map(([name, description]) => (
+              <div class="gs-cmd">
+                <code class="gs-cmd__code">{name}</code>
+                <span class="text-[13px]" style="color: var(--color-surface-600)">{description}</span>
+              </div>
+            ))
+          }
+        </div>
       </div>
     </section>
   </main>
